@@ -1,6 +1,9 @@
 // fast-check generators for the orbit-engine tests (design.md, "Generators"). This part holds the
-// TLE generators of Properties 1 to 3; later tasks add the other generators to this file.
+// TLE generators of Properties 1 to 3 and the fetcher generators of Properties 13 and 14; later tasks
+// add the other generators to this file.
 import fc from 'fast-check';
+import type { EngineErrorCategory } from '../../src/lib/orbit/index';
+import { celestrakBody, createMockCelestrakFetch, recordingFetch, type MockCelestrakFetch } from './mock-celestrak';
 
 // The ISS lines of Reference_Document section 4.2. Their tails fill the columns that C18 does not
 // name. No checksum is recomputed (D1), so every generated TLE carries the ISS checksum digits.
@@ -127,3 +130,280 @@ export function renderingArb(tle: TleLines): fc.Arbitrary<string> {
       return endsWithTerminator ? text : text.replace(/\r?\n$/, '');
     });
 }
+
+/** Length of a TLE line without terminator (C18). */
+const LINE_LENGTH = 69;
+
+/** A column range `[start, end)` of line 1 or line 2 (C18; Requirement 4, criterion 4). */
+interface ColumnRange {
+  /** Index into `[name, line1, line2]`. */
+  readonly line: 1 | 2;
+  readonly start: number;
+  readonly end: number;
+}
+
+/** One column of line 1 or line 2. */
+interface Column {
+  readonly line: 1 | 2;
+  readonly column: number;
+}
+
+/** Fields that must consist of the digits 0 to 9 (Requirement 4, criterion 14). */
+const DIGIT_FIELDS: readonly ColumnRange[] = [
+  { line: 1, start: 2, end: 7 }, // NORAD number
+  { line: 2, start: 2, end: 7 }, // NORAD number
+  { line: 1, start: 18, end: 20 }, // epoch year
+  { line: 2, start: 26, end: 33 }, // eccentricity
+];
+
+/** Fields that must hold a decimal number once their spaces are trimmed (Requirement 4, criterion 21). */
+const DECIMAL_FIELDS: readonly ColumnRange[] = [
+  { line: 1, start: 20, end: 32 }, // epoch day
+  { line: 2, start: 8, end: 16 }, // inclination
+  { line: 2, start: 17, end: 25 }, // right ascension of the ascending node
+  { line: 2, start: 34, end: 42 }, // argument of perigee
+  { line: 2, start: 43, end: 51 }, // mean anomaly
+  { line: 2, start: 52, end: 63 }, // mean motion
+];
+
+/** A column inside one of `fields`. */
+function columnArb(fields: readonly ColumnRange[]): fc.Arbitrary<Column> {
+  return fc
+    .constantFrom(...fields)
+    .chain(({ line, start, end }) => fc.integer({ min: start, max: end - 1 }).map((column) => ({ line, column })));
+}
+
+/** A mutated three-line text and the Property 3 operator that produced it. */
+export interface Mutation {
+  /** Name of the mutation operator, so that a failure report shows which mutation the parser accepted. */
+  readonly operator: string;
+  /** The mutated text, its lines joined with LF. The TLE_Parser must reject it with category `invalid-tle`. */
+  readonly text: string;
+}
+
+/**
+ * Mutations of the three-line text of `tle` by the operators of Property 3. Each mutated text breaks a
+ * rule of Requirement 4 (criteria 11 to 15, 21 and 22), so `parseTle` rejects it with category
+ * `invalid-tle`, and so does `fetchTle` when a status-200 Fetch_Function returns it as the body.
+ * `tle` has the layout of `formatTle` or of a Baseline_TLE_Snapshot: two 69-character lines whose
+ * decimal fields each hold one decimal point.
+ */
+export function mutationArb(tle: TleLines): fc.Arbitrary<Mutation> {
+  const lines = [tle.name, tle.line1, tle.line2];
+
+  /** The text with the columns [start, end) of line 1 or line 2 replaced by `replacement`. */
+  const replaceColumns = (index: 1 | 2, start: number, end: number, replacement: string): string =>
+    lines.map((line, i) => (i === index ? line.slice(0, start) + replacement + line.slice(end) : line)).join('\n');
+
+  /** The text with one generated column replaced by a generated character. */
+  const replaceOne = (columns: fc.Arbitrary<Column>, chars: fc.Arbitrary<string>): fc.Arbitrary<string> =>
+    fc.tuple(columns, chars).map(([{ line, column }, char]) => replaceColumns(line, column, column + 1, char));
+
+  const lineIndex = fc.constantFrom(1, 2);
+  const decimalColumn = columnArb(DECIMAL_FIELDS);
+  // A second decimal point replaces a digit, because each decimal field of such a TLE holds one point already.
+  const decimalDigitColumn = decimalColumn.filter(({ line, column }) => /[0-9]/.test(lines[line][column]));
+
+  const operators: Record<string, fc.Arbitrary<string>> = {
+    // Criterion 11: the text has more or fewer than three non-empty lines.
+    removeName: fc.constant([tle.line1, tle.line2].join('\n')),
+    extraLine: fc
+      .tuple(fc.integer({ min: 0, max: 3 }), fc.stringMatching(/^[A-Z0-9]{1,24}$/))
+      .map(([at, extra]) => lines.toSpliced(at, 0, extra).join('\n')),
+    secondTle: tleFieldsArb
+      .map(formatTle)
+      .map((second) => [...lines, second.name, second.line1, second.line2].join('\n')),
+    // Criterion 12: line 1 does not begin with `1 ` or line 2 does not begin with `2 `.
+    prefix: fc
+      .tuple(lineIndex, fc.string({ unit: fc.constantFrom(...'0123456789ABXYZ .+-'), minLength: 2, maxLength: 2 }))
+      .filter(([index, prefix]) => prefix !== `${index} `)
+      .map(([index, prefix]) => replaceColumns(index, 0, 2, prefix)),
+    // Criterion 13: a line of 68 or 70 characters. The inserted character is a digit, because trailing
+    // whitespace would be removed again.
+    shorterLine: fc
+      .tuple(lineIndex, fc.integer({ min: 0, max: LINE_LENGTH - 1 }))
+      .map(([index, at]) => replaceColumns(index, at, at + 1, '')),
+    longerLine: fc
+      .tuple(lineIndex, fc.integer({ min: 0, max: LINE_LENGTH }), fc.constantFrom(...'0123456789'))
+      .map(([index, at, digit]) => replaceColumns(index, at, at, digit)),
+    // Criterion 14: a non-digit or a space in a NORAD number, the epoch year or the eccentricity.
+    nonDigit: replaceOne(columnArb(DIGIT_FIELDS), fc.constantFrom(...' ABCXYZabcxyz+-._')),
+    // Criterion 15: line 2 carries another NORAD number than line 1.
+    differentNorad: fc
+      .integer({ min: 0, max: 99_999 })
+      .filter((id) => id !== Number(tle.line2.slice(2, 7)))
+      .map((id) => replaceColumns(2, 2, 7, String(id).padStart(5, '0'))),
+    // Criterion 21: a decimal field that is blank, or holds a sign, an exponent, a letter or a second decimal point.
+    blankField: fc
+      .constantFrom(...DECIMAL_FIELDS)
+      .map(({ line, start, end }) => replaceColumns(line, start, end, ' '.repeat(end - start))),
+    sign: replaceOne(decimalColumn, fc.constantFrom('+', '-')),
+    exponent: replaceOne(decimalColumn, fc.constantFrom('e', 'E')),
+    letter: replaceOne(decimalColumn, fc.constantFrom('A', 'Z', 'a', 'z')),
+    secondDecimalPoint: replaceOne(decimalDigitColumn, fc.constant('.')),
+    // Criterion 22: a mean motion of zero (line 2 columns [52:63]).
+    zeroMeanMotion: fc
+      .constantFrom('00.00000000', ' 0.00000000', '0.00000000 ')
+      .map((zero) => replaceColumns(2, 52, 63, zero)),
+  };
+
+  return fc.oneof(
+    ...Object.entries(operators).map(([operator, texts]) => texts.map((text): Mutation => ({ operator, text }))),
+  );
+}
+
+/** NORAD catalog numbers that a request can name (Requirement 3, criterion 7). */
+const noradIdArb = fc.integer({ min: 1, max: 99_999 });
+
+/**
+ * Values that are not a number with an integer value from 1 to 99999 (Property 13): 0 and negative
+ * integers, integers from 100 000 up, fractional numbers, NaN, the infinities, numeric strings and
+ * bigints with a valid value, null, undefined and other values such as objects.
+ */
+export const invalidNoradArb: fc.Arbitrary<unknown> = fc.oneof(
+  fc.integer({ max: 0 }),
+  fc.integer({ min: 100_000, max: Number.MAX_SAFE_INTEGER }),
+  fc.double({ min: 1, max: 99_999, noNaN: true }).filter((value) => !Number.isInteger(value)),
+  fc.constantFrom(NaN, Infinity, -Infinity),
+  noradIdArb.map(String),
+  noradIdArb.map(BigInt),
+  fc.constantFrom(null, undefined),
+  // `anything` also yields numbers, and some of them are valid catalog numbers, so only other values pass.
+  fc.anything({ withBoxedValues: true }).filter((value) => typeof value !== 'number'),
+);
+
+/** The six failure scenarios of Property 14. */
+export type FailureKind =
+  | 'throws' // the Fetch_Function throws a generated value synchronously
+  | 'rejects' // it returns a promise rejected with a generated value
+  | 'non-response' // it resolves with a value that is not a response
+  | 'http-status' // it resolves with a status from 100 to 599 other than 200 and any body
+  | 'unreadable-body' // it resolves with status 200 and a response whose `text()` throws, rejects or returns a non-string
+  | 'catalog-mismatch'; // it resolves with status 200 and an accepted TLE for a number M other than N
+
+/**
+ * One failure scenario of Property 14 for the requested NORAD catalog number N (`noradId`). A test makes
+ * `createFetch()` the Fetch_Function of a fetcher (or routes the requests for N to it), requests N and
+ * expects `fetchTle(noradId)` to reject with an EngineError that matches `expected`.
+ */
+export interface FailureScenario {
+  readonly kind: FailureKind;
+  /** The requested NORAD catalog number N, from 1 to 99999. */
+  readonly noradId: number;
+  /** Kind `catalog-mismatch` only: the number M other than N of the TLE that the Fetch_Function answers with. */
+  readonly answeredNoradId?: number;
+  /** Creates a new Fetch_Function that applies the scenario to every request and records its calls in `calls`. */
+  readonly createFetch: () => MockCelestrakFetch;
+  readonly expected: {
+    readonly category: EngineErrorCategory;
+    /** Kind `http-status` only: the HTTP status that the error must carry. */
+    readonly status?: number;
+    /**
+     * Present when the error must carry `value` as its `cause`: compare with `Object.is`, and also check
+     * `'cause' in error`, because the value can be `undefined`. Absent when the engine builds the cause itself.
+     */
+    readonly cause?: { readonly value: unknown };
+  };
+}
+
+/** Generated causes: an Error or any other value, `undefined` included (D4 records an undefined cause too). */
+const causeArb: fc.Arbitrary<unknown> = fc.oneof(
+  fc.string().map((message) => new Error(message)),
+  fc.anything(),
+);
+
+/** HTTP statuses from 100 to 599 other than 200; 403, the rate-limit answer of CelesTrak, is drawn more often. */
+const statusArb = fc.oneof(
+  { weight: 1, arbitrary: fc.constant(403) },
+  { weight: 4, arbitrary: fc.integer({ min: 100, max: 599 }).filter((status) => status !== 200) },
+);
+
+/** The ISS lines with NORAD catalog number `id` in both lines. No checksum is recomputed (D1). */
+function issTleWithNorad(id: number): TleLines {
+  const norad = String(id).padStart(5, '0');
+  return {
+    name: 'ISS (ZARYA)',
+    line1: ISS_LINE1.slice(0, 2) + norad + ISS_LINE1.slice(7),
+    line2: ISS_LINE2.slice(0, 2) + norad + ISS_LINE2.slice(7),
+  };
+}
+
+/** A status-200 response whose `text()` is `text`; `new Response` cannot build a body that fails to read. */
+function responseWithText(text: () => unknown): Response {
+  return Object.defineProperty(new Response(null, { status: 200 }), 'text', { value: text });
+}
+
+/**
+ * The failure scenarios of Property 14 with generated causes, statuses and catalog numbers N and M
+ * (N and M differ). Scenario kind `unreadable-body` covers the three ways in which reading the body can
+ * fail (Requirement 3, criterion 15): `text()` throws, `text()` rejects and `text()` returns a non-string.
+ */
+export const failureScenarioArb: fc.Arbitrary<FailureScenario> = fc
+  .uniqueArray(noradIdArb, { minLength: 2, maxLength: 2 })
+  .chain(([noradId, answeredNoradId]) => {
+    const unreadableBody = (text: () => unknown, cause?: { readonly value: unknown }): FailureScenario => ({
+      kind: 'unreadable-body',
+      noradId,
+      createFetch: () => recordingFetch(() => Promise.resolve(responseWithText(text))),
+      expected: { category: 'network', cause },
+    });
+
+    return fc.oneof(
+      causeArb.map(
+        (thrown): FailureScenario => ({
+          kind: 'throws',
+          noradId,
+          createFetch: () => createMockCelestrakFetch({ kind: 'throw', thrown }),
+          expected: { category: 'network', cause: { value: thrown } },
+        }),
+      ),
+      causeArb.map(
+        (reason): FailureScenario => ({
+          kind: 'rejects',
+          noradId,
+          createFetch: () => createMockCelestrakFetch({ kind: 'reject', reason }),
+          expected: { category: 'network', cause: { value: reason } },
+        }),
+      ),
+      // `anything` never yields a function, so no generated value has the `text()` method of a response.
+      fc.anything().map(
+        (value): FailureScenario => ({
+          kind: 'non-response',
+          noradId,
+          createFetch: () => recordingFetch(() => Promise.resolve(value as Response)),
+          expected: { category: 'network' },
+        }),
+      ),
+      fc.tuple(statusArb, fc.oneof(fc.string(), fc.constant(celestrakBody(issTleWithNorad(noradId))))).map(
+        ([status, body]): FailureScenario => ({
+          kind: 'http-status',
+          noradId,
+          createFetch: () => createMockCelestrakFetch({ kind: 'answer', status, body }),
+          expected: { category: 'http', status },
+        }),
+      ),
+      fc.oneof(
+        causeArb.map((thrown) =>
+          unreadableBody(
+            () => {
+              throw thrown;
+            },
+            { value: thrown },
+          ),
+        ),
+        causeArb.map((reason) => unreadableBody(() => Promise.reject(reason), { value: reason })),
+        fc
+          .anything()
+          .filter((value) => typeof value !== 'string')
+          .map((value) => unreadableBody(() => Promise.resolve(value))),
+      ),
+      fc.constant<FailureScenario>({
+        kind: 'catalog-mismatch',
+        noradId,
+        answeredNoradId,
+        createFetch: () =>
+          createMockCelestrakFetch({ kind: 'answer', body: celestrakBody(issTleWithNorad(answeredNoradId)) }),
+        expected: { category: 'catalog-mismatch' },
+      }),
+    );
+  });

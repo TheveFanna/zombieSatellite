@@ -61,7 +61,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - Stage by name: `src/lib/orbit/errors.ts`, `src/lib/orbit/constants.ts`, `src/lib/orbit/time.ts`, `src/lib/orbit/index.ts`, `tests/helpers/source-scan.ts`, `tests/orbit/source-boundary.test.ts`, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add engine errors, time handling and source-boundary scan`. Do not push
     - _Requirements: 2.1, 2.2, 2.10_
 
-- [ ] 3. Implement the TLE_Parser
+- [x] 3. Implement the TLE_Parser
   - [x] 3.1 Implement `parseTle` and the `TleRecord` type in `tle-parser.ts`
     - Define `TleRecord` as in the design's Data Models section and implement `parseTle(text)`: a non-string argument gives `invalid-input`; the nine checks run in the design's order (split on `\n`, `trimEnd()` per line, keep non-empty lines; exactly three lines; `1 `/`2 ` prefixes; 69 characters; digit-only NORAD, epoch-year and eccentricity fields; equal NORAD numbers; decimal fields of criterion 21; `MEAN_MOTION !== 0`; `twoline2satrec` error code, finite `no`, and finite `propagate` result at `new Date(EPOCH)`), each failure `invalid-tle`
     - Compute the fields by the design's field table (EPOCH by C02 and formula 2.9.1, not rounded, D2; `ECCENTRICITY = Number('0.' + digits)`; semi-major axis by formula 2.9.7; altitude `a − 6378.137`); no checksum verification (D1); none of the optional fields of D17; return the record with `Object.freeze`
@@ -91,72 +91,72 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - **Property 2: Column model of the TLE fields**
     - **Validates: Requirements 2.8, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.24, 5.11**
 
-  - [-] 3.6 Run the suite and commit task 3
+  - [x] 3.6 Run the suite and commit task 3
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/tle-parser.ts`, `src/lib/orbit/index.ts`, `tests/helpers/baseline.ts`, `tests/orbit/tle-parser.test.ts`, the files of 3.3 to 3.5 that were written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`, no scratch script); commit, for example `Add TLE parser`. Do not push
     - _Requirements: 4.25_
 
 - [ ] 4. Implement the TLE_Cache and the TLE_Fetcher
-  - [ ] 4.1 Implement `TleCache` in `tle-cache.ts`
+  - [x] 4.1 Implement `TleCache` in `tle-cache.ts`
     - Internal `Map`-based cache of `{ record, storedAtMs }` entries keyed by NORAD number, created empty; `set` replaces an entry; entries are never deleted; no persistent storage; not exported from `index.ts`
     - _Requirements: 5.1, 5.5, 5.9_
 
-  - [ ] 4.2 Write the Mock_CelesTrak_Fetch helper
+  - [x] 4.2 Write the Mock_CelesTrak_Fetch helper
     - `tests/helpers/mock-celestrak.ts`: `createMockCelestrakFetch()` answering status 200, `text/plain`, the ISS TLE from `baseline.ts` with the name line right-padded to 24 characters and CRLF endings; configurable variants for other bodies, statuses, synchronous throws, rejections and never-settling requests; every variant records `{ url, init }` in its own array (no `vi.fn`)
     - _Requirements: 3.12, 3.13, 5.10_
 
-  - [ ] 4.3 Implement `createTleFetcher` in `tle-fetcher.ts`
+  - [x] 4.3 Implement `createTleFetcher` in `tle-fetcher.ts`
     - Options check (`invalid-input` for a non-object `options` or a non-function `fetch` or `now`); the synchronous part of `fetchTle` in the design's order: catalog-number check without calling the Fetch_Function, In_Flight_Request lookup, Cache_Clock reading through `toTimeMs` with `nowMs − storedAtMs < TLE_CACHE_TTL_MS` as the freshness test (negative ages fresh), and synchronous registration of the request promise whose body starts in a later microtask (D11, D12)
     - `runRequest` as in the design's pseudocode: exact URL, init `{ method: 'GET', credentials: 'omit', signal }` without headers, Fetch_Function read per request and called as a plain function, `AbortController` plus a 15 s timer raced against the exchange and the body read with a no-op handler on the timeout promise, the error categories `network`, `http` (with `status`, body unread), `invalid-tle` and `catalog-mismatch`, cache store only on success, and timer clearing and map removal in `finally`
     - Export `createTleFetcher` and the types `FetchFunction`, `TleFetcher`, `TleFetcherOptions` from `index.ts`
     - _Requirements: 2.7, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10, 3.11, 3.14, 3.15, 3.16, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.11, 5.12_
 
-  - [ ] 4.4 Write the fetcher example tests
+  - [x] 4.4 Write the fetcher example tests
     - `tests/orbit/tle-fetcher.test.ts`: 3.12 and 3.13 with the Mock_CelesTrak_Fetch; 5.10 with the Cache_Clock at Entry_Age TTL − 1 ms (served from the cache) and TTL (new request); 3.5 (two successive `globalThis.fetch` mocks installed after import); 3.10 bodies `No GP data found`, `''` and `[]`; the 3.15 variants; 3.16 with `vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })`, a never-settling mock that ignores the signal, two waiting callers and `await vi.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS)`; 5.2; 5.5 (refetch with a later epoch replaces the entry); 5.9
     - Run `pnpm exec vitest run tests/orbit/tle-fetcher.test.ts`
     - _Requirements: 3.5, 3.10, 3.12, 3.13, 3.15, 3.16, 5.2, 5.3, 5.4, 5.5, 5.9, 5.10_
 
-  - [ ] 4.5 Write the Live_Test and run it once
+  - [x] 4.5 Write the Live_Test and run it once
     - `tests/orbit/live-celestrak.test.ts`: `it.skipIf(!process.env.ZOMBIESAT_LIVE_TEST)(…, 30_000)`; the body installs the guard's `builtinFetch` as `globalThis.fetch`, calls `createTleFetcher().fetchTle(25544)` once without a Fetch_Function, restores the blocker in `finally`, and asserts only `NORAD_CAT_ID === 25544`, `OBJECT_ID === '98067A'` and `OBJECT_NAME === 'ISS (ZARYA)'`
     - Run `pnpm exec vitest run tests/orbit/live-celestrak.test.ts` without the variable and confirm that the test is reported as skipped and the exit code is 0
     - Run the Live_Test exactly once for this spec: `$env:ZOMBIESAT_LIVE_TEST = "1"; pnpm exec vitest run tests/orbit/live-celestrak.test.ts; Remove-Item Env:ZOMBIESAT_LIVE_TEST`. Do not repeat it here or in any later task; if it fails with `network` or `http` (for example 403), report the result to the user instead of retrying
     - _Requirements: 14.3, 14.4, 14.5, 14.11_
 
-  - [ ] 4.6 Add the fetcher generators to `tests/helpers/arbitraries.ts`
+  - [x] 4.6 Add the fetcher generators to `tests/helpers/arbitraries.ts`
     - `mutationArb(tle)` (the mutation operators of Property 3), `invalidNoradArb` (Property 13) and `failureScenarioArb` (the six failure scenarios of Property 14 with generated causes and statuses, built on the mock variants of 4.2); create the file if 3.3 was skipped
     - _Requirements: 3.7, 3.8, 3.9, 3.10, 3.11, 3.15_
 
-  - [ ] 4.7 Write the property test for malformed TLE text
+  - [x] 4.7 Write the property test for malformed TLE text
     - `tests/orbit/property-03-malformed-tle.test.ts`; checks both `parseTle` and `fetchTle` with a status-200 mock returning the mutated body; uses `mutationArb` from 4.6 and the generated TLEs of 3.3
     - **Property 3: Malformed TLE text is rejected**
     - **Validates: Requirements 2.7, 3.10, 4.11, 4.12, 4.13, 4.14, 4.15, 4.21, 4.22**
 
-  - [ ] 4.8 Write the property test for successful fetches
+  - [x] 4.8 Write the property test for successful fetches
     - `tests/orbit/property-12-fetch-success.test.ts`
     - **Property 12: Successful fetch for any catalog number**
     - **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.6, 3.14**
 
-  - [ ] 4.9 Write the property test for invalid catalog numbers
+  - [x] 4.9 Write the property test for invalid catalog numbers
     - `tests/orbit/property-13-invalid-catalog-numbers.test.ts`
     - **Property 13: Invalid catalog numbers never reach the Fetch_Function**
     - **Validates: Requirements 2.7, 3.7**
 
-  - [ ] 4.10 Write the property test for failed requests
+  - [x] 4.10 Write the property test for failed requests
     - `tests/orbit/property-14-fetch-failures.test.ts`
     - **Property 14: Failed requests are classified and leave the cache unchanged**
     - **Validates: Requirements 2.7, 3.8, 3.9, 3.11, 3.15, 5.6**
 
-  - [ ] 4.11 Write the property test for cache freshness
+  - [x] 4.11 Write the property test for cache freshness
     - `tests/orbit/property-15-cache-freshness.test.ts`; offsets from −3·TTL to +3·TTL with TTL − 1 and TTL always included
     - **Property 15: Cache freshness follows Entry_Age**
     - **Validates: Requirements 5.3, 5.4, 5.8, 5.12**
 
-  - [ ] 4.12 Write the property test for concurrent callers
+  - [x] 4.12 Write the property test for concurrent callers
     - `tests/orbit/property-16-in-flight-dedupe.test.ts`
     - **Property 16: Concurrent callers share one In_Flight_Request**
     - **Validates: Requirements 5.7**
 
-  - [ ] 4.13 Run the suite and commit task 4
+  - [-] 4.13 Run the suite and commit task 4
     - Run `pnpm test` (exit 0, Live_Test reported as skipped) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/tle-cache.ts`, `src/lib/orbit/tle-fetcher.ts`, `src/lib/orbit/index.ts`, `tests/helpers/mock-celestrak.ts`, `tests/orbit/tle-fetcher.test.ts`, `tests/orbit/live-celestrak.test.ts`, the files of 4.6 to 4.12 that were written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add TLE cache and CelesTrak fetcher`. Do not push
     - _Requirements: 14.1, 14.3_

@@ -6,3 +6,5 @@ export { REQUEST_TIMEOUT_MS, TLE_CACHE_TTL_MS } from './constants';
 export type { TimeInput } from './time';
 export { parseTle } from './tle-parser';
 export type { TleRecord } from './tle-parser';
+export { createTleFetcher } from './tle-fetcher';
+export type { FetchFunction, TleFetcher, TleFetcherOptions } from './tle-fetcher';
