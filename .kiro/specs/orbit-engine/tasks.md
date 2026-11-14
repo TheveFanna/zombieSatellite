@@ -8,7 +8,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
 
 ## Tasks
 
-- [ ] 1. Set up the project scaffold, toolchain and offline test guard
+- [x] 1. Set up the project scaffold, toolchain and offline test guard
   - [x] 1.1 Create the npm project and toolchain configuration
     - Write `package.json` as in the design's package.json section: name `zombie-satellite`, version `0.1.0`, `private`, the description, `engines.node` `>=22.12.0`, `"packageManager": "pnpm@10.30.3"` (D26), and the scripts `dev`, `build`, `start`, `test` (`vitest run`) and `typecheck` (`tsc --noEmit`), each a single command without environment assignments, variable expansion, `rm`/`del` or shell operators
     - Install with the design's three commands: `pnpm add next@16 react@19 react-dom@19`, `pnpm add --save-exact satellite.js@6.0.2`, `pnpm add -D vitest@5 fast-check@4 typescript@5.9 @types/node@22 @types/react@19 @types/react-dom@19`
@@ -34,7 +34,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - `tests/scaffold/scaffold.test.ts` with the checks of the design's scaffold row: version ranges (`/^[\^~]?16\.\d+\.\d+$/`, `/^[\^~]?19\.\d+\.\d+$/`), `ts.getParsedCommandLineOfConfigFile` strict-family check, satellite.js pin in package.json and `pnpm-lock.yaml` (text matching, no YAML library, no new dependency), absence of the other lock files listed in task 1.1, `packageManager` starting with `pnpm@`, `engines.node`, devDependencies, no `@vitest-environment` in any test file, script syntax, the `src/app` file set, the TypeScript-AST checks of `layout.tsx` and `page.tsx`, the two verbatim README sentences and the simulated/synthesized wording rules
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.7, 1.8, 1.9, 1.10, 1.11, 1.13, 1.19, 1.20, 1.21, 1.22, 1.23, 1.24, 1.25_
 
-  - [-] 1.5 Verify the toolchain commands and commit task 1
+  - [x] 1.5 Verify the toolchain commands and commit task 1
     - Run `pnpm install --frozen-lockfile` (exit 0), `pnpm test` (single run, exit 0), `pnpm run build` (exit 0, `/` listed as static) and then `pnpm run typecheck` (zero errors; it runs after the build because `next-env.d.ts` and `.next/types` come from the build). If the build adjusted `tsconfig.json`, keep the adjusted file and run `pnpm run typecheck` again
     - Run `pnpm test no-such-test-file` once and confirm that `$LASTEXITCODE` is non-zero (no test file found)
     - Stage by name with `git add --`: `package.json`, `pnpm-lock.yaml`, `tsconfig.json`, `next.config.ts`, `vitest.config.ts`, `.gitignore`, `README.md`, `src/app/layout.tsx`, `src/app/page.tsx`, `tests/setup/network-guard.ts`, `tests/orbit/network-guard.test.ts`, `tests/scaffold/scaffold.test.ts` (if 1.4 was done), and the spec documents `.kiro/specs/orbit-engine/requirements.md`, `.kiro/specs/orbit-engine/design.md`, `.kiro/specs/orbit-engine/tasks.md` and `.kiro/specs/orbit-engine/.config.kiro`
@@ -43,20 +43,20 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - _Requirements: 1.6, 1.12, 1.14, 1.15, 1.16, 1.17, 1.18, 1.20, 1.21_
 
 - [ ] 2. Build the engine foundation and the source-boundary scan
-  - [ ] 2.1 Implement `errors.ts`, `constants.ts`, `time.ts` and the entry module `index.ts`
+  - [x] 2.1 Implement `errors.ts`, `constants.ts`, `time.ts` and the entry module `index.ts`
     - `errors.ts` (D4): `EngineErrorCategory`, `EngineErrorOptions`, `EngineError` with `name`, `category`, `status` and ES2022 `cause` (set whenever the `cause` key is present, also for `undefined`), `isEngineError`
     - `constants.ts`: every constant of the design's constants table, exported `TLE_CACHE_TTL_MS = 7_200_000` (D9) and `REQUEST_TIMEOUT_MS = 15_000` (D10), and `radToDeg(x) = (x / Math.PI) * 180` (D8)
     - `time.ts`: `TimeInput` and `toTimeMs(value, label)` (D3: a `Date` of any realm read with `Date.prototype.getTime.call`, or a finite number with absolute value ≤ 8.64 × 10¹⁵ truncated with `Math.trunc(value) + 0`; everything else `invalid-input`), and `isoOf` for messages, which uses only `toISOString()`
     - `index.ts` exports `EngineError`, `isEngineError`, `TLE_CACHE_TTL_MS`, `REQUEST_TIMEOUT_MS` and the types `EngineErrorCategory`, `EngineErrorOptions`, `TimeInput`; `toTimeMs`, `radToDeg` and the other constants stay internal
     - _Requirements: 2.1, 2.4, 2.5, 2.6, 2.7, 2.9, 5.2_
 
-  - [ ] 2.2 Implement the source scanner and the source-boundary test
+  - [x] 2.2 Implement the source scanner and the source-boundary test
     - `tests/helpers/source-scan.ts` (D24): walk `src/lib/orbit` recursively, fail on any non-source file extension, require `index.ts`, parse each file with `ts.createSourceFile`, collect the specifiers of import and export declarations (including `import type`), `import x = require(…)`, dynamic `import(…)` and `import('…')` type nodes, allow only `satellite.js` and relative paths that resolve inside `src/lib/orbit`, treat a non-literal dynamic import as a violation, and report every forbidden identifier of Requirement 2, criterion 10 and every forbidden or non-literal `globalThis[…]` element access
     - `tests/orbit/source-boundary.test.ts`: zero violations for the engine, the design's synthetic violation snippets are all reported, and a snippet that mentions `window` only in a comment and a string is not
     - Run `pnpm exec vitest run tests/orbit/source-boundary.test.ts`
     - _Requirements: 2.1, 2.2, 2.10, 14.12_
 
-  - [ ] 2.3 Run the suite and commit task 2
+  - [-] 2.3 Run the suite and commit task 2
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/errors.ts`, `src/lib/orbit/constants.ts`, `src/lib/orbit/time.ts`, `src/lib/orbit/index.ts`, `tests/helpers/source-scan.ts`, `tests/orbit/source-boundary.test.ts`, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add engine errors, time handling and source-boundary scan`. Do not push
     - _Requirements: 2.1, 2.2, 2.10_
