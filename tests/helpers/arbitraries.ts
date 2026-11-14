@@ -1,7 +1,7 @@
 // fast-check generators for the orbit-engine tests (design.md, "Generators"). This part holds the
 // TLE generators of Properties 1 to 3, the fetcher generators of Properties 13 and 14, the Observer and
-// instant generators of Properties 9, 11, 20 and 23 and the unimodal score functions of Property 19; later
-// tasks add the other generators to this file.
+// instant generators of Properties 9, 11, 20 and 23, the unimodal score functions of Property 19 and the invalid
+// pass parameters of Property 6; later tasks add the other generators to this file.
 import fc from 'fast-check';
 import type { EngineErrorCategory } from '../../src/lib/orbit/index';
 import { celestrakBody, createMockCelestrakFetch, recordingFetch, type MockCelestrakFetch } from './mock-celestrak';
@@ -539,3 +539,85 @@ export const unimodalArb: fc.Arbitrary<UnimodalCase> = fc
         return { shape, scale, shift, a, b: a + width, xStar, score: unimodalScore(shape, a, xStar, scale, shift) };
       }),
   );
+
+/** The largest `durationHours` that `predictPasses` accepts, in hours (Requirement 9, criterion 8). */
+const MAX_DURATION_HOURS = 168;
+
+/** The largest absolute `minElevationDeg` that `predictPasses` accepts, in degrees (Requirement 9, criterion 9). */
+const MAX_ELEVATION_DEG = 90;
+
+/** Valid `durationHours` values: finite numbers greater than 0 and at most 168. */
+const validDurationArb = fc.oneof(
+  fc.integer({ min: 1, max: MAX_DURATION_HOURS }),
+  fc.double({ min: 0, max: MAX_DURATION_HOURS, minExcluded: true, noNaN: true }),
+);
+
+/** Valid `minElevationDeg` values: finite numbers from −90 to 90. */
+const validMinElevationArb = fc.oneof(
+  fc.integer({ min: -MAX_ELEVATION_DEG, max: MAX_ELEVATION_DEG }),
+  fc.double({ min: -MAX_ELEVATION_DEG, max: MAX_ELEVATION_DEG, noNaN: true }),
+);
+
+/**
+ * Generators for the values of a numeric pass parameter that are not primitive numbers: `null`, both booleans,
+ * numeric strings written from `valid` numbers (a check that coerces its value would accept them), and other values
+ * such as strings, arrays, objects and boxed numbers. `undefined` is not among them, because it selects the default.
+ * One generator per kind, so that `fc.oneof` draws each kind equally often.
+ */
+function wrongTypeArms(valid: fc.Arbitrary<number>): fc.Arbitrary<unknown>[] {
+  return [
+    fc.constant(null),
+    fc.constant(true),
+    fc.constant(false),
+    valid.map(String),
+    fc.anything({ withBoxedValues: true }).filter((value) => typeof value !== 'number' && value !== undefined),
+  ];
+}
+
+/**
+ * Values of `durationHours` that `predictPasses` must reject (Property 6): anything other than `undefined` that is not
+ * a finite `number` greater than 0 and at most 168. That is `null`, booleans, numeric strings, other strings, arrays,
+ * objects and boxed numbers; NaN and the infinities; 0 and −0 hours; negative numbers; and numbers above 168, among
+ * them the double just above 168. `undefined` and every number in (0, 168] are valid and never generated.
+ */
+export const invalidDurationArb: fc.Arbitrary<unknown> = fc.oneof(
+  ...wrongTypeArms(validDurationArb),
+  // Not finite.
+  fc.constant(NaN),
+  fc.constant(Infinity),
+  fc.constant(-Infinity),
+  // Zero hours: neither 0 nor −0 is greater than 0.
+  fc.constant(0),
+  fc.constant(-0),
+  // Negative hours, from −1000 down to −Number.MAX_VALUE.
+  fc.integer({ min: -1_000, max: -1 }),
+  fc.double({ min: -Number.MAX_VALUE, max: -Number.MIN_VALUE, noNaN: true }),
+  // More than 168 hours: the next double above 168 (doubles in [128, 256) are 2⁻⁴⁵ apart), whole hours, and any
+  // larger number.
+  fc.constant(MAX_DURATION_HOURS + 2 ** -45),
+  fc.integer({ min: MAX_DURATION_HOURS + 1, max: 10_000 }),
+  fc.double({ min: MAX_DURATION_HOURS, max: Number.MAX_VALUE, minExcluded: true, noNaN: true }),
+);
+
+/**
+ * Values of `minElevationDeg` that `predictPasses` must reject (Property 6): anything other than `undefined` that is
+ * not a finite `number` from −90 to 90. That is `null`, booleans, numeric strings, other strings, arrays, objects and
+ * boxed numbers; NaN and the infinities; and numbers beyond ±90°, among them the doubles just beyond 90 and −90.
+ * `undefined` and every number in [−90, 90] (0 and −0 included) are valid and never generated.
+ */
+export const invalidMinElevationArb: fc.Arbitrary<unknown> = fc.oneof(
+  ...wrongTypeArms(validMinElevationArb),
+  // Not finite.
+  fc.constant(NaN),
+  fc.constant(Infinity),
+  fc.constant(-Infinity),
+  // Above +90°: the next double above 90 (doubles in [64, 128) are 2⁻⁴⁶ apart), whole degrees, and any larger
+  // number.
+  fc.constant(MAX_ELEVATION_DEG + 2 ** -46),
+  fc.integer({ min: MAX_ELEVATION_DEG + 1, max: 10_000 }),
+  fc.double({ min: MAX_ELEVATION_DEG, max: Number.MAX_VALUE, minExcluded: true, noNaN: true }),
+  // Below −90°: the mirror image.
+  fc.constant(-MAX_ELEVATION_DEG - 2 ** -46),
+  fc.integer({ min: -10_000, max: -MAX_ELEVATION_DEG - 1 }),
+  fc.double({ min: -Number.MAX_VALUE, max: -MAX_ELEVATION_DEG, maxExcluded: true, noNaN: true }),
+);

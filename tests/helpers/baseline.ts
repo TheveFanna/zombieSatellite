@@ -1,6 +1,7 @@
-// Baseline_TLE_Snapshots and their expected fields (section 4.2), the Reference_Observer (section 4.1) and the
-// section 4.3 instants, copied from docs/reference/TECHNICAL_ROUTE.md. Section 4 is normative: copy values from
-// it, never recompute them. Later tasks add the section 4.6 and 4.7 values to this file.
+// Baseline_TLE_Snapshots and their expected fields (section 4.2), the Reference_Observer (section 4.1), the
+// section 4.3 instants and the 1 s reference of ISS pass 2 (section 4.7), copied from
+// docs/reference/TECHNICAL_ROUTE.md. Section 4 is normative: copy values from it, never recompute them. A later
+// task adds the section 4.6 pass tables to this file.
 import type { Observer, Vec3 } from './oracles';
 
 /** The section 4.2 table of one Baseline_TLE_Snapshot, with the names of the TleRecord fields (D6). */
@@ -153,3 +154,38 @@ export const ZHTW_AT_1200Z: BaselineInstant = instant(ZHTW_BASELINE, '2026-11-09
 
 /** The three section 4.3 rows in table order. */
 export const BASELINE_INSTANTS: readonly BaselineInstant[] = [ISS_AT_1123Z, ISS_AT_1200Z, ZHTW_AT_1200Z];
+
+/**
+ * The column "1 s 参考" of the section 4.7 table ("1 min 采样误差对照（ISS 第 2 段）"): rise, peak and set of ISS pass 2
+ * for the Reference_Observer, found with 1 s sampling (window start 2026-11-09T00:00:00Z, window 24 h, Min_Elevation
+ * 0°). Every instant is on 2026-11-09 UTC.
+ */
+export interface IssPass2Reference {
+  /** "升起": 11:18:05 UTC. */
+  readonly riseIso: string;
+  /** The same instant in ms since 1970-01-01T00:00:00Z: `Date.parse(riseIso)`. */
+  readonly riseMs: number;
+  /** "最大仰角 … @ 11:23:24": 11:23:24 UTC. */
+  readonly peakIso: string;
+  readonly peakMs: number;
+  /** "最大仰角": 48.6098°. */
+  readonly maxElevationDeg: number;
+  /** "落下": 11:28:47 UTC. */
+  readonly setIso: string;
+  readonly setMs: number;
+}
+
+const ISS_PASS_2_RISE_ISO = '2026-11-09T11:18:05Z';
+const ISS_PASS_2_PEAK_ISO = '2026-11-09T11:23:24Z';
+const ISS_PASS_2_SET_ISO = '2026-11-09T11:28:47Z';
+
+/** Section 4.7, column "1 s 参考": ISS pass 2 (Requirement 10, criterion 4; Requirement 11, criteria 7 and 8). */
+export const ISS_PASS_2_1S_REFERENCE: IssPass2Reference = {
+  riseIso: ISS_PASS_2_RISE_ISO,
+  riseMs: Date.parse(ISS_PASS_2_RISE_ISO),
+  peakIso: ISS_PASS_2_PEAK_ISO,
+  peakMs: Date.parse(ISS_PASS_2_PEAK_ISO),
+  maxElevationDeg: 48.6098,
+  setIso: ISS_PASS_2_SET_ISO,
+  setMs: Date.parse(ISS_PASS_2_SET_ISO),
+};

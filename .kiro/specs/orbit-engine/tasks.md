@@ -229,7 +229,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
   - Ensure all tests pass, ask the user if questions arise.
   - If this checkpoint changes any file, commit those files by name in one commit (never `.kiro/steering/workflow.md`); do not push.
 
-- [ ] 7. Implement the refinement primitives
+- [x] 7. Implement the refinement primitives
   - [x] 7.1 Implement `coarseScanInstants`, `bisectCrossing` and `maximizeOnGrid` in `refine.ts`
     - `coarseScanInstants(S, E)`: S, S + k · 60 000 while below E, then E when E > S
     - `bisectCrossing`: integer midpoints `lo + Math.floor((hi − lo) / 2)` while `hi − lo > 1000`, returning `hi` (D13, D16)
@@ -252,45 +252,45 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - **Property 19: Peak search on the integer grid**
     - **Validates: Requirements 10.3, 11.5**
 
-  - [-] 7.5 Run the suite and commit task 7
+  - [x] 7.5 Run the suite and commit task 7
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/refine.ts`, the files of 7.2 to 7.4 that were written (including `tests/helpers/arbitraries.ts` if 7.4 changed it), `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add pass refinement primitives`. Do not push
     - _Requirements: 10.1, 10.2, 10.3_
 
 - [ ] 8. Implement the Pass_Predictor
-  - [ ] 8.1 Implement `predictPasses` with validation, the Coarse_Scan and pass runs in `pass-predictor.ts`
+  - [x] 8.1 Implement `predictPasses` with validation, the Coarse_Scan and pass runs in `pass-predictor.ts`
     - Types `PassSearch` and `Pass` (D6); step 1 validation in the D18 order (`search` object, Observer, TleRecord, start through `toTimeMs`, `durationHours` and `minElevationDeg` tested with `=== undefined` for the defaults 24 h and 0°, window end `S + Math.round(h · 3 600 000)` within ±8.64 × 10¹⁵ ms (D14), then `createSatrec`)
     - Step 2 memoised elevation oracle on integer instants with one prepared Observer (`above` strict, `score` with −∞ for propagation failures); step 3 `coarseScanInstants`; step 4 passes from runs of samples above Min_Elevation with truncation flags, `bisectCrossing` for rise and set, the peak bracket rules including the window-edge brackets, and the peak as the earliest argmax of every instant evaluated by `maximizeOnGrid` inside [rise, set] (D15); step 6 sorting by rise and `durationMin = (setMs − riseMs) / 60_000`
     - Export `predictPasses` and the types `PassSearch`, `Pass` from `index.ts`
     - _Requirements: 2.4, 2.7, 2.8, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9, 9.10, 9.11, 9.12, 9.13, 9.14, 9.15, 10.1, 10.2, 10.3, 10.8, 10.9, 10.10, 10.11, 11.1, 11.2, 11.3, 11.4, 11.5, 11.6_
 
-  - [ ] 8.2 Add the refinement of sub-threshold Coarse_Scan_Maxima
+  - [x] 8.2 Add the refinement of sub-threshold Coarse_Scan_Maxima
     - Step 5 of the design: detect every Coarse_Scan_Maximum at or below Min_Elevation (failure samples never qualify and count as lowest), refine it with `maximizeOnGrid` inside the bracket of its neighbouring samples or window bounds, and for a refined instant above Min_Elevation report a Pass with that peak, rise and set by `bisectCrossing` from the peak to the bracket ends, and both flags false; merge these Passes into the step 6 assembly
     - _Requirements: 9.5, 11.3, 11.4, 12.1, 12.2, 12.3, 12.5, 12.6, 12.7_
 
-  - [ ] 8.3 Write the Pass_Predictor example tests
+  - [x] 8.3 Write the Pass_Predictor example tests
     - `tests/helpers/baseline.ts`: add the section 4.7 values of ISS pass 2 (rise 11:18:05Z, peak 11:23:24Z at 48.6098°, set 11:28:47Z)
     - `tests/orbit/pass-predictor.test.ts`: 9.1 to 9.3 (defaults equal explicit 24 h and 0°, by omission and by passing `undefined`); 9.11 (ISS window starting at EPOCH + 3650 days returns `[]`); 11.7 and 11.8 (Peak_Instant exactly at the window bound); 11.9
     - `tests/orbit/propagator.test.ts`: add the 9.15 case, the hand-built TleRecord of 5.5 passed to `predictPasses`, which gives `invalid-tle`
     - Run `pnpm exec vitest run tests/orbit/pass-predictor.test.ts tests/orbit/propagator.test.ts`
     - _Requirements: 9.1, 9.2, 9.3, 9.11, 9.15, 11.5, 11.7, 11.8, 11.9_
 
-  - [ ] 8.4 Write the property test for invalid pass parameters
+  - [x] 8.4 Write the property test for invalid pass parameters
     - `tests/orbit/property-06-invalid-pass-parameters.test.ts`; adds `invalidDurationArb` and `invalidMinElevationArb` to `tests/helpers/arbitraries.ts`
     - **Property 6: Invalid pass parameters are rejected**
     - **Validates: Requirements 2.7, 9.8, 9.9**
 
-  - [ ] 8.5 Write the property test for the pass list invariants
+  - [x] 8.5 Write the property test for the pass list invariants
     - `tests/orbit/property-20-pass-invariants.test.ts`; generators composed inline from `observerArb` and `instantArb`
     - **Property 20: Pass list invariants**
     - **Validates: Requirements 2.8, 9.4, 9.5, 9.6, 9.7, 9.13, 10.2, 10.8, 10.11, 11.1, 11.2, 11.3, 11.4, 11.6, 12.5, 12.6, 12.7**
 
-  - [ ] 8.6 Write the property test for Min_Elevation +90°
+  - [x] 8.6 Write the property test for Min_Elevation +90°
     - `tests/orbit/property-21-no-pass-above-90.test.ts`
     - **Property 21: No passes above +90°**
     - **Validates: Requirements 9.14**
 
-  - [ ] 8.7 Run the suite and commit task 8
+  - [-] 8.7 Run the suite and commit task 8
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/pass-predictor.ts`, `src/lib/orbit/index.ts`, `tests/helpers/baseline.ts`, `tests/orbit/pass-predictor.test.ts`, `tests/orbit/propagator.test.ts`, the files of 8.4 to 8.6 that were written (including `tests/helpers/arbitraries.ts` if 8.4 changed it), `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add pass predictor`. Do not push
     - _Requirements: 9.1, 9.11, 11.7_

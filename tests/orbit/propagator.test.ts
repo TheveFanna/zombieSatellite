@@ -1,10 +1,11 @@
 // Example tests of the Propagator and of the Satrec factory (design.md, Testing Strategy, propagator.test.ts):
-// Requirement 6, criteria 7, 8, 9, 10 and 13.
+// Requirement 6, criteria 7, 8, 9, 10 and 13, and Requirement 9, criterion 15, which shares the hand-built record of
+// criterion 10.
 import { twoline2satrec } from 'satellite.js';
 import { describe, expect, it } from 'vitest';
-import { EngineError, createSatrec, parseTle, propagateAt } from '../../src/lib/orbit/index';
+import { EngineError, createSatrec, parseTle, predictPasses, propagateAt } from '../../src/lib/orbit/index';
 import type { TleRecord, Vec3 } from '../../src/lib/orbit/index';
-import { ISS_AT_1123Z, ISS_AT_1200Z, ISS_BASELINE, ZHTW_AT_1200Z } from '../helpers/baseline';
+import { ISS_AT_1123Z, ISS_AT_1200Z, ISS_BASELINE, REFERENCE_OBSERVER, ZHTW_AT_1200Z } from '../helpers/baseline';
 import type { BaselineInstant } from '../helpers/baseline';
 
 // Tolerances of Requirement 6, criteria 7 to 9: per position component in km, and for GMST in rad.
@@ -28,6 +29,14 @@ const DECAYED_ERROR_CODE = 6;
 const ZERO_MEAN_MOTION_LINE2 = `${ISS_BASELINE.line2.slice(0, 52)}00.00000000${ISS_BASELINE.line2.slice(63)}`;
 const ZERO_MEAN_MOTION_ERROR_CODE = 2;
 
+// Requirement 9, criterion 15: a valid window start, so that the TleRecord is the only input that is rejected.
+const PASS_WINDOW_START_MS = Date.parse('2026-11-09T00:00:00Z');
+
+/** A hand-built record: the frozen ISS record is copied and only TLE_LINE2 is replaced. */
+function zeroMeanMotionRecord(): TleRecord {
+  return { ...parseTle(ISS_BASELINE.text), TLE_LINE2: ZERO_MEAN_MOTION_LINE2 };
+}
+
 /** Expects every component of `actual` to lie within the position tolerance of the component of `expected`. */
 function expectVec3Within(label: string, actual: Vec3, expected: Vec3): void {
   for (const axis of ['x', 'y', 'z'] as const) {
@@ -38,17 +47,17 @@ function expectVec3Within(label: string, actual: Vec3, expected: Vec3): void {
   }
 }
 
-/** Calls `createSatrec` on a record that it must reject and returns the Engine_Error that it reports. */
-function rejection(record: TleRecord): EngineError {
+/** Runs `call`, which must throw an Engine_Error, and returns that error. */
+function thrownEngineError(call: () => unknown): EngineError {
   try {
-    createSatrec(record);
+    call();
   } catch (error) {
     if (error instanceof EngineError) {
       return error;
     }
     throw error;
   }
-  throw new Error('createSatrec accepted a record that it must reject');
+  throw new Error('the call returned instead of throwing an Engine_Error');
 }
 
 describe('Propagator', () => {
@@ -77,10 +86,19 @@ describe('Propagator', () => {
 
 describe('Satrec factory', () => {
   it('reports invalid-tle for a TleRecord whose mean motion is 00.00000000 (Requirement 6, criterion 10)', () => {
-    // A hand-built record: the frozen ISS record is copied and only TLE_LINE2 is replaced.
-    const record: TleRecord = { ...parseTle(ISS_BASELINE.text), TLE_LINE2: ZERO_MEAN_MOTION_LINE2 };
+    const record = zeroMeanMotionRecord();
     expect(twoline2satrec(record.TLE_LINE1, record.TLE_LINE2).error).toBe(ZERO_MEAN_MOTION_ERROR_CODE);
 
-    expect(rejection(record).category).toBe('invalid-tle');
+    expect(thrownEngineError(() => createSatrec(record)).category).toBe('invalid-tle');
+  });
+});
+
+describe('Pass_Predictor Satrec creation', () => {
+  it('reports invalid-tle for a TleRecord whose mean motion is 00.00000000 (Requirement 9, criterion 15)', () => {
+    const record = zeroMeanMotionRecord();
+    expect(twoline2satrec(record.TLE_LINE1, record.TLE_LINE2).error).toBe(ZERO_MEAN_MOTION_ERROR_CODE);
+
+    const search = { observer: REFERENCE_OBSERVER, tle: record, start: PASS_WINDOW_START_MS };
+    expect(thrownEngineError(() => predictPasses(search)).category).toBe('invalid-tle');
   });
 });

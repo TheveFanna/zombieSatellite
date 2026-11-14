@@ -19,5 +19,7 @@ export type {
   PropagationSuccess,
   Vec3,
 } from './propagator';
+export { predictPasses } from './pass-predictor';
+export type { Pass, PassSearch } from './pass-predictor';
 export { createTleFetcher } from './tle-fetcher';
 export type { FetchFunction, TleFetcher, TleFetcherOptions } from './tle-fetcher';
