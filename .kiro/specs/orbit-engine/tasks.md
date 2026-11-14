@@ -42,7 +42,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - Confirm that `git ls-files pnpm-lock.yaml` prints the file. Do not push
     - _Requirements: 1.6, 1.12, 1.14, 1.15, 1.16, 1.17, 1.18, 1.20, 1.21_
 
-- [ ] 2. Build the engine foundation and the source-boundary scan
+- [x] 2. Build the engine foundation and the source-boundary scan
   - [x] 2.1 Implement `errors.ts`, `constants.ts`, `time.ts` and the entry module `index.ts`
     - `errors.ts` (D4): `EngineErrorCategory`, `EngineErrorOptions`, `EngineError` with `name`, `category`, `status` and ES2022 `cause` (set whenever the `cause` key is present, also for `undefined`), `isEngineError`
     - `constants.ts`: every constant of the design's constants table, exported `TLE_CACHE_TTL_MS = 7_200_000` (D9) and `REQUEST_TIMEOUT_MS = 15_000` (D10), and `radToDeg(x) = (x / Math.PI) * 180` (D8)
@@ -56,19 +56,19 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - Run `pnpm exec vitest run tests/orbit/source-boundary.test.ts`
     - _Requirements: 2.1, 2.2, 2.10, 14.12_
 
-  - [-] 2.3 Run the suite and commit task 2
+  - [x] 2.3 Run the suite and commit task 2
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/errors.ts`, `src/lib/orbit/constants.ts`, `src/lib/orbit/time.ts`, `src/lib/orbit/index.ts`, `tests/helpers/source-scan.ts`, `tests/orbit/source-boundary.test.ts`, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add engine errors, time handling and source-boundary scan`. Do not push
     - _Requirements: 2.1, 2.2, 2.10_
 
 - [ ] 3. Implement the TLE_Parser
-  - [ ] 3.1 Implement `parseTle` and the `TleRecord` type in `tle-parser.ts`
+  - [x] 3.1 Implement `parseTle` and the `TleRecord` type in `tle-parser.ts`
     - Define `TleRecord` as in the design's Data Models section and implement `parseTle(text)`: a non-string argument gives `invalid-input`; the nine checks run in the design's order (split on `\n`, `trimEnd()` per line, keep non-empty lines; exactly three lines; `1 `/`2 ` prefixes; 69 characters; digit-only NORAD, epoch-year and eccentricity fields; equal NORAD numbers; decimal fields of criterion 21; `MEAN_MOTION !== 0`; `twoline2satrec` error code, finite `no`, and finite `propagate` result at `new Date(EPOCH)`), each failure `invalid-tle`
     - Compute the fields by the design's field table (EPOCH by C02 and formula 2.9.1, not rounded, D2; `ECCENTRICITY = Number('0.' + digits)`; semi-major axis by formula 2.9.7; altitude `a − 6378.137`); no checksum verification (D1); none of the optional fields of D17; return the record with `Object.freeze`
     - Export `parseTle` and the `TleRecord` type from `index.ts`
     - _Requirements: 2.7, 2.8, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.10, 4.11, 4.12, 4.13, 4.14, 4.15, 4.16, 4.17, 4.20, 4.21, 4.22, 4.23, 4.24, 5.11_
 
-  - [ ] 3.2 Find the two satellite.js fixtures and write the parser example tests
+  - [x] 3.2 Find the two satellite.js fixtures and write the parser example tests
     - Create `tests/helpers/baseline.ts` with the section 4.2 TLE texts of both Baseline_TLE_Snapshots (name line and the two 69-character lines) and their expected section 4.2 fields, copied from the Reference_Document without recomputation
     - Fixture for Requirement 4, criterion 16: with an untracked scratch Node script at the repository root (for example `fixture-search.mjs`, run with `node fixture-search.mjs`) that imports `twoline2satrec` and `propagate` from satellite.js 6.0.2, find a TLE that passes parser checks 1 to 8 but for which `twoline2satrec` returns a non-zero error code. Start with the ISS lines and mean motion `99.99999999` in line 2 columns [52:63]; record the error code
     - Fixture for Requirement 4, criterion 23: with the same script, find a TLE that passes checks 1 to 8, for which `twoline2satrec` returns error code 0, and for which the Satrec mean motion is not finite or `propagate` at EPOCH returns null or a non-finite component. Try the design's candidate (a perigee inside the Earth) and, if that already gives a non-zero error code in `twoline2satrec`, a field that the parser does not check, such as a non-numeric BSTAR field; record the observed result
@@ -77,21 +77,21 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - Run `pnpm exec vitest run tests/orbit/tle-parser.test.ts`
     - _Requirements: 4.10, 4.16, 4.17, 4.18, 4.19, 4.22, 4.23, 4.25, 5.11_
 
-  - [ ] 3.3 Add the TLE generators to `tests/helpers/arbitraries.ts`
+  - [x] 3.3 Add the TLE generators to `tests/helpers/arbitraries.ts`
     - Create the file with `tleFieldsArb` and `formatTle(fields)` (C18 columns, `%05d` NORAD, 8-character designator, `yy`, `ddd.dddddddd`, `%8.4f` angles, 7 eccentricity digits below 0.25, `%11.8f` mean motion in [0.5, 17] rev/day, remaining columns copied from the ISS snapshot, no checksum recomputation) and `renderingArb(tle)` (name padding, trailing whitespace, LF/CRLF per line, blank and whitespace-only lines, optional final terminator)
     - _Requirements: 4.1, 4.2, 4.4_
 
-  - [ ] 3.4 Write the property test for TLE text normalisation
+  - [x] 3.4 Write the property test for TLE text normalisation
     - `tests/orbit/property-01-tle-normalisation.test.ts`
     - **Property 1: TLE text normalisation invariance**
     - **Validates: Requirements 4.1, 4.2, 4.3, 4.20**
 
-  - [ ] 3.5 Write the property test for the TLE column model
+  - [x] 3.5 Write the property test for the TLE column model
     - `tests/orbit/property-02-tle-columns.test.ts`; accept-or-reject decided against satellite.js `twoline2satrec` and `propagate` at the model EPOCH
     - **Property 2: Column model of the TLE fields**
     - **Validates: Requirements 2.8, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.24, 5.11**
 
-  - [ ] 3.6 Run the suite and commit task 3
+  - [-] 3.6 Run the suite and commit task 3
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/tle-parser.ts`, `src/lib/orbit/index.ts`, `tests/helpers/baseline.ts`, `tests/orbit/tle-parser.test.ts`, the files of 3.3 to 3.5 that were written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`, no scratch script); commit, for example `Add TLE parser`. Do not push
     - _Requirements: 4.25_

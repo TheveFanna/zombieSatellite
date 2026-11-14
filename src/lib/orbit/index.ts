@@ -4,3 +4,5 @@ export { EngineError, isEngineError } from './errors';
 export type { EngineErrorCategory, EngineErrorOptions } from './errors';
 export { REQUEST_TIMEOUT_MS, TLE_CACHE_TTL_MS } from './constants';
 export type { TimeInput } from './time';
+export { parseTle } from './tle-parser';
+export type { TleRecord } from './tle-parser';
