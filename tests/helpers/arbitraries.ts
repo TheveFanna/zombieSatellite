@@ -1,6 +1,7 @@
 // fast-check generators for the orbit-engine tests (design.md, "Generators"). This part holds the
-// TLE generators of Properties 1 to 3, the fetcher generators of Properties 13 and 14 and the Observer and
-// instant generators of Properties 9, 11, 20 and 23; later tasks add the other generators to this file.
+// TLE generators of Properties 1 to 3, the fetcher generators of Properties 13 and 14, the Observer and
+// instant generators of Properties 9, 11, 20 and 23 and the unimodal score functions of Property 19; later
+// tasks add the other generators to this file.
 import fc from 'fast-check';
 import type { EngineErrorCategory } from '../../src/lib/orbit/index';
 import { celestrakBody, createMockCelestrakFetch, recordingFetch, type MockCelestrakFetch } from './mock-celestrak';
@@ -441,3 +442,100 @@ export function instantArb(fromMs: number, toMs: number): fc.Arbitrary<number> {
 export function fractionalInstantArb(fromMs: number, toMs: number): fc.Arbitrary<number> {
   return fc.double({ min: fromMs, max: toMs, noNaN: true }).filter((instant) => !Number.isInteger(instant));
 }
+
+/** The longest bracket `b − a` of Property 19, in ms (design.md): ten minutes. */
+const MAX_PEAK_BRACKET_MS = 600_000;
+
+/** Largest absolute UTC_Instant: the ECMAScript Date range in ms (Requirement 2, criterion 9). */
+const MAX_INSTANT_MS = 8.64e15;
+
+/** The shapes of `unimodalArb`. */
+export type UnimodalShape = 'bell' | 'cusp' | 'monotone';
+
+/** One case of Property 19: an integer bracket [a, b] and a strictly unimodal score function on it. */
+export interface UnimodalCase {
+  /**
+   * Shape of `score`, with x* = `xStar`: `bell` is `shift − scale · (t − x*)²` (the design's −((t − x*)/w)² with
+   * scale = 1/w²), `cusp` is `shift − scale · |t − x*|`, and `monotone` is `shift − scale · (t − a)` for x* = a or
+   * `shift + scale · (t − a)` for x* = b. `scale` and `shift` are listed too, because a failure report prints `score`
+   * as source text without the values that it closes over.
+   */
+  readonly shape: UnimodalShape;
+  /** The vertical scale: a power of two from 2⁻¹⁰ to 2¹⁰. */
+  readonly scale: number;
+  /** The vertical shift: an integer from −1024 to 1024. */
+  readonly shift: number;
+  /** Left end of the bracket, an integer. */
+  readonly a: number;
+  /** Right end of the bracket, an integer with 1 ≤ b − a ≤ 600 000. */
+  readonly b: number;
+  /** The integer in [a, b] where `score` has its maximum on [a, b]; `a` or `b` for the shape `monotone`. */
+  readonly xStar: number;
+  /**
+   * Strictly increasing on [a, x*] and strictly decreasing on [x*, b]. On the integers of [a, b] every value is a
+   * binary fraction of at most 49 significant bits (t − x* is an integer of at most 600 000, `scale` is a power of
+   * two and `shift` a small integer), so `score` is computed without rounding and stays strictly unimodal as a
+   * floating-point function. Other values of t are not part of the case.
+   */
+  readonly score: (t: number) => number;
+}
+
+/** The score function of one case, for the bracket that starts at `a` and the maximum at `xStar`. */
+function unimodalScore(
+  shape: UnimodalShape,
+  a: number,
+  xStar: number,
+  scale: number,
+  shift: number,
+): (t: number) => number {
+  switch (shape) {
+    case 'bell':
+      return (t) => {
+        const distance = t - xStar;
+        return shift - scale * (distance * distance);
+      };
+    case 'cusp':
+      return (t) => shift - scale * Math.abs(t - xStar);
+    case 'monotone':
+      // Falling from a when x* = a, rising to b when x* = b.
+      return xStar === a ? (t) => shift - scale * (t - a) : (t) => shift + scale * (t - a);
+  }
+}
+
+/**
+ * The width b − a of a bracket: short brackets, for which `maximizeOnGrid` runs few iterations or none, are drawn as
+ * often as widths from 1 ms up to the ten minutes of Property 19.
+ */
+const bracketWidthArb = fc.oneof(fc.integer({ min: 1, max: 300 }), fc.integer({ min: 1, max: MAX_PEAK_BRACKET_MS }));
+
+/** The distance from `a` to x* in a bracket of `width` ms: a bracket end in a third of the draws, else anywhere. */
+function peakOffsetArb(width: number): fc.Arbitrary<number> {
+  return fc.oneof(
+    { weight: 1, arbitrary: fc.constant(0) },
+    { weight: 1, arbitrary: fc.constant(width) },
+    { weight: 4, arbitrary: fc.integer({ min: 0, max: width }) },
+  );
+}
+
+/**
+ * Cases for Property 19: an integer bracket [a, b] with b − a from 1 to 600 000 at any UTC_Instant, and a strictly
+ * unimodal score function on it with its maximum at x*. The shape is a bell, a cusp or a monotone function, each
+ * scaled and shifted. A bell or a cusp has x* anywhere in [a, b], at a bracket end in a third of the draws; a
+ * monotone function has x* = a (falling) or x* = b (rising). x* is an integer. A bell and a cusp are symmetric about
+ * x*, so two integers at equal distance from x* have equal scores.
+ */
+export const unimodalArb: fc.Arbitrary<UnimodalCase> = fc
+  .tuple(bracketWidthArb, fc.constantFrom<UnimodalShape>('bell', 'cusp', 'monotone'))
+  .chain(([width, shape]) =>
+    fc
+      .record({
+        a: instantArb(-MAX_INSTANT_MS, MAX_INSTANT_MS - width),
+        offset: shape === 'monotone' ? fc.constantFrom(0, width) : peakOffsetArb(width),
+        scale: fc.integer({ min: -10, max: 10 }).map((exponent) => 2 ** exponent),
+        shift: fc.integer({ min: -1024, max: 1024 }),
+      })
+      .map(({ a, offset, scale, shift }): UnimodalCase => {
+        const xStar = a + offset;
+        return { shape, scale, shift, a, b: a + width, xStar, score: unimodalScore(shape, a, xStar, scale, shift) };
+      }),
+  );

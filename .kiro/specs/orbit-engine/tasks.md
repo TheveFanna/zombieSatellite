@@ -161,7 +161,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - Stage by name: `src/lib/orbit/tle-cache.ts`, `src/lib/orbit/tle-fetcher.ts`, `src/lib/orbit/index.ts`, `tests/helpers/mock-celestrak.ts`, `tests/orbit/tle-fetcher.test.ts`, `tests/orbit/live-celestrak.test.ts`, the files of 4.6 to 4.12 that were written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add TLE cache and CelesTrak fetcher`. Do not push
     - _Requirements: 14.1, 14.3_
 
-- [ ] 5. Implement Satrec creation, SGP4 propagation, look angles and range rate
+- [x] 5. Implement Satrec creation, SGP4 propagation, look angles and range rate
   - [x] 5.1 Implement `validate.ts` and `createSatrec` in `satrec.ts`
     - `assertObserver`, `assertTleRecord` and `assertSatrec` with the structural checks of the design's validation table (`assertSatrec` checks types only, because satellite.js 6.0.2 `sgp4` clears `error` on every call)
     - `createSatrec(tle)`: `assertTleRecord`, then `twoline2satrec(TLE_LINE1, TLE_LINE2)` with the stored strings unchanged; a thrown exception or a non-zero error code gives `invalid-tle` (D18 order)
@@ -220,39 +220,39 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - **Property 11: Range rate matches its definition and the measured range change**
     - **Validates: Requirements 8.1, 8.2, 8.4, 8.8, 8.9, 14.7**
 
-  - [-] 5.12 Run the suite and commit task 5
+  - [x] 5.12 Run the suite and commit task 5
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/validate.ts`, `src/lib/orbit/satrec.ts`, `src/lib/orbit/propagator.ts`, `src/lib/orbit/index.ts`, `tests/helpers/baseline.ts`, `tests/helpers/oracles.ts`, `tests/helpers/arbitraries.ts`, `tests/orbit/propagator.test.ts`, `tests/orbit/look-angles.test.ts`, `tests/orbit/range-rate.test.ts`, `tests/orbit/property-09-look-angles.test.ts`, `tests/orbit/property-11-range-rate.test.ts`, the files of 5.8 and 5.10 if written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add SGP4 propagation, look angles and range rate`. Do not push
     - _Requirements: 14.7_
 
-- [ ] 6. Checkpoint - Ensure all tests pass
+- [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
   - If this checkpoint changes any file, commit those files by name in one commit (never `.kiro/steering/workflow.md`); do not push.
 
 - [ ] 7. Implement the refinement primitives
-  - [ ] 7.1 Implement `coarseScanInstants`, `bisectCrossing` and `maximizeOnGrid` in `refine.ts`
+  - [x] 7.1 Implement `coarseScanInstants`, `bisectCrossing` and `maximizeOnGrid` in `refine.ts`
     - `coarseScanInstants(S, E)`: S, S + k · 60 000 while below E, then E when E > S
     - `bisectCrossing`: integer midpoints `lo + Math.floor((hi − lo) / 2)` while `hi − lo > 1000`, returning `hi` (D13, D16)
     - `maximizeOnGrid`: Brent's method for a maximum on integer instants with the design's adaptations (both ends evaluated first, start point `x0` or the golden-section point, parabolic step only with distinct points and finite values, rounding and the ±1 ms fallback strictly inside the bracket, loop while `b − a > 100`); returns every evaluated instant (D15)
     - Internal module, not exported from `index.ts`; the Pass_Predictor of task 8 uses it
     - _Requirements: 10.1, 10.2, 10.3, 10.11, 12.1, 12.5, 12.6_
 
-  - [ ] 7.2 Write the property test for the Coarse_Scan instants
+  - [x] 7.2 Write the property test for the Coarse_Scan instants
     - `tests/orbit/property-17-coarse-scan.test.ts`; imports from `refine.ts`
     - **Property 17: Coarse_Scan instants**
     - **Validates: Requirements 10.1**
 
-  - [ ] 7.3 Write the property test for crossing bisection
+  - [x] 7.3 Write the property test for crossing bisection
     - `tests/orbit/property-18-bisection.test.ts`; imports from `refine.ts`
     - **Property 18: Crossing bisection**
     - **Validates: Requirements 10.2, 10.11, 12.5, 12.6**
 
-  - [ ] 7.4 Write the property test for the peak search
+  - [x] 7.4 Write the property test for the peak search
     - `tests/orbit/property-19-peak-search.test.ts`; adds `unimodalArb` (bell, cusp and monotone shapes, scaled and shifted, including x* at a bracket end) to `tests/helpers/arbitraries.ts`
     - **Property 19: Peak search on the integer grid**
     - **Validates: Requirements 10.3, 11.5**
 
-  - [ ] 7.5 Run the suite and commit task 7
+  - [-] 7.5 Run the suite and commit task 7
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/refine.ts`, the files of 7.2 to 7.4 that were written (including `tests/helpers/arbitraries.ts` if 7.4 changed it), `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add pass refinement primitives`. Do not push
     - _Requirements: 10.1, 10.2, 10.3_
