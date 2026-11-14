@@ -1,9 +1,10 @@
 // fast-check generators for the orbit-engine tests (design.md, "Generators"). This part holds the
-// TLE generators of Properties 1 to 3 and the fetcher generators of Properties 13 and 14; later tasks
-// add the other generators to this file.
+// TLE generators of Properties 1 to 3, the fetcher generators of Properties 13 and 14 and the Observer and
+// instant generators of Properties 9, 11, 20 and 23; later tasks add the other generators to this file.
 import fc from 'fast-check';
 import type { EngineErrorCategory } from '../../src/lib/orbit/index';
 import { celestrakBody, createMockCelestrakFetch, recordingFetch, type MockCelestrakFetch } from './mock-celestrak';
+import type { Observer } from './oracles';
 
 // The ISS lines of Reference_Document section 4.2. Their tails fill the columns that C18 does not
 // name. No checksum is recomputed (D1), so every generated TLE carries the ISS checksum digits.
@@ -407,3 +408,36 @@ export const failureScenarioArb: fc.Arbitrary<FailureScenario> = fc
       }),
     );
   });
+
+/** The altitude of generated Observers in km above the WGS84 ellipsoid: one fixed value or a closed range. */
+export type AltitudeKm = number | { readonly min: number; readonly max: number };
+
+/**
+ * Observers with latitude in [−90°, 90°], longitude in [−180°, 180°] and the altitude of `altitudeKm`: a number
+ * gives that altitude every time, `{ min, max }` a generated altitude in the closed range (Properties 9, 11, 20
+ * and 23). Every value is a finite number, so every Observer passes the checks of Requirement 7, criterion 4.
+ */
+export function observerArb(options: { readonly altitudeKm: AltitudeKm }): fc.Arbitrary<Observer> {
+  const { altitudeKm } = options;
+  return fc.record({
+    latitudeDeg: fc.double({ min: -90, max: 90, noNaN: true }),
+    longitudeDeg: fc.double({ min: -180, max: 180, noNaN: true }),
+    altitudeKm:
+      typeof altitudeKm === 'number'
+        ? fc.constant(altitudeKm)
+        : fc.double({ min: altitudeKm.min, max: altitudeKm.max, noNaN: true }),
+  });
+}
+
+/** Integer instants, in ms since 1970-01-01T00:00:00Z, from `fromMs` to `toMs`, both included (integer bounds). */
+export function instantArb(fromMs: number, toMs: number): fc.Arbitrary<number> {
+  return fc.integer({ min: fromMs, max: toMs });
+}
+
+/**
+ * The fractional variant of `instantArb`: instants from `fromMs` to `toMs` with a fractional millisecond part.
+ * The engine truncates them toward zero like `new Date(t)` (D3).
+ */
+export function fractionalInstantArb(fromMs: number, toMs: number): fc.Arbitrary<number> {
+  return fc.double({ min: fromMs, max: toMs, noNaN: true }).filter((instant) => !Number.isInteger(instant));
+}

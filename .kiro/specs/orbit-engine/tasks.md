@@ -96,7 +96,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - Stage by name: `src/lib/orbit/tle-parser.ts`, `src/lib/orbit/index.ts`, `tests/helpers/baseline.ts`, `tests/orbit/tle-parser.test.ts`, the files of 3.3 to 3.5 that were written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`, no scratch script); commit, for example `Add TLE parser`. Do not push
     - _Requirements: 4.25_
 
-- [ ] 4. Implement the TLE_Cache and the TLE_Fetcher
+- [x] 4. Implement the TLE_Cache and the TLE_Fetcher
   - [x] 4.1 Implement `TleCache` in `tle-cache.ts`
     - Internal `Map`-based cache of `{ record, storedAtMs }` entries keyed by NORAD number, created empty; `set` replaces an entry; entries are never deleted; no persistent storage; not exported from `index.ts`
     - _Requirements: 5.1, 5.5, 5.9_
@@ -156,71 +156,71 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - **Property 16: Concurrent callers share one In_Flight_Request**
     - **Validates: Requirements 5.7**
 
-  - [-] 4.13 Run the suite and commit task 4
+  - [x] 4.13 Run the suite and commit task 4
     - Run `pnpm test` (exit 0, Live_Test reported as skipped) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/tle-cache.ts`, `src/lib/orbit/tle-fetcher.ts`, `src/lib/orbit/index.ts`, `tests/helpers/mock-celestrak.ts`, `tests/orbit/tle-fetcher.test.ts`, `tests/orbit/live-celestrak.test.ts`, the files of 4.6 to 4.12 that were written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add TLE cache and CelesTrak fetcher`. Do not push
     - _Requirements: 14.1, 14.3_
 
 - [ ] 5. Implement Satrec creation, SGP4 propagation, look angles and range rate
-  - [ ] 5.1 Implement `validate.ts` and `createSatrec` in `satrec.ts`
+  - [x] 5.1 Implement `validate.ts` and `createSatrec` in `satrec.ts`
     - `assertObserver`, `assertTleRecord` and `assertSatrec` with the structural checks of the design's validation table (`assertSatrec` checks types only, because satellite.js 6.0.2 `sgp4` clears `error` on every call)
     - `createSatrec(tle)`: `assertTleRecord`, then `twoline2satrec(TLE_LINE1, TLE_LINE2)` with the stored strings unchanged; a thrown exception or a non-zero error code gives `invalid-tle` (D18 order)
     - Export `createSatrec` and the `Satrec` type from `index.ts`
     - _Requirements: 2.7, 2.11, 6.1, 6.10, 7.4_
 
-  - [ ] 5.2 Add the propagator test helpers
+  - [x] 5.2 Add the propagator test helpers
     - `tests/helpers/baseline.ts`: add the Reference_Observer (section 4.1) and the section 4.3 instants with their ECI, ECF, GMST, look-angle and range-rate values, copied from the Reference_Document and requirements.md
     - `tests/helpers/oracles.ts`: the independent look-angle oracle (C30, C34–C37 applied to an ECF position) and the range-rate oracle `(Rz(−θ)·v_teme − ω⊕ × r_ecf) · (r_ecf − r_obs) / ρ`
     - `tests/helpers/arbitraries.ts`: add `observerArb({ altitudeKm })` and `instantArb(fromMs, toMs)` with fractional variants; create the file if earlier generator sub-tasks were skipped. These generators are required because Properties 9, 11 and 23 use them
     - _Requirements: 7.1, 8.1, 8.2, 14.7_
 
-  - [ ] 5.3 Implement `propagateAt` in `propagator.ts`
+  - [x] 5.3 Implement `propagateAt` in `propagator.ts`
     - Types `Vec3`, `PropagationSuccess`, `PropagationFailure`, `PropagationResult` (D5); `propagateAt` runs `assertSatrec`, `toTimeMs` and the internal `propagateMs`: `gstime`, `propagate` (an exception counts as a failure), the failure conditions of Requirement 6, criterion 5 with `satrecError`, `eciToEcf`, and fresh `Vec3` copies of position, velocity and ECF position
     - Export `propagateAt` and the propagation types from `index.ts`
     - _Requirements: 2.4, 2.7, 2.9, 6.2, 6.3, 6.4, 6.5, 6.6, 6.11, 6.12_
 
-  - [ ] 5.4 Implement `observeAt`, the range rate and `normalizeAzimuthDeg` in `propagator.ts`
+  - [x] 5.4 Implement `observeAt`, the range rate and `normalizeAzimuthDeg` in `propagator.ts`
     - Types `Observer`, `LookAngles`, `ObservationSuccess`, `ObservationResult`; `normalizeAzimuthDeg` exactly as in the design (D7); internal `prepareObserver` (`geodeticToEcf` once per Observer) and `observeMs` (`ecfToLookAngles`, `radToDeg`, Elevation clamp to [−90, 90], range rate with the Earth-rotation term)
     - `observeAt` runs `assertSatrec`, `toTimeMs` and `assertObserver` before any propagation, so an invalid Observer gives `invalid-input` also where SGP4 fails
     - Export `observeAt`, `normalizeAzimuthDeg` and the observation types from `index.ts`
     - _Requirements: 2.6, 2.11, 7.1, 7.2, 7.3, 7.4, 7.8, 7.10, 8.1, 8.2, 8.3, 8.4_
 
-  - [ ] 5.5 Write the propagator example tests
+  - [x] 5.5 Write the propagator example tests
     - `tests/orbit/propagator.test.ts`: 6.7 to 6.9 (ECI and ECF within ±0.1 km per component, GMST within ±1 × 10⁻⁸ rad); 6.10 with a hand-built TleRecord whose line 2 has mean motion `00.00000000` (satellite.js error 2) passed to `createSatrec`; 6.13 (ISS at 2036-11-05T04:12:35.430Z gives `ok: false` with `satrecError` 6)
     - Run `pnpm exec vitest run tests/orbit/propagator.test.ts`
     - _Requirements: 6.7, 6.8, 6.9, 6.10, 6.13_
 
-  - [ ] 5.6 Write the look-angle example tests
+  - [x] 5.6 Write the look-angle example tests
     - `tests/orbit/look-angles.test.ts`: 7.5 to 7.7 (±0.01°, ±0.1 km); 7.8 (`normalizeAzimuthDeg(360)` is `+0`, `(2π / π) · 180 === 360`); 7.9 (1 km Observer altitude: same Azimuth ±0.01°, same horizontal distance ±0.1 km, vertical distance 1 km smaller ±0.1 km)
     - Run `pnpm exec vitest run tests/orbit/look-angles.test.ts`
     - _Requirements: 7.5, 7.6, 7.7, 7.8, 7.9_
 
-  - [ ] 5.7 Write the range-rate example tests
+  - [x] 5.7 Write the range-rate example tests
     - `tests/orbit/range-rate.test.ts`: 8.5 to 8.7 (±0.01 km/s); 8.3 (the rotate-only value, computed in the test with `eciToEcf` applied to the velocity, misses each baseline by more than 0.01 km/s while the engine's value meets it)
     - Run `pnpm exec vitest run tests/orbit/range-rate.test.ts`
     - _Requirements: 8.3, 8.4, 8.5, 8.6, 8.7_
 
-  - [ ] 5.8 Write the property test for agreement with satellite.js
+  - [x] 5.8 Write the property test for agreement with satellite.js
     - `tests/orbit/property-08-satellitejs-agreement.test.ts`; records from the baselines and from `tleFieldsArb`/`formatTle` of 3.3
     - **Property 8: The Propagator agrees with satellite.js**
     - **Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5, 6.11, 6.12**
 
-  - [ ] 5.9 Write the property test for look angles
+  - [x] 5.9 Write the property test for look angles
     - `tests/orbit/property-09-look-angles.test.ts`; required by Requirement 14, criterion 7 (at least 100 cases, seed reported by fast-check)
     - **Property 9: Look angles follow formula 2.9.2 and stay in range**
     - **Validates: Requirements 7.1, 7.2, 7.3, 14.7**
 
-  - [ ] 5.10 Write the property test for azimuth normalisation
+  - [x] 5.10 Write the property test for azimuth normalisation
     - `tests/orbit/property-10-azimuth-normalisation.test.ts`; imports `radToDeg` from `constants.ts`
     - **Property 10: Azimuth normalisation**
     - **Validates: Requirements 7.8, 7.10**
 
-  - [ ] 5.11 Write the property test for the range rate
+  - [x] 5.11 Write the property test for the range rate
     - `tests/orbit/property-11-range-rate.test.ts`; required by Requirement 14, criterion 7 (at least 100 cases, seed reported by fast-check)
     - **Property 11: Range rate matches its definition and the measured range change**
     - **Validates: Requirements 8.1, 8.2, 8.4, 8.8, 8.9, 14.7**
 
-  - [ ] 5.12 Run the suite and commit task 5
+  - [-] 5.12 Run the suite and commit task 5
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/validate.ts`, `src/lib/orbit/satrec.ts`, `src/lib/orbit/propagator.ts`, `src/lib/orbit/index.ts`, `tests/helpers/baseline.ts`, `tests/helpers/oracles.ts`, `tests/helpers/arbitraries.ts`, `tests/orbit/propagator.test.ts`, `tests/orbit/look-angles.test.ts`, `tests/orbit/range-rate.test.ts`, `tests/orbit/property-09-look-angles.test.ts`, `tests/orbit/property-11-range-rate.test.ts`, the files of 5.8 and 5.10 if written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add SGP4 propagation, look angles and range rate`. Do not push
     - _Requirements: 14.7_
