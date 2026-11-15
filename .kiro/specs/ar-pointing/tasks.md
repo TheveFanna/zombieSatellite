@@ -148,21 +148,21 @@ Ground rules for the implementer:
     - Run `pnpm vitest run tests/pointing` and `pnpm typecheck`; both must pass.
     - Main agent: commit staging `src/components/pointing/deps.ts`, `orientation-stream.ts`, `permission-flow.ts`, `tests/helpers/pointing-mocks.ts`, `tests/pointing/orientation-stream.test.ts`, `tests/pointing/permission-flow.test.ts` by name, then push.
 
-- [ ] 6. Calibration store and drag compass controllers
+- [x] 6. Calibration store and drag compass controllers
   - Depends on: task 5 (uses `deps.ts` and `pointing-mocks.ts`).
-  - [~] 6.1 Create `src/components/pointing/calibration-store.ts`
+  - [x] 6.1 Create `src/components/pointing/calibration-store.ts`
     - Per design "`calibration-store.ts`": key `zombieSatellite.pointing.calibrationOffsetDeg`; read with `raw === null || raw.trim() === '' ? undefined : Number(raw)` through `applyCalibrationInput(0, ...)`; `set` and `step` persist `String(offset)`.
     - _Requirements: 7.5, 7.6, 7.7, 7.8_
-  - [~] 6.2 Create `src/components/pointing/drag-compass.ts`
+  - [x] 6.2 Create `src/components/pointing/drag-compass.ts`
     - Per design "`drag-compass.ts`": `activate` resets to `INITIAL_DRAG_POSE`; one tracked pointer; moves call `applyDrag` with the pixel deltas; other pointers ignored.
     - _Requirements: 12.1, 12.2, 12.3_
-  - [~] 6.3 Create `tests/pointing/calibration-store.test.ts`
+  - [x] 6.3 Create `tests/pointing/calibration-store.test.ts`
     - The "calibration storage" row: empty storage → 0; stored `'abc'` → 0; `step(-5)` from 0 → 355 and the storage holds `'355'`; a new store over the same storage reads 355.
     - **Validates: Requirements 7.9**
-  - [~] 6.4 Create `tests/pointing/drag-compass.test.ts`
+  - [x] 6.4 Create `tests/pointing/drag-compass.test.ts`
     - The "drag" row: activate → (0, 0); drag +40 px right → heading 10; from 0, drag −40 px → heading 350; drag 400 px toward the top (clientY decreasing) → pitch 90.
     - **Validates: Requirements 12.6**
-  - [~] 6.5 Verify task 6 and hand over for commit
+  - [x] 6.5 Verify task 6 and hand over for commit
     - Run `pnpm vitest run tests/pointing` and `pnpm typecheck`; both must pass.
     - Main agent: commit staging `src/components/pointing/calibration-store.ts`, `drag-compass.ts`, `tests/pointing/calibration-store.test.ts`, `tests/pointing/drag-compass.test.ts` by name, then push.
 
