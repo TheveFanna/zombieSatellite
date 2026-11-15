@@ -54,7 +54,7 @@ The zombie-satellite hobby exists because amateurs did the work that institution
 The project was built spec by spec with Kiro, and the specs are in the repository under `.kiro/specs`.
 
 - **Six specs:** orbit-engine, zombie-catalog, ar-pointing, seance-session, qsl-card and shell-pwa-deploy. Each has its own requirements, design and tasks documents.
-- **Models:** Opus wrote the requirements and the designs; Sonnet did the implementation of the tasks.
+- **Models:** Opus wrote the requirements and the designs; Sonnet did most of the implementation.
 - **Review gates:** a human review between stages. The requirements, the design and the task list of each spec were approved by the author before the next stage started, and several designs were changed after review.
 - **Steering:** two steering files in `.kiro/steering` hold the project scope (a fixed catalog, no custom backend, UTC everywhere, no claim of real reception) and the workflow rules.
 - **Commits:** one commit per task, made after that task's tests passed, staging files by name.
