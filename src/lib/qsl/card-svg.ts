@@ -67,7 +67,7 @@ export function buildCardSvg(model: CardModel): string {
   // 4. name and NORAD id
   parts.push(
     `<text x="28" y="116" font-family="${SANS}" font-size="30" font-weight="700" fill="${WHITE}">${escapeXml(model.satelliteName)}</text>`,
-    `<text x="28" y="142" font-family="${SANS}" font-size="15" fill="${GREY}">${escapeXml(`NORAD ${model.noradId}`)}</text>`,
+    `<text x="28" y="142" font-family="${SANS}" font-size="15" fill="${GREY}">${escapeXml(`${QSL_COPY.noradLabel} ${model.noradId}`)}</text>`,
   );
   // 5. field rows, two columns of four
   cardFields(model).forEach((field, i) => {

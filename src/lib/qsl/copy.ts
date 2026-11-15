@@ -5,6 +5,7 @@ export const QSL_COPY = Object.freeze({
   cardTitle: 'zombieSatellite · simulated QSL',
   simulatedNoticeLine1: 'Confirms a simulated session, not a real reception.',
   simulatedNoticeLine2: 'Beacon tone synthesized from public orbital data.',
+  noradLabel: 'NORAD',
   demoMark: 'DEMO 60×',
   autoPointMark: 'AUTO-POINT',
   realTimeMark: 'REAL TIME',
