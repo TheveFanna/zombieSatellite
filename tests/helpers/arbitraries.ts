@@ -1,9 +1,16 @@
-// fast-check generators for the orbit-engine tests (design.md, "Generators"). This part holds the
+// fast-check generators for the orbit-engine tests (design.md, "Generators"). This file holds the
 // TLE generators of Properties 1 to 3, the fetcher generators of Properties 13 and 14, the Observer and
-// instant generators of Properties 9, 11, 20 and 23, the unimodal score functions of Property 19 and the invalid
-// pass parameters of Property 6; later tasks add the other generators to this file.
+// instant generators of Properties 9, 11, 20 and 23, the unimodal score functions of Property 19, the invalid
+// pass parameters of Property 6 and the invalid instants and structured inputs of Properties 4 and 5.
 import fc from 'fast-check';
-import type { EngineErrorCategory } from '../../src/lib/orbit/index';
+import {
+  createSatrec,
+  parseTle,
+  type EngineErrorCategory,
+  type Satrec,
+  type TleRecord,
+} from '../../src/lib/orbit/index';
+import { ISS_BASELINE, ZHTW_BASELINE } from './baseline';
 import { celestrakBody, createMockCelestrakFetch, recordingFetch, type MockCelestrakFetch } from './mock-celestrak';
 import type { Observer } from './oracles';
 
@@ -623,4 +630,178 @@ export const invalidMinElevationArb: fc.Arbitrary<unknown> = fc.oneof(
   fc.constant(-MAX_ELEVATION_DEG - 2 ** -46),
   fc.integer({ min: -10_000, max: -MAX_ELEVATION_DEG - 1 }),
   fc.double({ min: -Number.MAX_VALUE, max: -MAX_ELEVATION_DEG, maxExcluded: true, noNaN: true }),
+);
+
+/** The largest absolute latitude of an Observer, in degrees (Requirement 7, criterion 4). */
+const MAX_LATITUDE_DEG = 90;
+
+/** The largest absolute longitude of an Observer, in degrees (Requirement 7, criterion 4). */
+const MAX_LONGITUDE_DEG = 180;
+
+/** NaN and the infinities: values of type number that are not finite. */
+const nonFiniteArb = fc.constantFrom(NaN, Infinity, -Infinity);
+
+/**
+ * Finite numbers with an absolute value above `limit`, with either sign: `justBeyond`, the double next to `limit`,
+ * the integers from `limit + 1` to `limit + 10 000`, and any larger number.
+ */
+function beyondArb(limit: number, justBeyond: number): fc.Arbitrary<number> {
+  const magnitude = fc.oneof(
+    fc.constant(justBeyond),
+    fc.integer({ min: limit + 1, max: limit + 10_000 }),
+    fc.double({ min: limit, max: Number.MAX_VALUE, minExcluded: true, noNaN: true }),
+  );
+  return fc.tuple(magnitude, fc.boolean()).map(([value, negative]) => (negative ? -value : value));
+}
+
+/** Valid instants as integers: the values from which the text and bigint forms of an invalid instant are written. */
+const validInstantMsArb = instantArb(-MAX_INSTANT_MS, MAX_INSTANT_MS);
+
+/**
+ * Values that are not a UTC_Instant (Property 4): NaN and the infinities; finite numbers with an absolute value above
+ * 8.64e15 ms, among them ±(8.64e15 + 1); Invalid Dates; ISO 8601 text and numeric strings of valid instants; `null`,
+ * `undefined` (a missing start), booleans, bigints with a valid value, other strings, plain objects, arrays and boxed
+ * numbers. A valid `Date` and a number from −8.64e15 to 8.64e15 are never generated. A test passes the value as the
+ * instant of `propagateAt` and `observeAt` and as `start` of `predictPasses`; each throws `invalid-input`.
+ */
+export const invalidInstantArb: fc.Arbitrary<unknown> = fc.oneof(
+  // `null`, both booleans, numeric strings, and every other value that is neither a number nor `undefined`.
+  ...wrongTypeArms(validInstantMsArb),
+  fc.constant(undefined),
+  validInstantMsArb.map(BigInt),
+  fc.date({ noInvalidDate: true }).map((date) => date.toISOString()),
+  // NaN, the infinities and the first instants beyond the Date range each make an Invalid Date.
+  fc.constantFrom(NaN, Infinity, -Infinity, MAX_INSTANT_MS + 1, -MAX_INSTANT_MS - 1).map((ms) => new Date(ms)),
+  nonFiniteArb,
+  // Doubles in [2⁵², 2⁵³) are integers, so 8.64e15 + 1 is the next double above the limit.
+  beyondArb(MAX_INSTANT_MS, MAX_INSTANT_MS + 1),
+);
+
+/** The fields of an Observer that the structural check reads (Requirement 7, criterion 4). */
+const OBSERVER_KEYS = ['latitudeDeg', 'longitudeDeg', 'altitudeKm'] as const satisfies readonly (keyof Observer)[];
+
+/** The fields of a TleRecord that the structural check reads: four strings, then ten numbers. */
+const RECORD_KEYS = [
+  'OBJECT_NAME',
+  'TLE_LINE1',
+  'TLE_LINE2',
+  'OBJECT_ID',
+  'NORAD_CAT_ID',
+  'EPOCH',
+  'MEAN_MOTION',
+  'ECCENTRICITY',
+  'INCLINATION',
+  'RA_OF_ASC_NODE',
+  'ARG_OF_PERICENTER',
+  'MEAN_ANOMALY',
+  'SEMIMAJOR_AXIS_KM',
+  'ALTITUDE_KM',
+] as const satisfies readonly (keyof TleRecord)[];
+
+/** The fields of a Satrec that the structural check reads: three numbers and `method`, which is `'n'` or `'d'`. */
+const SATREC_KEYS = ['error', 'no', 'jdsatepoch', 'method'] as const satisfies readonly (keyof Satrec)[];
+
+/** Valid Observers, with the altitude range of Property 9. */
+const validObserverArb = observerArb({ altitudeKm: { min: -0.5, max: 9 } });
+
+/** The TleRecord of one of the two Baseline_TLE_Snapshots, built by the engine when a value is generated. */
+const validRecordArb = fc.constantFrom(ISS_BASELINE, ZHTW_BASELINE).map((baseline) => parseTle(baseline.text));
+
+/** The Satrec that `createSatrec` builds from such a TleRecord. */
+const validSatrecArb = validRecordArb.map(createSatrec);
+
+/**
+ * `undefined`, `null` and other values from `fc.anything()`. Every object key starts with an underscore, so no
+ * generated object has a field named like one that an Observer, a TleRecord or a Satrec must have.
+ */
+const noStructureArb: fc.Arbitrary<unknown> = fc.oneof(
+  { weight: 1, arbitrary: fc.constantFrom(undefined, null) },
+  {
+    weight: 4,
+    arbitrary: fc.anything({ key: fc.string().map((key) => `_${key}`), withBoxedValues: true, withBigInt: true }),
+  },
+);
+
+/**
+ * Values of another type than `current`, a number or a string: `undefined`, `null`, booleans, bigints, boxed values,
+ * arrays and objects, and for a number also its own value written as text, such as `"39.9"`, which a check that
+ * coerces its value would accept.
+ */
+function otherTypeArb(current: unknown): fc.Arbitrary<unknown> {
+  const other = fc
+    .anything({ withBoxedValues: true, withBigInt: true })
+    .filter((value) => typeof value !== typeof current);
+  return typeof current === 'number' ? fc.oneof(fc.constant(String(current)), other) : other;
+}
+
+/**
+ * Objects like the ones that `valid` draws, with one of `keys` broken: the field is removed, or replaced by a value
+ * that `wrongValue` draws for the valid value of the field.
+ */
+function brokenFieldArb<T extends object>(
+  valid: fc.Arbitrary<T>,
+  keys: readonly (keyof T & string)[],
+  wrongValue: (current: unknown) => fc.Arbitrary<unknown>,
+): fc.Arbitrary<unknown> {
+  return fc.tuple(valid, fc.constantFrom(...keys)).chain(([base, key]) =>
+    fc.oneof(
+      fc.constant(Object.fromEntries(Object.entries(base).filter(([name]) => name !== key))),
+      wrongValue(base[key]).map((value) => ({ ...base, [key]: value })),
+    ),
+  );
+}
+
+/** Valid Observers whose `field` holds a finite number from `beyond`, which lies outside the range of the field. */
+function outOfRangeObserverArb(
+  field: 'latitudeDeg' | 'longitudeDeg',
+  beyond: fc.Arbitrary<number>,
+): fc.Arbitrary<unknown> {
+  return fc.tuple(validObserverArb, beyond).map(([observer, value]) => ({ ...observer, [field]: value }));
+}
+
+/**
+ * Values that are not an Observer (Property 5; Requirement 7, criterion 4): `undefined`, `null` and other values from
+ * `fc.anything()`; Observers with one field removed, or replaced by a value of another type (numeric strings such as
+ * `"39.9"` among them) or by NaN or an infinity; and Observers with a latitude that is a finite number beyond ±90° or
+ * a longitude that is a finite number beyond ±180°. Every finite altitude is valid, so none is generated as a defect.
+ * A test passes the value as the Observer of `observeAt` (also at an instant where SGP4 fails) and as `observer` of
+ * `predictPasses`; each throws `invalid-input`.
+ */
+export const invalidObserverArb: fc.Arbitrary<unknown> = fc.oneof(
+  noStructureArb,
+  brokenFieldArb(validObserverArb, OBSERVER_KEYS, (current) => fc.oneof(otherTypeArb(current), nonFiniteArb)),
+  // The doubles just beyond 90 and 180: doubles in [64, 128) are 2⁻⁴⁶ apart, doubles in [128, 256) are 2⁻⁴⁵ apart.
+  outOfRangeObserverArb('latitudeDeg', beyondArb(MAX_LATITUDE_DEG, MAX_LATITUDE_DEG + 2 ** -46)),
+  outOfRangeObserverArb('longitudeDeg', beyondArb(MAX_LONGITUDE_DEG, MAX_LONGITUDE_DEG + 2 ** -45)),
+);
+
+/**
+ * Values that are not a TleRecord (Property 5; Requirement 2, criterion 11): `undefined`, `null` and other values from
+ * `fc.anything()`; and the TleRecords of the two Baseline_TLE_Snapshots with one of the 14 checked fields removed or
+ * replaced by a value of another type: a non-string for the four text fields, a non-number (numeric strings among
+ * them) for the ten numeric fields. NaN and the infinities are not generated: they have type number, so the
+ * structural check accepts them. A test passes the value to `createSatrec` and as `tle` of `predictPasses`; each
+ * throws `invalid-input`.
+ */
+export const invalidRecordArb: fc.Arbitrary<unknown> = fc.oneof(
+  noStructureArb,
+  brokenFieldArb(validRecordArb, RECORD_KEYS, otherTypeArb),
+);
+
+/**
+ * Values that are not a Satrec (Property 5; Requirement 2, criterion 11): `undefined`, `null` and other values from
+ * `fc.anything()`; and the Satrecs of the two Baseline_TLE_Snapshots with `error`, `no`, `jdsatepoch` or `method`
+ * removed or replaced by a value of another type (numeric strings among them), or with a `method` that is another
+ * text than `"n"` and `"d"`. NaN and the infinities are not generated: they have type number, so the structural check
+ * accepts them. A test passes the value as the Satrec of `propagateAt` and `observeAt`; each throws `invalid-input`.
+ */
+export const invalidSatrecArb: fc.Arbitrary<unknown> = fc.oneof(
+  noStructureArb,
+  brokenFieldArb(validSatrecArb, SATREC_KEYS, otherTypeArb),
+  fc
+    .tuple(
+      validSatrecArb,
+      fc.oneof(fc.constantFrom('N', 'D', ''), fc.string()).filter((text) => text !== 'n' && text !== 'd'),
+    )
+    .map(([satrec, method]) => ({ ...satrec, method })),
 );

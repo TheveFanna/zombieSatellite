@@ -295,7 +295,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - Stage by name: `src/lib/orbit/pass-predictor.ts`, `src/lib/orbit/index.ts`, `tests/helpers/baseline.ts`, `tests/orbit/pass-predictor.test.ts`, `tests/orbit/propagator.test.ts`, the files of 8.4 to 8.6 that were written (including `tests/helpers/arbitraries.ts` if 8.4 changed it), `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add pass predictor`. Do not push
     - _Requirements: 9.1, 9.11, 11.7_
 
-- [ ] 9. Verify the Pass_Predictor against the Brute_Force_Reference and the baselines
+- [x] 9. Verify the Pass_Predictor against the Brute_Force_Reference and the baselines
   - [x] 9.1 Write the Brute_Force_Reference helper and the pass baseline data
     - `tests/helpers/brute-force.ts`: `bruteForceSamples(satrec, observer, startMs, endMs)` evaluating `observeAt` at the start, every 1 s step before the end and the end into a `Float64Array` (NaN for a failure), never calling `predictPasses`; `bruteForcePasses(samples, minEl)` returning the maximal runs with `riseMs`, `lastAboveMs`, `setMs`, `peakDeg`, `peakMs`, `beforeMs`; and the overlap rule `riseMs ≤ pass.setMs && lastAboveMs ≥ pass.riseMs` used for the exemption of passes without exactly one Brute_Force_Pass
     - `tests/helpers/baseline.ts`: add the section 4.6 ISS and ZHIHUI TIANWANG-1 01A pass tables and the 58.5919° peak of ISS pass 6 from Requirement 10, criterion 4
@@ -316,46 +316,46 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - **Property 23: Window-shift stability**
     - **Validates: Requirements 12.4, 14.7**
 
-  - [-] 9.5 Run the suite and commit task 9
+  - [x] 9.5 Run the suite and commit task 9
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `tests/helpers/brute-force.ts`, `tests/helpers/baseline.ts`, `tests/orbit/pass-baselines.test.ts`, `tests/orbit/property-23-window-shift.test.ts`, `tests/orbit/property-22-brute-force-agreement.test.ts` if written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add pass baseline and stability tests`. Do not push
     - _Requirements: 13.10_
 
 - [ ] 10. Complete the Public_Interface and add the cross-cutting checks
-  - [ ] 10.1 Align `index.ts` with the design's Public_Interface table
+  - [x] 10.1 Align `index.ts` with the design's Public_Interface table
     - Confirm that `index.ts` exports exactly the functions, the class, the two constants and the types of the table, and none of the internals (`TleCache`, `toTimeMs`, the `assert*` validators, `propagateMs`, `observeMs`, `prepareObserver`, the `refine.ts` functions, `radToDeg`, other constants); add or remove exports as needed
     - _Requirements: 2.1, 2.2, 7.10_
 
-  - [ ] 10.2 Write the no-DOM environment test
+  - [x] 10.2 Write the no-DOM environment test
     - `tests/orbit/environment.test.ts`: save the own property descriptors of `window`, `document`, `navigator`, `localStorage` and `indexedDB` on `globalThis`, delete the existing ones, assert that all five are `undefined`, call every Public_Interface function with valid inputs (`fetchTle` with the Mock_CelesTrak_Fetch, `predictPasses` over 24 h), and restore the descriptors in `finally`
     - Run `pnpm exec vitest run tests/orbit/environment.test.ts`
     - _Requirements: 2.3, 14.9_
 
-  - [ ] 10.3 Write the time-zone repeat test
+  - [x] 10.3 Write the time-zone repeat test
     - `tests/orbit/timezone.test.ts` (60 000 ms timeout, D20, D23): `computeAll()` builds fresh inputs and returns plain data for 4.18, 4.19, 6.7 to 6.9, 7.5 to 7.7, 8.5 to 8.7 and the `predictPasses` runs of 13.1, 13.5 and 13.7, with errors captured as `{ category, message }`; set `process.env.TZ = 'UTC'`, assert the offset 0 for 2026-11-09T00:00:00Z, compute; set `'Asia/Shanghai'`, assert −480, compute; assert `toStrictEqual`; restore or delete `TZ` in `finally`
     - Run `pnpm exec vitest run tests/orbit/timezone.test.ts`
     - _Requirements: 2.5, 14.8, 14.10, 14.11_
 
-  - [ ] 10.4 Add the invalid-input generators to `tests/helpers/arbitraries.ts`
+  - [x] 10.4 Add the invalid-input generators to `tests/helpers/arbitraries.ts`
     - `invalidInstantArb`, `invalidObserverArb`, `invalidRecordArb` and `invalidSatrecArb` as described in Properties 4 and 5 (including numeric strings such as `"39.9"`)
     - _Requirements: 2.9, 2.11, 7.4_
 
-  - [ ] 10.5 Write the property test for invalid instants
+  - [x] 10.5 Write the property test for invalid instants
     - `tests/orbit/property-04-invalid-instants.test.ts`
     - **Property 4: Invalid instants are rejected**
     - **Validates: Requirements 2.7, 2.9, 6.6, 9.10**
 
-  - [ ] 10.6 Write the property test for invalid structured inputs
+  - [x] 10.6 Write the property test for invalid structured inputs
     - `tests/orbit/property-05-invalid-structures.test.ts`; includes `observeAt` at ISS EPOCH + 3650 days
     - **Property 5: Invalid structured inputs are rejected**
     - **Validates: Requirements 2.7, 2.11, 7.4, 9.12**
 
-  - [ ] 10.7 Write the property test for Date and millisecond inputs
+  - [x] 10.7 Write the property test for Date and millisecond inputs
     - `tests/orbit/property-07-date-ms-equivalence.test.ts`
     - **Property 7: Date and millisecond inputs are interchangeable**
     - **Validates: Requirements 2.4**
 
-  - [ ] 10.8 Run the suite and commit task 10
+  - [-] 10.8 Run the suite and commit task 10
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/index.ts` (if 10.1 changed it), `tests/orbit/environment.test.ts`, `tests/orbit/timezone.test.ts`, the files of 10.4 to 10.7 that were written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add public interface and cross-cutting engine checks`. Do not push
     - _Requirements: 2.3, 2.5_
