@@ -10,6 +10,12 @@ import type {
   NoiseSource,
   OscillatorNodeLike,
 } from '../../src/components/session/deps';
+import type { SensorPointing } from '../../src/components/session/deps';
+import type { Clock, TimerApi } from '../../src/components/pointing/deps';
+import type { PointingSnapshot } from '../../src/components/pointing/pointing-session';
+import { parseTle } from '../../src/lib/orbit/index';
+import type { TleFetcher, TleRecord } from '../../src/lib/orbit/index';
+import { ISS_BASELINE } from './baseline';
 
 export type ParamCall = readonly [target: number, startTime: number, timeConstant: number];
 
@@ -197,5 +203,111 @@ export function createScriptedNoise(values: number[]): NoiseSource {
       index += 1;
       return value;
     },
+  };
+}
+
+export type ManualClock = Clock & { advance(ms: number): void; set(ms: number): void };
+
+export function createManualClock(startMs: number): ManualClock {
+  let now = startMs;
+  return {
+    nowMs: () => now,
+    advance(ms) { now += ms; },
+    set(ms) { now = ms; },
+  };
+}
+
+export interface ManualTimers extends TimerApi {
+  /** Runs once every callback that is pending at the call; callbacks scheduled during the run wait for the next call. */
+  fireAll(): void;
+  pendingCount(): number;
+}
+
+export function createManualTimers(): ManualTimers {
+  const pending = new Map<number, () => void>();
+  let nextHandle = 1;
+  return {
+    setTimeout(fn) {
+      const handle = nextHandle;
+      nextHandle += 1;
+      pending.set(handle, fn);
+      return handle;
+    },
+    clearTimeout(handle) {
+      pending.delete(handle as number);
+    },
+    fireAll() {
+      const due = [...pending.entries()];
+      for (const [handle, fn] of due) {
+        // A callback may clear a later one in the same batch; skip it then.
+        if (!pending.has(handle)) continue;
+        pending.delete(handle);
+        fn();
+      }
+    },
+    pendingCount: () => pending.size,
+  };
+}
+
+export interface MockTleFetcher extends TleFetcher {
+  /** The NORAD IDs requested so far, in call order. */
+  readonly calls: number[];
+}
+
+/**
+ * Returns the ISS Baseline_TLE_Snapshot with the catalog-number field (columns 3 to 7 of both lines) replaced by the
+ * requested NORAD ID, so the record's NORAD_CAT_ID equals the requested ID. Only the number changes; the orbital
+ * elements stay the ISS values, so the fixture is a test orbit, not the entry's real orbit. The checksum digit is
+ * left as it is (parseTle does not verify it).
+ */
+export function createMockTleFetcher(options: { failTimes?: number } = {}): MockTleFetcher {
+  const calls: number[] = [];
+  let remainingFailures = options.failTimes ?? 0;
+  return {
+    calls,
+    fetchTle(noradId: number): Promise<TleRecord> {
+      calls.push(noradId);
+      if (remainingFailures > 0) {
+        remainingFailures -= 1;
+        return Promise.reject(new Error('mock TLE fetch failure'));
+      }
+      const field = String(noradId).padStart(5, '0');
+      const swap = (line: string): string => line.slice(0, 2) + field + line.slice(7);
+      const text = [ISS_BASELINE.name, swap(ISS_BASELINE.line1), swap(ISS_BASELINE.line2)].join('\n');
+      return Promise.resolve(parseTle(text));
+    },
+  };
+}
+
+export interface StubSensorPointing extends SensorPointing {
+  readonly setTargetCalls: Parameters<SensorPointing['setTarget']>[0][];
+  readonly setObserverCalls: Parameters<SensorPointing['setObserver']>[0][];
+}
+
+export function createStubSensorPointing(): StubSensorPointing {
+  const snapshot: PointingSnapshot = {
+    permission: 'unknown',
+    mode: 'sensor',
+    source: null,
+    basis: null,
+    lock: null,
+    calibrationOffsetDeg: 0,
+    declinationAppliedDeg: null,
+    observer: { latitudeDeg: 39.9042, longitudeDeg: 116.4074 },
+    target: { azimuthDeg: 90, elevationDeg: 30 },
+    dragActive: false,
+  };
+  const setTargetCalls: StubSensorPointing['setTargetCalls'] = [];
+  const setObserverCalls: StubSensorPointing['setObserverCalls'] = [];
+  return {
+    setTargetCalls,
+    setObserverCalls,
+    subscribe: () => () => undefined,
+    getSnapshot: () => snapshot,
+    setTarget(target) { setTargetCalls.push(target); },
+    setObserver(observer) { setObserverCalls.push(observer); },
+    pointerDown: () => undefined,
+    pointerMove: () => undefined,
+    pointerUp: () => undefined,
   };
 }
