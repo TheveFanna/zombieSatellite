@@ -133,7 +133,7 @@ Ground rules for the implementer:
   - [ ] 7.3 Main agent: commit staging `.kiro/specs/shell-pwa-deploy/tasks.md` by name, then push.
     - Note: task 7 is not closed, so this commit waits until the owner has reported every item.
 
-- [ ] 7A. Visual styling pass (added after task 7; style only)
+- [x] 7A. Visual styling pass (added after task 7; style only)
   - Depends on: task 7 closed. May start earlier only if the owner asks.
   - Scope decision (project owner, 2026-11-15): the interface stays English only, no Chinese version, no translation work. This task changes CSS and the necessary `className` attributes only. It changes no logic, no copy text and no copy module, and no element order that a test or the Honesty_Scan reads.
   - [x] 7A.1 Design the palette and the layout rules. The palette is the dark-space family of the QSL card face (`src/lib/qsl/card-svg.ts`): background `#0d1117`, green `#2ea043`, orange `#f0883e`, violet `#a371f7`, amber `#d29922`, grey `#8b949e`, white `#f0f6fc`. State the CSS file location, the class naming, and the reset of the inline styles that the pages carry today, before writing code. If this needs anything beyond CSS and `className`, stop and ask.
@@ -145,7 +145,7 @@ Ground rules for the implementer:
     - Main agent: commit staging the changed files by name, then push.
   - [x] 7A.4 Review item (project owner, real phone): the owner looks at the five areas on the Live_URL and reports. Close this task only after that report.
     - Owner review (real phone, Live_URL, 2026-11-16): NOT PASSED. The interface still looks unattractive. Task 7A stays open and is ticked and closed together with task 7B after the 7B review passes.
-- [ ] 7B. iOS-style visual redesign (replaces the look delivered by 7A; presentation only)
+- [x] 7B. iOS-style visual redesign (replaces the look delivered by 7A; presentation only)
   - Depends on: 7A.1 to 7A.3 pushed. Runs in parallel with the rest of task 7.
   - Scope (project owner, 2026-11-16): allowed: `src/app/globals.css`, and in the `src/app` page and layout files, purely presentational wrapper elements, `className`, `data-*` attributes for styling, decorative `aria-hidden` elements and presentational structure changes; the `viewport` metadata may gain `viewportFit: 'cover'`. If the background colour changes, `theme_color` and `background_color` in `src/app/manifest.ts` and the `viewport.themeColor` change with it. Still forbidden: any logic, state, event handler, copy string, copy module, and any change under `src/components` or `src/lib`.
   - Design (iOS idiom, dark-space palette kept): bottom tab bar with translucent blur and safe-area inset for the three main routes, large bold titles, inset grouped cards, list rows with hairlines, switch-style toggles, filled and tinted buttons, disclosure rows, a slow CSS orbit as the home hero. The background stays `#0d1117` (card palette and app icon), so the manifest colours do not change.
