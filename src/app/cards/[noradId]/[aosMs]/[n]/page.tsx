@@ -46,7 +46,7 @@ export default function CardDetailPage() {
 
   if (card === undefined) {
     return (
-      <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+      <main data-tab="cards" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
         <p>{QSL_COPY.loading}</p>
       </main>
     );
@@ -54,7 +54,7 @@ export default function CardDetailPage() {
 
   if (card === null) {
     return (
-      <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+      <main data-tab="cards" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
         <p>{QSL_COPY.notFound}</p>
         {backLink}
       </main>
@@ -78,7 +78,7 @@ export default function CardDetailPage() {
   }
 
   return (
-    <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+    <main data-tab="cards" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
       <img
         src={svgDataUrl(svg)}
         alt={describeCard(model)}

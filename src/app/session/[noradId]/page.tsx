@@ -289,7 +289,7 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
   );
 
   return (
-    <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+    <main data-tab="session" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
       <title>{`${entry.name} · zombieSatellite`}</title>
 
       <header>
@@ -565,7 +565,7 @@ export default function SessionPage() {
 
   if (entry === null) {
     return (
-      <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+      <main data-tab="session" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
         <title>Satellite not found · zombieSatellite</title>
         <h1>Satellite not found</h1>
         <p>This satellite is not in the playable catalog.</p>

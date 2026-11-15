@@ -4,7 +4,6 @@ import type { CatalogEntry } from '../lib/catalog/index';
 import { SESSION_COPY } from '../components/session/copy';
 import { SHELL_COPY } from '../components/shell/copy';
 
-const sectionStyle = { marginTop: '1.25rem' } as const;
 
 function EntryArticle({ entry }: { entry: CatalogEntry }) {
   return (
@@ -41,22 +40,25 @@ function EntryArticle({ entry }: { entry: CatalogEntry }) {
 
 export default function HomePage() {
   return (
-    <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
-      <h1>zombieSatellite</h1>
-      <p>{SHELL_COPY.appStatement}</p>
-      <section style={sectionStyle}>
-        <p>
+    <main data-tab="home" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+      <div className="hero">
+        <div className="orbit" aria-hidden="true" />
+        <h1>zombieSatellite</h1>
+        <p>{SHELL_COPY.appStatement}</p>
+      </div>
+      <section className="plain">
+        <p className="actions">
           <Link className="button primary" href="/session">{SHELL_COPY.startSession}</Link>{' '}<Link className="button" href="/cards">{SHELL_COPY.openCards}</Link>
         </p>
         <p>{SHELL_COPY.demoHint}</p>
       </section>
-      <section style={sectionStyle}>
+      <section className="plain">
         <h2>{SHELL_COPY.catalogHeading}</h2>
         {listCatalogEntries().map((entry) => (
           <EntryArticle key={entry.noradId} entry={entry} />
         ))}
       </section>
-      <footer style={sectionStyle}>
+      <footer>
         <p>{SHELL_COPY.honestyFooter}</p>
       </footer>
     </main>

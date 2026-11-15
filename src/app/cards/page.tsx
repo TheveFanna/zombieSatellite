@@ -16,7 +16,7 @@ export default function CardsPage() {
   }, []);
 
   return (
-    <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+    <main data-tab="cards" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
       <title>{QSL_COPY.collectionTitle}</title>
       <h1>{QSL_COPY.collectionTitle}</h1>
       <p>{QSL_COPY.collectionIntro}</p>

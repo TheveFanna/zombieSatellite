@@ -143,7 +143,7 @@ export default function SessionPickerPage() {
   }
 
   return (
-    <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+    <main data-tab="session" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
       <title>Satellite picker · zombieSatellite</title>
       <h1>Pick a satellite</h1>
       <p>{SESSION_COPY.utcNote}</p>
@@ -160,7 +160,7 @@ export default function SessionPickerPage() {
         {locateStatus === 'failed' ? <p>{SHELL_COPY.locationFailed}</p> : null}
       </section>
 
-      <section style={sectionStyle}>
+      <section className="plain">
         <h2>Satellites</h2>
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {snapshot.rows.map((row) => (
