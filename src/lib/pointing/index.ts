@@ -37,3 +37,7 @@ export {
   toSensorAttitude,
   normalizeScreenOrientationDeg,
 } from './heading-source';
+export { effectiveAzimuthDeg, applyCalibrationInput, stepCalibrationOffset } from './calibration';
+export { evaluateLock } from './lock';
+export { projectMarker } from './projection';
+export { permissionTransition } from './permission';

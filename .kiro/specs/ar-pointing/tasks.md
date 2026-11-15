@@ -59,32 +59,32 @@ Ground rules for the implementer:
     - Run `pnpm vitest run tests/pointing/heading-source.test.ts tests/pointing/attitude.test.ts` and `pnpm typecheck`; both must pass. If a baseline row fails, fix the code, never the expected value.
     - Main agent: commit staging `src/lib/pointing/types.ts`, `constants.ts`, `angles.ts`, `vector.ts`, `quaternion.ts`, `attitude.ts`, `heading-source.ts`, `index.ts`, `tests/helpers/pointing-assert.ts`, `tests/pointing/heading-source.test.ts`, `tests/pointing/attitude.test.ts` by name, then push.
 
-- [ ] 2. Calibration, lock geometry, marker projection and permission transitions
+- [x] 2. Calibration, lock geometry, marker projection and permission transitions
   - Depends on: task 1.
-  - [~] 2.1 Create `src/lib/pointing/calibration.ts`
+  - [x] 2.1 Create `src/lib/pointing/calibration.ts`
     - `effectiveAzimuthDeg`, `applyCalibrationInput(previousDeg, input: unknown)` (only `typeof input === 'number' && Number.isFinite(input)` is accepted, then normalized; everything else, including numeric strings, returns `previousDeg`), `stepCalibrationOffset`.
     - _Requirements: 7.1, 7.3, 7.5, 7.8_
-  - [~] 2.2 Create `src/lib/pointing/lock.ts`
+  - [x] 2.2 Create `src/lib/pointing/lock.ts`
     - `evaluateLock(forward, target, calibrationOffsetDeg)` exactly as the pseudocode of design "Lock geometry": `azEff`, `u = sceneDirection(azEff, el)`, `errorDeg`, `locked = errorDeg <= LOCK_TOLERANCE_DEG + LOCK_COMPARISON_EPSILON_DEG`, `behind = d < 0`, one `headingPitch(forward)` call for heading, pitch and the `null` Azimuth_Difference.
     - _Requirements: 5.6, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 9.1_
-  - [~] 2.3 Create `src/lib/pointing/projection.ts`
+  - [x] 2.3 Create `src/lib/pointing/projection.ts`
     - `projectMarker(target, basis, aspect)` per design "Marker projection", `VERTICAL_FOV_DEG` 75. It must not import `lock.ts`. Review only, no test.
     - _Requirements: 10.1, 10.2_
-  - [~] 2.4 Create `src/lib/pointing/permission.ts`
+  - [x] 2.4 Create `src/lib/pointing/permission.ts`
     - `permissionTransition(state, event)` implementing exactly the table of design "Permission transitions", including `unavailable + valid-sample-arrived → granted`; every other pair returns `state`.
     - _Requirements: 11.1, 11.4, 11.5, 11.6, 11.7, 11.9, 11.10, 11.13_
-  - [~] 2.5 Extend `src/lib/pointing/index.ts` with the exports of tasks 2.1 to 2.4.
-  - [~] 2.6 Create `tests/pointing/calibration.test.ts`
+  - [x] 2.5 Extend `src/lib/pointing/index.ts` with the exports of tasks 2.1 to 2.4.
+  - [x] 2.6 Create `tests/pointing/calibration.test.ts`
     - **Property 8: Calibration sample and normalization** — `effectiveAzimuthDeg(90, 10)` = 80 (1e-9); `20 · sceneDirection(80, 0)` = (19.696155, 0, −3.472964) (1e-6); `applyCalibrationInput(0, -5)` = 355; `applyCalibrationInput(0, -365)` = 355; `effectiveAzimuthDeg(90, -5)` and `effectiveAzimuthDeg(90, 355)` both 95.
     - **Validates: Requirements 7.2, 7.3, 7.4**
-  - [~] 2.7 Create `tests/pointing/lock.test.ts`
+  - [x] 2.7 Create `tests/pointing/lock.test.ts`
     - **Property 9: §4.4 target rows** — six axis-aligned rows within 1e-6, three real-data rows within 1e-4 (design Property 9).
     - **Property 10: Lock geometry** — the four target rows and the Vertical_Forward case of design Property 10.
     - **Validates: Requirements 8.9, 8.10**
-  - [~] 2.8 Create `tests/pointing/permission.test.ts`
+  - [x] 2.8 Create `tests/pointing/permission.test.ts`
     - **Property 12: Permission transitions** — one table-driven assertion per row of the design table, plus `granted + request-started → granted`.
     - **Validates: Requirements 11.12, 11.13**
-  - [~] 2.9 Verify task 2 and hand over for commit
+  - [x] 2.9 Verify task 2 and hand over for commit
     - Run `pnpm vitest run tests/pointing` and `pnpm typecheck`; both must pass.
     - Main agent: commit staging `src/lib/pointing/calibration.ts`, `lock.ts`, `projection.ts`, `permission.ts`, `index.ts`, `tests/pointing/calibration.test.ts`, `tests/pointing/lock.test.ts`, `tests/pointing/permission.test.ts` by name, then push.
 
