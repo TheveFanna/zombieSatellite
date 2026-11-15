@@ -1,0 +1,205 @@
+import type { CatalogEntry } from './types';
+
+export const RAW_ENTRIES: readonly CatalogEntry[] = [
+  {
+    slug: 'les-1',
+    name: 'LES-1',
+    noradId: 1002,
+    playable: true,
+    difficulty: 'hard',
+    unplayableReason: null,
+    status: 'still-transmitting',
+    statusNote:
+      'Still transmitting: listeners have heard it since 2012, and the SatNOGS network still observes it.',
+    launchDate: '1965-02-11',
+    beacon: {
+      downlinkMhz: 237,
+      displayFrequency: 'about 237 MHz',
+      beaconMode: null,
+      tumblePeriodS: 4,
+      sunlitOnly: null,
+    },
+    orbitLabel: null,
+    operatorOrigin: 'MIT Lincoln Laboratory, for a US Air Force program',
+    hook: 'Silent for 45 years, this 1965 test satellite came back on the air in 2012, its signal swelling and fading every four seconds.',
+    story:
+      'MIT Lincoln Laboratory built LES-1 for a US Air Force military communications test and launched it on 11 February 1965, but a wiring error kept it from its planned orbit, and it was switched off as planned in 1967. On 18 December 2012, radio amateur Phil Williams (G3YPQ) in Cornwall, England, heard it again near 237 MHz, and Hearsat listeners PY2ZX in Brazil and DD1US in Germany confirmed the reception. The presumed cause is an aged battery that has shorted, so that sunlight on the solar cells powers the transmitter directly. The satellite tumbles about once every four seconds, and its signal brightens and fades in that rhythm, which listeners describe as the most ghostly sound in the sky.',
+    sourceUrls: [
+      'https://en.wikipedia.org/wiki/LES-1',
+      'https://www.amsat.org/ans-299-amsat-news-service-bulletins/',
+      'https://www.drewexmachina.com/2022/02/11/zombie-satellites-the-tale-of-lincoln-experimental-satellite-1/',
+    ],
+  },
+  {
+    slug: 'transit-5b-5',
+    name: 'Transit 5B-5',
+    noradId: 965,
+    playable: true,
+    difficulty: 'standard',
+    unplayableReason: null,
+    status: 'still-transmitting',
+    statusNote:
+      'Still transmitting whenever sunlight reaches it, but its identity is disputed: listener analysis suggests the signal may come from Transit 5E-5.',
+    launchDate: '1964-12-13',
+    beacon: {
+      downlinkMhz: 136.65,
+      displayFrequency: '136.65 MHz',
+      beaconMode: 'telemetry',
+      tumblePeriodS: null,
+      sunlitOnly: true,
+    },
+    orbitLabel: null,
+    operatorOrigin: 'US Navy, Transit navigation system',
+    hook: 'Launched in 1964 for the forerunner of GPS, it is believed to be the oldest satellite still transmitting.',
+    story:
+      "Transit 5B-5 was launched on 13 December 1964 as part of the US Navy's Transit navigation system, the forerunner of GPS that gave submarines their positions. Its navigation mission failed after about 19 days, but its telemetry transmitter never stopped: whenever sunlight reaches it, it sends on 136.65 MHz, and amateurs around the world receive it with a V-shaped dipole antenna and an RTL-SDR. It is commonly called Transit 5B-5, but its identity is disputed: listener analysis of SDR recordings suggests the signal format matches Transit 5E-5, and the catalog identities may have been mixed up during digitization.",
+    sourceUrls: [
+      'https://www.sigidwiki.com/wiki/Category:Satellite',
+      'https://spacedaily.com/b-there-is-a-single-satellite-launched-by-the-us-navy-in-1964-that-is-still-in-orbit-still-transmitting-and-still-being-used-by-amateur-radio-operators-around-the-world-and-nobody-at-the-nav/',
+      'https://www.rtl-sdr.com/category/rtl-sdr/page/30/',
+    ],
+  },
+  {
+    slug: 'ao-7',
+    name: 'AMSAT-OSCAR 7 (AO-7)',
+    noradId: 7530,
+    playable: true,
+    difficulty: 'standard',
+    unplayableReason: null,
+    status: 'semi-operational',
+    statusNote:
+      'Semi-operational: AMSAT lists it as partly working, and hams use it for voice and CW contacts.',
+    launchDate: '1974-11-15',
+    beacon: {
+      downlinkMhz: 145.9775,
+      displayFrequency: '145.9775 MHz',
+      beaconMode: 'cw-beacon',
+      tumblePeriodS: null,
+      sunlitOnly: true,
+    },
+    orbitLabel: null,
+    operatorOrigin: 'AMSAT, the amateur radio satellite organization',
+    hook: 'Dead for 21 years after a battery short, AO-7 woke up in 2002, and hams still use it for contacts.',
+    story:
+      'AMSAT launched AMSAT-OSCAR 7 on 15 November 1974 as its second Phase 2 amateur satellite, with a linear transponder built for hams around the world to contact each other. In 1981 a battery short killed the whole satellite, and it stayed silent for 21 years. On 21 June 2002, British amateur Pat Gowen (G3IOR) heard its CW beacon on 145.9775 MHz: the shorted battery cell had gone open, so the solar cells could power the satellite directly. It works only in sunlight, switches off in eclipse and moves between modes A and B at random, and it is the one satellite in this catalog that came back and returned to its original job.',
+    sourceUrls: [
+      'https://www.amsat.org/amsat/ftp/news/news/2002/wsr181.txt',
+      'https://satellites.ham-amplifiers.com/satellite/ao-7',
+    ],
+  },
+  {
+    slug: 'prospero',
+    name: 'Prospero',
+    noradId: 5580,
+    playable: true,
+    difficulty: 'standard',
+    unplayableReason: null,
+    status: 'unconfirmed',
+    statusNote:
+      'Unconfirmed: officially shut down in 1996; later reception claims are unconfirmed because other satellites share its frequency.',
+    launchDate: '1971-10-28',
+    beacon: {
+      downlinkMhz: 137.56,
+      displayFrequency: '137.56 MHz (historical)',
+      beaconMode: null,
+      tumblePeriodS: null,
+      sunlitOnly: null,
+    },
+    orbitLabel: null,
+    operatorOrigin:
+      'United Kingdom, launched by a Black Arrow rocket from Woomera, Australia',
+    hook: 'The only satellite ever put into orbit by a British rocket, Prospero is the closest thing to an urban legend in this catalog.',
+    story:
+      "Prospero was launched on 28 October 1971 by a British Black Arrow rocket from Woomera, Australia, three months after the Black Arrow programme had been cancelled, which makes it the only satellite ever placed in orbit by a British rocket. After its tape recorder failed in 1973 it was contacted once a year, and a UK defence research agency officially shut it down in 1996. Its historical downlink was 137.56 MHz. Since then some listeners have claimed to hear it there, but other satellites use the same frequency and a signal in a 2004 BBC programme was later traced to an Orbcomm satellite, so these reports remain unconfirmed. For its 40th anniversary in 2011, UCL's Mullard Space Science Laboratory dug out decades-old command documents to try to reach it again, and no two-way contact has been confirmed.",
+    sourceUrls: [
+      'https://en.wikipedia.org/wiki/Prospero_(spacecraft)',
+      'https://futurescot.com/astronaut-tim-peake-joins-scottish-space-mission-to-rescue-satellite/',
+    ],
+  },
+  {
+    slug: 'image',
+    name: 'IMAGE',
+    noradId: 26113,
+    playable: true,
+    difficulty: 'hard',
+    unplayableReason: null,
+    status: 'silent-again',
+    statusNote:
+      'Silent again: its signal weakened in February 2018 and was lost after August 2018, with no public reception reports since.',
+    launchDate: '2000-03-25',
+    beacon: {
+      downlinkMhz: null,
+      displayFrequency: null,
+      beaconMode: 'telemetry',
+      tumblePeriodS: null,
+      sunlitOnly: null,
+    },
+    orbitLabel: 'Highly elliptical polar orbit',
+    operatorOrigin: 'NASA',
+    hook: 'NASA ended the IMAGE mission in 2007, and in 2018 an amateur hunting a different satellite from his backyard found it again.',
+    story:
+      'NASA launched the IMAGE magnetosphere imaging satellite on 25 March 2000; on 18 December 2005 a cosmic-ray single-event upset tripped its power controller and contact was lost, and when a long eclipse in 2007 failed to reboot it, the mission was declared over. On 20 January 2018, Canadian amateur Scott Tilley was searching from his backyard for Zuma, a classified satellite rumoured to have failed, when he picked up an unknown signal; he matched its Doppler curve against the public orbit catalog and identified object 26113, IMAGE. On 30 January NASA decoded spacecraft ID 166 from the telemetry and confirmed the identity; the batteries were fully charged, and analysis showed that it had been sending since at least 2016 with no one listening. The signal weakened in February 2018 and was lost again after August 2018, and no new public reception has been reported since. Its highly elliptical polar orbit gives rare, long passes, which makes it the hard target of this catalog.',
+    sourceUrls: [
+      'https://www.nasa.gov/solar-system/a-detailed-timeline-of-the-image-mission-recovery/',
+      'https://www.nasa.gov/solar-system/nasas-newly-rediscovered-image-mission-provided-key-aurora-research/',
+      'https://en.wikipedia.org/wiki/IMAGE_(spacecraft)',
+    ],
+  },
+  {
+    slug: 'galaxy-15',
+    name: 'Galaxy 15',
+    noradId: 28884,
+    playable: false,
+    difficulty: null,
+    unplayableReason: 'geo-slot-not-visible-from-china',
+    status: 'historical',
+    statusNote:
+      'Historical: the 2010 runaway ended with a reboot that December, and it returned to service in 2011.',
+    launchDate: null,
+    beacon: {
+      downlinkMhz: null,
+      displayFrequency: null,
+      beaconMode: null,
+      tumblePeriodS: null,
+      sunlitOnly: null,
+    },
+    orbitLabel: 'Geostationary orbit',
+    operatorOrigin: 'Intelsat',
+    hook: 'In 2010 this communications satellite stopped obeying commands and drifted with its transponders at full power, and the press called it a zombie satellite.',
+    story:
+      'Galaxy 15 is an Intelsat communications satellite in geostationary orbit. On 5 April 2010 it stopped responding to ground commands but kept its transponders on at full power as it drifted along the geostationary belt, threatening the uplink signals of other satellites, and operators spent eight months moving other satellites out of its way. The media called it a zombie satellite, and that term caught on with this incident. The ending was simple physics: on 23 December 2010 it ran out of attitude control, its battery drained, and its computer rebooted as designed and obeyed commands again; in 2011 it returned to its original slot and to service. In August 2022 it lost contact once more, officially attributed to a space weather event. Its slot is not visible from China, so it appears here as a story only, in honour of the satellite that named the category.',
+    sourceUrls: [
+      'https://en.wikipedia.org/wiki/Galaxy_15',
+      'https://www.space.com/8747-sun-eruption-spawned-zombie-satellite-identified.html',
+      'https://www.USGS.gov/programs/geomagnetism/science/april-5-2010-magnetic-disturbance',
+    ],
+  },
+  {
+    slug: 'les-5',
+    name: 'LES-5',
+    noradId: 2866,
+    playable: false,
+    difficulty: null,
+    unplayableReason: 'graveyard-orbit-drift',
+    status: 'still-transmitting',
+    statusNote:
+      'Still transmitting: its telemetry beacon sends whenever sunlight reaches it, as a listener found in 2020.',
+    launchDate: '1967-07-01',
+    beacon: {
+      downlinkMhz: 236.7487,
+      displayFrequency: '236.7487 MHz',
+      beaconMode: 'telemetry',
+      tumblePeriodS: null,
+      sunlitOnly: true,
+    },
+    orbitLabel: 'Near-geostationary graveyard orbit',
+    operatorOrigin: 'MIT Lincoln Laboratory',
+    hook: 'Forgotten in a graveyard orbit for almost half a century, LES-5 was found again in 2020 by an amateur scanning during lockdown.',
+    story:
+      'LES-5, a sibling of LES-1 from MIT Lincoln Laboratory, was launched on 1 July 1967 for UHF military communications tests, retired in 1971 and moved in 1972 to a graveyard orbit above the geostationary belt, where it was forgotten for almost half a century; it carried a battery meant to switch it off after five years, and that battery did not work. On 24 March 2020, during the pandemic lockdown, Scott Tilley found a modulated carrier on 236.7487 MHz and confirmed it as the LES-5 telemetry beacon, which sends whenever sunlight reaches it; NPR covered the find. It drifts in a near-geostationary graveyard orbit without regular passes, so it appears here as a story only, and together with IMAGE it makes Scott Tilley the listener who brought back two lost satellites.',
+    sourceUrls: [
+      'https://en.wikipedia.org/wiki/Zombie_satellite',
+      'https://www.amsat.org/ans-117-amsat-news-service-weekly-bulletins/',
+    ],
+  },
+];
