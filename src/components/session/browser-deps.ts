@@ -1,5 +1,6 @@
 import { createTleFetcher } from '../../lib/orbit/index';
 import type { TleFetcher } from '../../lib/orbit/index';
+import { createProxyFetch } from '../shell/proxy-fetch';
 import type { Clock, KeyValueStorage } from '../pointing/deps';
 import type { AudioContextFactory, AudioContextLike, SensorPointing } from './deps';
 import type { SessionControllerDeps } from './session-controller';
@@ -69,7 +70,7 @@ export function createPickerBrowserDeps(): PickerBrowserDeps {
   return {
     clock,
     storage: createSafeStorage(),
-    tleFetcher: createTleFetcher({ now: clock.nowMs }),
+    tleFetcher: createTleFetcher({ now: clock.nowMs, fetch: createProxyFetch(() => globalThis.fetch.bind(globalThis)) }),
   };
 }
 

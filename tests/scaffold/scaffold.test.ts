@@ -208,8 +208,12 @@ describe('Requirement 1: project scaffold', () => {
     expect(Object.entries(pkg.scripts ?? {}).filter(([, command]) => OS_SPECIFIC_SYNTAX.test(command))).toEqual([]);
   });
 
-  it('1.19 src/app holds only layout.tsx, page.tsx and the approved cards, pointing and session routes, and no other .tsx file exists under src', () => {
-    expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual(['cards', 'layout.tsx', 'page.tsx', 'pointing', 'session']);
+  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes and the named .ts files, and no other .tsx file exists under src', () => {
+    expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual(['api', 'cards', 'layout.tsx', 'page.tsx', 'pointing', 'session']);
+    const appTsFiles = readdirSync(join(root, 'src', 'app'), { encoding: 'utf8', recursive: true })
+      .filter((file) => file.endsWith('.ts'))
+      .map((file) => file.split(sep).join('/'));
+    expect(appTsFiles.sort()).toEqual(['api/tle/route.ts']);
     const tsxFiles = readdirSync(join(root, 'src'), { encoding: 'utf8', recursive: true })
       .filter((file) => file.endsWith('.tsx'))
       .map((file) => file.split(sep).join('/'));
