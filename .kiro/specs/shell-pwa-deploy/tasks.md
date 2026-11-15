@@ -21,61 +21,61 @@ Ground rules for the implementer:
 
 ## Tasks
 
-- [ ] 1. Shell core: proxy logic, URL rewrite, marker placement, local time, source boundary
+- [x] 1. Shell core: proxy logic, URL rewrite, marker placement, local time, source boundary
   - Depends on: nothing (first task).
-  - [ ] 1.1 Create `src/lib/shell/tle-proxy.ts`
+  - [x] 1.1 Create `src/lib/shell/tle-proxy.ts`
     - `TLE_PROXY_PATH`, `UPSTREAM_GP_URL`, `PROXY_CACHE_SECONDS` (from `TLE_CACHE_TTL_MS`), `parseCatnr`, `upstreamUrl`, `createTleProxyHandler` per design "TLE proxy": the status, body and `Cache-Control` table row by row, `Content-Type: text/plain; charset=utf-8` on every response, upstream init `{ method: 'GET', cache: 'no-store', signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }`, body check with `parseTle` and the `NORAD_CAT_ID` match.
     - _Requirements: 6.1–6.8, 12.1_
-  - [ ] 1.2 Create `src/lib/shell/proxy-url.ts`, `marker.ts`, `local-time.ts` and `index.ts`
+  - [x] 1.2 Create `src/lib/shell/proxy-url.ts`, `marker.ts`, `local-time.ts` and `index.ts`
     - `toProxyUrl` per design "Proxy fetch and the browser assembly".
     - `SKY_VIEW_ASPECT`, `MarkerPlacement`, `markerPlacement` per design "Camera backdrop and sky view" (target vector exactly as `evaluateLock` builds it).
     - `formatLocalTimeNote` per design "Time display".
     - `index.ts`: barrel of every name above.
     - _Requirements: 7.2, 7.3, 7.6, 9.6, 9.7, 10.3, 12.1_
-  - [ ] 1.3 Create `tests/helpers/shell-source-scan.ts` and the core tests
+  - [x] 1.3 Create `tests/helpers/shell-source-scan.ts` and the core tests
     - `shell-source-scan.ts`: a copy of `tests/helpers/qsl-source-scan.ts` with root `src/lib/shell` and allowed outside files the `orbit` and `pointing` barrels.
     - `tests/shell/source-boundary.test.ts` (item 1), `tests/shell/tle-proxy.test.ts` (item 2, including the DD-5 equality), `tests/shell/proxy-url.test.ts` (item 3, `toProxyUrl` part only), `tests/shell/marker.test.ts` (item 6), `tests/shell/local-time.test.ts` (item 7) of design "Testing Strategy".
     - Run the `tests/shell` folder and `pnpm typecheck`.
     - _Requirements: 6.9, 7.6, 10.3, 12.2, 12.4, 12.5_
-  - [ ] 1.4 Main agent: commit staging `.kiro/specs/shell-pwa-deploy/.config.kiro`, `requirements.md`, `design.md`, `tasks.md`, the five `src/lib/shell` files, `tests/helpers/shell-source-scan.ts` and the five test files by name, then push.
+  - [x] 1.4 Main agent: commit staging `.kiro/specs/shell-pwa-deploy/.config.kiro`, `requirements.md`, `design.md`, `tasks.md`, the five `src/lib/shell` files, `tests/helpers/shell-source-scan.ts` and the five test files by name, then push.
 
-- [ ] 2. TLE proxy route and the browser switch
+- [x] 2. TLE proxy route and the browser switch
   - Depends on: task 1.
-  - [ ] 2.1 Create `src/app/api/tle/route.ts` and `src/components/shell/proxy-fetch.ts`
+  - [x] 2.1 Create `src/app/api/tle/route.ts` and `src/components/shell/proxy-fetch.ts`
     - `route.ts`: exactly the two lines of design "TLE proxy" (import and `export const GET`).
     - `proxy-fetch.ts`: `createProxyFetch(getFetch)` per design; rejection with `TypeError('Not a CelesTrak GP request')` without calling `getFetch`; no fallback branch.
     - _Requirements: 6.1, 7.2–7.4, 12.3_
-  - [ ] 2.2 Switch `src/components/session/browser-deps.ts`
+  - [x] 2.2 Switch `src/components/session/browser-deps.ts`
     - Change only the `createTleFetcher` call to `createTleFetcher({ now: clock.nowMs, fetch: createProxyFetch(() => globalThis.fetch.bind(globalThis)) })` and add the import. No other change to the file.
     - _Requirements: 7.1, 7.4, 7.5_
-  - [ ] 2.3 Extend the tests
+  - [x] 2.3 Extend the tests
     - `tests/shell/proxy-url.test.ts`: add the `createProxyFetch` case of design "Testing Strategy" item 3.
     - `tests/scaffold/scaffold.test.ts`, check 1.19: the `src/app` listing becomes `['api', 'cards', 'layout.tsx', 'page.tsx', 'pointing', 'session']`; add the assertion that the `.ts` files under `src/app` are exactly `['api/tle/route.ts']` (task 3 adds `manifest.ts` to both lists). No other change.
     - Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 7.6, 11.1, 11.2, 11.6_
-  - [ ] 2.4 Main agent: commit staging `src/app/api/tle/route.ts`, `src/components/shell/proxy-fetch.ts`, `src/components/session/browser-deps.ts`, `tests/shell/proxy-url.test.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 2.4 Main agent: commit staging `src/app/api/tle/route.ts`, `src/components/shell/proxy-fetch.ts`, `src/components/session/browser-deps.ts`, `tests/shell/proxy-url.test.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 3. App shell, home page and PWA
+- [x] 3. App shell, home page and PWA
   - Depends on: task 2.
-  - [ ] 3.1 Create `src/components/shell/copy.ts`
+  - [x] 3.1 Create `src/components/shell/copy.ts`
     - `SHELL_COPY` exactly as design "Shell copy": plain string literals inside `Object.freeze({...})`, nested `unplayableReasons` frozen and `satisfies Record<UnplayableReason, string>`, the honesty rule comment at the top as in `src/components/session/copy.ts`.
     - _Requirements: 2.2, 2.4, 3.1, 3.2_
-  - [ ] 3.2 Rewrite `src/app/page.tsx` and extend `src/app/layout.tsx`
+  - [x] 3.2 Rewrite `src/app/page.tsx` and extend `src/app/layout.tsx`
     - `page.tsx`: server component per design "Home page", items 1 to 4; Catalog_Prose verbatim inside the "Documented history" block with its sources; no `statusNote`.
     - `layout.tsx`: header and navigation, `<ServiceWorkerRegistrar />`, the `metadata` additions and the `viewport` export per design "App shell and navigation". Both files keep checks 1.20 and 1.21.
     - _Requirements: 1.1–1.3, 1.5, 2.1–2.8, 4.4_
-  - [ ] 3.3 Create the PWA files
+  - [x] 3.3 Create the PWA files
     - `src/app/manifest.ts` exactly as design "Web App Manifest".
     - `scripts/generate-icons.mjs` per design "App icons"; run `node scripts/generate-icons.mjs` once and commit its three outputs in `public/icons/`.
     - `public/sw.js` per design "Service worker".
     - `src/components/shell/service-worker.ts` (`registerServiceWorker`) and `src/components/shell/service-worker-registrar.tsx` per design "Service worker registration".
     - _Requirements: 1.4, 4.1–4.3, 4.5, 5.1–5.3, 5.5_
-  - [ ] 3.4 Extend the tests
+  - [x] 3.4 Extend the tests
     - `tests/shell/service-worker.test.ts`: design "Testing Strategy" item 8.
     - `tests/scaffold/scaffold.test.ts` per design "Scaffold check extensions": 1.19 listing adds `manifest.ts`, the `.tsx` inventory adds `components/shell/service-worker-registrar.tsx` (title updated), the `.ts` list becomes `['api/tle/route.ts', 'manifest.ts']`; `checkedTexts()` adds `shell copy strings`, `manifest strings` and the registrar's JSX text. No other change.
     - Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. Then `pnpm run start` locally and confirm by hand that `/` shows the home page and `/manifest.webmanifest` serves the manifest; stop the server.
     - _Requirements: 3.3, 3.4, 11.1–11.6, 12.4–12.6_
-  - [ ] 3.5 Main agent: commit staging `src/components/shell/copy.ts`, `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/manifest.ts`, `scripts/generate-icons.mjs`, the three `public/icons/*.png`, `public/sw.js`, `src/components/shell/service-worker.ts`, `src/components/shell/service-worker-registrar.tsx`, `tests/shell/service-worker.test.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 3.5 Main agent: commit staging `src/components/shell/copy.ts`, `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/manifest.ts`, `scripts/generate-icons.mjs`, the three `public/icons/*.png`, `public/sw.js`, `src/components/shell/service-worker.ts`, `src/components/shell/service-worker-registrar.tsx`, `tests/shell/service-worker.test.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [x] 4. Deployment (stop point)
   - Depends on: task 3.
@@ -88,45 +88,72 @@ Ground rules for the implementer:
     - Outcome (2026-11-15): Live_URL `https://zombie-satellite.vercel.app/`, deployed by the project owner from `main` at `f55ee4f`. Home page 200. `GET /api/tle?CATNR=7530` answered 200 with the AO-7 TLE; first request `X-Vercel-Cache: MISS`, repeat `HIT` (`Age: 12`), so the CDN cache works. Vercel strips `s-maxage` from the client-facing `Cache-Control` (`public, max-age=0`), as expected.
   - [x] 4.4 Main agent: commit staging `README.md` and `.kiro/specs/shell-pwa-deploy/tasks.md` by name, then push. From here on, every push redeploys the Deployed_Build.
 
-- [ ] 5. Geolocation
+- [x] 5. Geolocation
   - Depends on: task 4.
-  - [ ] 5.1 Create `src/components/shell/geolocation.ts` and `src/components/shell/browser-deps.ts`
+  - [x] 5.1 Create `src/components/shell/geolocation.ts` and `src/components/shell/browser-deps.ts`
     - `createLocator`, `GeolocationLike`, `LocateOutcome`, `AUTO_LOCATE_FLAG_KEY`, `LOCATE_OPTIONS` per design "Geolocation": stored-value check through `OBSERVER_STORAGE_KEY` and `parseStoredObserver`, the flag rule, the re-check on arrival, the error mapping, 4-decimal rounding; never rejects.
     - `browser-deps.ts`: `browserGeolocation()` only (task 6 adds `browserMediaDevices`).
     - _Requirements: 8.1–8.4, 8.6, 8.8, 8.9, 8.11_
-  - [ ] 5.2 Wire both session pages
+  - [x] 5.2 Wire both session pages
     - In `src/app/session/page.tsx` and `src/app/session/[noradId]/page.tsx`: create the locator next to the page controller with the controller's storage, call `autoLocate` after the controller is created, add the "Use my location" button with the `locating` and `locationFailed` states under the observer inputs, pass `controller.setObserver` as `apply` and reset the raw input text on `'applied'`. No other change; the manual inputs stay as they are.
     - _Requirements: 8.1, 8.4, 8.5, 8.7_
-  - [ ] 5.3 Write `tests/shell/geolocation.test.ts`
+  - [x] 5.3 Write `tests/shell/geolocation.test.ts`
     - The six cases of design "Testing Strategy" item 4. Run it, `pnpm test`, `pnpm typecheck` and `pnpm run build`.
     - _Requirements: 8.10, 12.4, 12.5_
-  - [ ] 5.4 Main agent: commit staging `src/components/shell/geolocation.ts`, `src/components/shell/browser-deps.ts`, `src/app/session/page.tsx`, `src/app/session/[noradId]/page.tsx` and `tests/shell/geolocation.test.ts` by name, then push.
+  - [x] 5.4 Main agent: commit staging `src/components/shell/geolocation.ts`, `src/components/shell/browser-deps.ts`, `src/app/session/page.tsx`, `src/app/session/[noradId]/page.tsx` and `tests/shell/geolocation.test.ts` by name, then push.
 
-- [ ] 6. Sky view, camera backdrop and local time note
+- [x] 6. Sky view, camera backdrop and local time note
   - Depends on: task 5.
-  - [ ] 6.1 Create `src/components/shell/camera.ts` and extend `src/components/shell/browser-deps.ts`
+  - [x] 6.1 Create `src/components/shell/camera.ts` and extend `src/components/shell/browser-deps.ts`
     - `createCameraController`, `MediaStreamLike`, `MediaDevicesLike`, `CameraOutcome`, `CAMERA_CONSTRAINTS` per design: error mapping, generation counter, idempotent `stop`; never rejects; reads no frame.
     - `browserMediaDevices()`: `null` unless `window.isSecureContext` and `navigator.mediaDevices?.getUserMedia` exist.
     - _Requirements: 9.2–9.5, 12.3_
-  - [ ] 6.2 Add the Sky_View to `src/app/session/[noradId]/page.tsx`
+  - [x] 6.2 Add the Sky_View to `src/app/session/[noradId]/page.tsx`
     - At the seam of design "Camera backdrop and sky view", real-time `in-pass` only: heading, camera checkbox, the 3:4 box, the video layer, the marker from `markerPlacement(...)` (green when `lock.locked`), the `markerOutOfView` and `noPointingYet` notes; the stop effect on phase and clock mode and the unmount cleanup. Silent fallback on any outcome other than `'on'`. No other change.
     - _Requirements: 9.1–9.4, 9.6, 9.7_
-  - [ ] 6.3 Add the Local_Time_Note to `src/app/session/page.tsx`
+  - [x] 6.3 Add the Local_Time_Note to `src/app/session/page.tsx`
     - In `PassInfo`, ready rows only: one line `{SHELL_COPY.localTimeLabel} {formatLocalTimeNote(pass.riseMs, -new Date(pass.riseMs).getTimezoneOffset())}` under the "Next pass" line. No other change.
     - _Requirements: 10.1–10.4_
-  - [ ] 6.4 Write `tests/shell/camera.test.ts`
+  - [x] 6.4 Write `tests/shell/camera.test.ts`
     - Design "Testing Strategy" item 5. Run it, `pnpm test`, `pnpm typecheck` and `pnpm run build`.
     - _Requirements: 9.8, 12.4, 12.5_
-  - [ ] 6.5 Main agent: commit staging `src/components/shell/camera.ts`, `src/components/shell/browser-deps.ts`, `src/app/session/[noradId]/page.tsx`, `src/app/session/page.tsx` and `tests/shell/camera.test.ts` by name, then push.
+  - [x] 6.5 Main agent: commit staging `src/components/shell/camera.ts`, `src/components/shell/browser-deps.ts`, `src/app/session/[noradId]/page.tsx`, `src/app/session/page.tsx` and `tests/shell/camera.test.ts` by name, then push.
 
 - [ ] 7. Device checklist on the Deployed_Build (review items, executed by the project owner)
   - Depends on: task 6, with its push deployed (check that the Live_URL serves the Sky_View).
   - [ ] 7.1 Present the Device_Checklist of `.kiro/specs/ar-pointing/design.md` (iPhone pass steps 1 to 9, Android pass) to the owner against the Live_URL, and record the owner's report per step. Step 5: record the measured heading before and after tilting to about 60°. If the flip is real, record the data and note that a separate fix follows R1's policy; build nothing here.
     - _Requirements: 14.1, 14.3, 14.4_
+    - Interim report (project owner, real iPhone, Live_URL, 2026-11-15). Task 7 stays open; the remaining steps are recorded as the owner reports them.
+      - iPhone step 3 (heading vs. known bearing): PASS. With the reference compass at magnetic north (0°), the app shows 353.5°. The difference of −6.5° matches the local magnetic declination (about −6.56°): the reference needle shows magnetic north and the app shows the declination-corrected true heading, so the declination correction works.
+      - iPhone step 7 (switch to another app and back): NOT as the checklist expects. After returning, the heading readout is gone and the owner has to tap "Enable motion sensors" again. Classified as an iOS permission-gesture platform limitation and recorded as a known limitation (requirements Known limitation 4). Not fixed in S6.
+      - Not yet reported: iPhone steps 1, 2, 4, 5, 6, 8, 9; the whole Android pass. Step 5 (tilt to about 60°, heading must not jump by about 180°) still needs the measured headings before and after tilting.
   - [ ] 7.2 Present the remaining review items of design "Testing Strategy > Review items" (PWA install and standalone on Android and iOS, geolocation, camera, home page prose) and record the owner's report per item.
     - _Requirements: 5.4, 14.2, 14.3, 2.6_
+    - Not yet reported: PWA install and standalone (Android and iOS), geolocation, camera backdrop, home page prose.
   - [ ] 7.3 Main agent: commit staging `.kiro/specs/shell-pwa-deploy/tasks.md` by name, then push.
+    - Note: task 7 is not closed, so this commit waits until the owner has reported every item.
 
+- [ ] 7A. Visual styling pass (added after task 7; style only)
+  - Depends on: task 7 closed. May start earlier only if the owner asks.
+  - Scope decision (project owner, 2026-11-15): the interface stays English only, no Chinese version, no translation work. This task changes CSS and the necessary `className` attributes only. It changes no logic, no copy text and no copy module, and no element order that a test or the Honesty_Scan reads.
+  - [x] 7A.1 Design the palette and the layout rules. The palette is the dark-space family of the QSL card face (`src/lib/qsl/card-svg.ts`): background `#0d1117`, green `#2ea043`, orange `#f0883e`, violet `#a371f7`, amber `#d29922`, grey `#8b949e`, white `#f0f6fc`. State the CSS file location, the class naming, and the reset of the inline styles that the pages carry today, before writing code. If this needs anything beyond CSS and `className`, stop and ask.
+    - _Requirements: none (owner-added scope)_
+  - [x] 7A.2 Add the stylesheet(s) and apply them to the home page, the satellite picker (`/session`), the session page (`/session/[noradId]`), `/pointing` and `/cards` (list and detail): typography, spacing, buttons, inputs, and card presentation. The `<video>` layer, the Sky_View box and the marker keep their behavior; only their look may change.
+    - If a new CSS file extends what check 1.19 inventories, extend it by explicit file name; no existing assertion is weakened. Importing a `.css` file from `layout.tsx` must keep checks 1.20 and 1.21 true.
+    - _Requirements: none (owner-added scope)_
+  - [x] 7A.3 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. Confirm that `git diff` shows no change to any copy string, any copy module or any logic file.
+    - Main agent: commit staging the changed files by name, then push.
+  - [x] 7A.4 Review item (project owner, real phone): the owner looks at the five areas on the Live_URL and reports. Close this task only after that report.
+    - Owner review (real phone, Live_URL, 2026-11-16): NOT PASSED. The interface still looks unattractive. Task 7A stays open and is ticked and closed together with task 7B after the 7B review passes.
+- [ ] 7B. iOS-style visual redesign (replaces the look delivered by 7A; presentation only)
+  - Depends on: 7A.1 to 7A.3 pushed. Runs in parallel with the rest of task 7.
+  - Scope (project owner, 2026-11-16): allowed: `src/app/globals.css`, and in the `src/app` page and layout files, purely presentational wrapper elements, `className`, `data-*` attributes for styling, decorative `aria-hidden` elements and presentational structure changes; the `viewport` metadata may gain `viewportFit: 'cover'`. If the background colour changes, `theme_color` and `background_color` in `src/app/manifest.ts` and the `viewport.themeColor` change with it. Still forbidden: any logic, state, event handler, copy string, copy module, and any change under `src/components` or `src/lib`.
+  - Design (iOS idiom, dark-space palette kept): bottom tab bar with translucent blur and safe-area inset for the three main routes, large bold titles, inset grouped cards, list rows with hairlines, switch-style toggles, filled and tinted buttons, disclosure rows, a slow CSS orbit as the home hero. The background stays `#0d1117` (card palette and app icon), so the manifest colours do not change.
+  - [x] 7B.1 Rewrite `src/app/globals.css` and the layout shell: tab bar markup in `src/app/layout.tsx` (class names on the three links, no logic), `viewportFit: 'cover'`, and the stylesheet for tab bar, typography, grouped cards, rows, buttons, switches, ranges, disclosure, sky view and drag area. Run tests, build and typecheck; commit staging `src/app/globals.css` and `src/app/layout.tsx` by name, then push.
+  - [x] 7B.2 Presentation hooks in the pages: `data-tab` on every `main` (active tab, styled with `:has`), home hero with the decorative orbit, `plain` sections where a section wraps cards, `actions` rows, in `src/app/page.tsx`, `src/app/session/page.tsx`, `src/app/session/[noradId]/page.tsx`, `src/app/pointing/page.tsx`, `src/app/cards/page.tsx` and `src/app/cards/[noradId]/[aosMs]/[n]/page.tsx`. Run tests, build and typecheck; commit staging those files by name, then push.
+  - [x] 7B.3 Diff audit against the 7B scope (diff of `src` and `tests` from the commit before 7B.1): no change under `src/components` or `src/lib`; in the pages and layout only `className`, `data-*`, wrappers, decorative elements, inline `style` objects and the `viewport` entry; no copy string added, removed or reworded (compare the JSX text and every string literal); no handler, hook or state touched. Run the full suite and the build once more.
+  - [x] 7B.4 Review item (project owner, real phone): the owner reviews the five areas on the Live_URL and reports. On approval: tick 7A.4, 7A and 7B and commit `.kiro/specs/shell-pwa-deploy/tasks.md` with task 7.
+    - Owner review (real phone, Live_URL, 2026-11-16): PASSED. 7A.4 is closed with it, and tasks 7A and 7B are closed.
 - [ ] 8. English technical route
   - Depends on: task 7 (may run in parallel with task 10).
   - [ ] 8.1 Write `docs/reference/TECHNICAL_ROUTE.en.md` per design "Submission materials": section-by-section translation of the trimmed `docs/reference/TECHNICAL_ROUTE.md`, same headings and order, numbers, units, formulas, identifiers and code unchanged, the one-line translation note at the top, nothing added.

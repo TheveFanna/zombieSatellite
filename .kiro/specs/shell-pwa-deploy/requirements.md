@@ -63,6 +63,7 @@ The Deployment, the installability of the PWA, the device behavior and the Submi
 1. The pointing projection keeps its fixed 75-degree field of view, so the marker over the Camera_Backdrop does not match the true camera field of view of every phone.
 2. The TLE_Proxy depends on CelesTrak accepting requests from the hosting platform's servers. CelesTrak can rate-limit with HTTP 403; the TLE_Proxy then answers with an error status, and the picker shows "Orbit data unavailable.".
 3. The TLE_Proxy server-side cache can serve a TLE up to the Proxy_Cache_Duration old; TLE data changes on a scale of hours to days, so the age is within the accuracy the app needs.
+4. On iPhone, after the user switches to another app and returns, the motion sensor readout does not resume by itself; the user taps "Enable motion sensors" again. This is an iOS permission-gesture platform limitation found by the Device_Checklist (iPhone step 7) and is not fixed in this spec.
 
 ## Glossary
 
