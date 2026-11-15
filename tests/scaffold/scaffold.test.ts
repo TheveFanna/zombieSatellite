@@ -71,6 +71,12 @@ function parseAppPath(relativePath: string): ts.SourceFile {
 
 const SESSION_PAGES = ['session/page.tsx', 'session/[noradId]/page.tsx'];
 const CARDS_PAGES = ['cards/page.tsx', 'cards/[noradId]/[aosMs]/[n]/page.tsx'];
+const SHELL_REGISTRAR = 'src/components/shell/service-worker-registrar.tsx';
+
+/** Parses a TSX file by its path relative to the repository root. */
+function parseTsx(path: string): ts.SourceFile {
+  return ts.createSourceFile(path, read(path), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+}
 
 /** The string values of every property assignment of a file, including nested objects. */
 function propertyStrings(file: string): string[] {
@@ -138,10 +144,13 @@ function checkedTexts(): Array<[string, string[]]> {
         ...APP_FILES.flatMap((file) => jsxTexts(parseApp(file))),
         ...SESSION_PAGES.flatMap((file) => jsxTexts(parseAppPath(file))),
         ...CARDS_PAGES.flatMap((file) => jsxTexts(parseAppPath(file))),
+        ...jsxTexts(parseTsx(SHELL_REGISTRAR)),
       ],
     ],
     ['session copy strings', propertyStrings('src/components/session/copy.ts')],
     ['qsl copy strings', propertyStrings('src/lib/qsl/copy.ts')],
+    ['shell copy strings', propertyStrings('src/components/shell/copy.ts')],
+    ['manifest strings', propertyStrings('src/app/manifest.ts')],
   ];
 }
 
@@ -208,12 +217,20 @@ describe('Requirement 1: project scaffold', () => {
     expect(Object.entries(pkg.scripts ?? {}).filter(([, command]) => OS_SPECIFIC_SYNTAX.test(command))).toEqual([]);
   });
 
-  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes and the named .ts files, and no other .tsx file exists under src', () => {
-    expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual(['api', 'cards', 'layout.tsx', 'page.tsx', 'pointing', 'session']);
+  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes and the named .ts files, and no .tsx file other than these pages and the shell service-worker registrar exists under src', () => {
+    expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual([
+      'api',
+      'cards',
+      'layout.tsx',
+      'manifest.ts',
+      'page.tsx',
+      'pointing',
+      'session',
+    ]);
     const appTsFiles = readdirSync(join(root, 'src', 'app'), { encoding: 'utf8', recursive: true })
       .filter((file) => file.endsWith('.ts'))
       .map((file) => file.split(sep).join('/'));
-    expect(appTsFiles.sort()).toEqual(['api/tle/route.ts']);
+    expect(appTsFiles.sort()).toEqual(['api/tle/route.ts', 'manifest.ts']);
     const tsxFiles = readdirSync(join(root, 'src'), { encoding: 'utf8', recursive: true })
       .filter((file) => file.endsWith('.tsx'))
       .map((file) => file.split(sep).join('/'));
@@ -225,6 +242,7 @@ describe('Requirement 1: project scaffold', () => {
       'app/pointing/page.tsx',
       'app/session/[noradId]/page.tsx',
       'app/session/page.tsx',
+      'components/shell/service-worker-registrar.tsx',
     ]);
   });
 
