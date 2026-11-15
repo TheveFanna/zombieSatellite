@@ -123,28 +123,28 @@ Ground rules for the implementer:
     - Review checklist (by reading): no file under `src/lib/pointing` references `window`, `document`, `navigator`, `screen`, `localStorage`, `DeviceOrientationEvent`, `setTimeout`, `fetch` or `AbsoluteOrientationSensor` (Requirements 1.3, 1.4, 3.9).
     - Main agent: commit staging `tests/helpers/pointing-source-scan.ts`, `tests/pointing/source-boundary.test.ts` by name, then push.
 
-- [ ] 5. Orientation stream and permission flow controllers
+- [x] 5. Orientation stream and permission flow controllers
   - Depends on: task 4.
-  - [~] 5.1 Create `src/components/pointing/deps.ts`
+  - [x] 5.1 Create `src/components/pointing/deps.ts`
     - Copy the interfaces of design "Injected interfaces" verbatim. No imports.
     - _Requirements: 13.2_
-  - [~] 5.2 Create `src/components/pointing/orientation-stream.ts`
+  - [x] 5.2 Create `src/components/pointing/orientation-stream.ts`
     - `createOrientationStream` exactly per the pseudocode of design "`orientation-stream.ts`": listeners for both event types, No_Sample_Timeout from Subscription start, Selection_Window opened by the first Valid_Sample, lock at window end with `pickHeadingSource`, samples of other sources ignored after lock, silence ignored, hidden ends the Subscription (listeners removed, attitude `null`), visible restarts it if still wanted.
     - Internal `toOrientationSample(event: unknown)`: finite numbers kept, everything else `null`; `absolute === true`; `webkitCompassHeading` only when finite.
     - Uses only the injected `events`, `timers` and `visibility`; no globals.
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 4.1, 4.2, 4.3_
-  - [~] 5.3 Create `src/components/pointing/permission-flow.ts`
+  - [x] 5.3 Create `src/components/pointing/permission-flow.ts`
     - `createPermissionFlow` exactly per design "`permission-flow.ts`": every change via `permissionTransition`; `start()` never calls the requester; `requestFromGesture()` dispatches `request-started`, starts the 5 s timeout and calls the requester synchronously in the same call; generation check for stale results; a synchronous throw is a `permission-error`; on granted, `stream.start()`; stream callbacks map to `no-sample-timeout` and `valid-sample-arrived`.
     - _Requirements: 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.9, 11.10, 11.13_
-  - [~] 5.4 Create `tests/helpers/pointing-mocks.ts`
+  - [x] 5.4 Create `tests/helpers/pointing-mocks.ts`
     - Minimal mocks: an event source with `dispatch(type, fields)` and a listener count per type; a visibility source with `setHidden(boolean)`; a storage over a `Map`; a requester factory returning a never-settling promise or a promise resolving to a given value; `fakeTimerApi()` returning `{ setTimeout: (fn, ms) => setTimeout(fn, ms), clearTimeout: (h) => clearTimeout(h as never) }` for use under `vi.useFakeTimers()`. Nothing else.
-  - [~] 5.5 Create `tests/pointing/orientation-stream.test.ts`
+  - [x] 5.5 Create `tests/pointing/orientation-stream.test.ts`
     - The rows of design "Controller example checks": relative then absolute in the window; no switch after lock; late first sample; all-null samples only (the desktop Chrome case, including the `onNoSampleTimeout` call at 3000 ms; the flow-state part is covered in 5.6); page hidden and visible; null alpha after a valid sample. Use `vi.useFakeTimers()` and `vi.advanceTimersByTime`.
     - **Validates: Requirements 3.10, 4.4**
-  - [~] 5.6 Create `tests/pointing/permission-flow.test.ts`
+  - [x] 5.6 Create `tests/pointing/permission-flow.test.ts`
     - The rows "no request without gesture", "never-settling request" (advance with `vi.advanceTimersByTimeAsync(5000)`), "silent subscription" (no requester, granted, unavailable at 3000 ms), and the flow-state part of "all-null samples only" (state unavailable at 3000 ms).
     - **Validates: Requirements 11.3, 11.7, 11.9, 11.10, 11.12**
-  - [~] 5.7 Verify task 5 and hand over for commit
+  - [x] 5.7 Verify task 5 and hand over for commit
     - Run `pnpm vitest run tests/pointing` and `pnpm typecheck`; both must pass.
     - Main agent: commit staging `src/components/pointing/deps.ts`, `orientation-stream.ts`, `permission-flow.ts`, `tests/helpers/pointing-mocks.ts`, `tests/pointing/orientation-stream.test.ts`, `tests/pointing/permission-flow.test.ts` by name, then push.
 
