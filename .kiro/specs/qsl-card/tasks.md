@@ -1,0 +1,105 @@
+# Implementation Plan: qsl-card (S5)
+## Overview
+Build the QSL card layer exactly as specified in `design.md`: the pure QSL_Core under `src/lib/qsl`, the framework-free QSL_Components under `src/components/qsl`, the two `'use client'` pages `src/app/cards/page.tsx` and `src/app/cards/[noradId]/[aosMs]/[n]/page.tsx`, and one link line on the S4 completion screen. Language: TypeScript (strict, ES modules); tests in Vitest, `node` environment.
+Ground rules for the implementer:
+- `requirements.md` and `design.md` in this folder are the specification. Read the design sections named in each sub-task before writing code. Do not deviate from the module layout, names, signatures, constants, copy strings and display rules given there. Where design.md and requirements.md differ, requirements.md wins; if you find such a difference, or design.md seems insufficient, stop and ask instead of extending scope.
+- Marks are orthogonal (approved note 1): the `DEMO 60×` banner and the orange colour depend on `demoMark` only; the `AUTO-POINT` badge and the dashed frame depend on `autoPointMark` only. `buildCardSvg` reads those two booleans, never `kind`, so all four combinations render consistently with the design table.
+- Pass_Number (approved note 2): injectivity holds by construction of the D10 format. Tests assert only the format, stability, equal numbers within one pass and distinct numbers across the distinct passes of the fixture set; no hashing, no search for collisions.
+- Group_Ordinal stability (approved note 3): design "Collection > Group_Ordinal stability" is the reference; no extra mechanism keeps ordinals stable.
+- No catalog prose: no file of this spec reads `statusNote`, `hook` or `story`, and no page shows the raw `status` value; the only status text is `QSL_COPY.statusLabels`.
+- Times: every displayed instant comes from `formatUtc`. No code of this spec calls `Date.now()` or `new Date()`; no QSL_Source_Module reads any clock.
+- Tests: plain example assertions only, exactly the cases listed in design.md "Correctness Properties" and "Testing Strategy". No fast-check, no extra cases, no scanner self-tests, no negative instrumentation, no real image or file.
+- Tests run in the Vitest `node` environment. Do not add jsdom, happy-dom, a React testing library or any other package. `package.json` and `pnpm-lock.yaml` stay unchanged.
+- Imports: inside `src/lib/qsl` only relative paths inside that directory plus `../session/index` and `../catalog/index`; from `src/components/qsl` and the pages, relative paths (no `@/` alias). Tests import the core only through `src/lib/qsl/index`.
+- Do not modify anything under `src/lib/orbit`, `src/lib/catalog`, `src/lib/pointing`, `src/lib/session`, `src/components/pointing`, `src/components/session`, `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/pointing`, `src/app/session/page.tsx`, the existing test folders or the existing files of `tests/helpers`. The permitted edits outside this spec's own files are task 5.3 (one link line in `src/app/session/[noradId]/page.tsx`) and task 5.4 (`tests/scaffold/scaffold.test.ts`).
+- Copy: every string of the S5 pages and of the Card_SVG comes from `QSL_COPY`; page JSX text holds no wording of its own beyond what the design names.
+- Test command: `pnpm vitest run <paths>`; full suite: `pnpm test`; typecheck: `pnpm typecheck`; build: `pnpm run build`.
+- Commit and push: the main agent commits locally once per top-level task, after that task's tests and `pnpm typecheck` pass, staging files by name (never `git add -A` or `git add .`), then pushes immediately. Never push in the middle of a task. The three spec documents and `.config.kiro` are committed with task 1. Commit message style: `feat(qsl): <summary> (S5 task N)` or `test(qsl): ...`.
+- Execution is serial. Each top-level task depends on the one before it.
+## Tasks
+- [ ] 1. Card model foundations: copy, types, display rules, Pass_Number and Card_Model
+  - Depends on: nothing (first task).
+  - [x] 1.1 Create `src/lib/qsl/copy.ts` and `src/lib/qsl/types.ts`
+    - `copy.ts`: `QSL_COPY` exactly as design "Copy", every value a plain string literal inside `Object.freeze({...})`, nested objects frozen, `kindLabels` `satisfies Record<CardKind, string>`, `statusLabels` `satisfies Record<EntryStatus, string>`.
+    - `types.ts`: `CardKind`, `CardModel`, `CardField`, `CardAddress`, `CollectionCard` as design "Card model > Types". Type imports only (`NoradId` from `../catalog/index`).
+    - _Requirements: 1.1, 2.9, 3.2, 7.4, 9.1, 9.2_
+  - [x] 1.2 Create `src/lib/qsl/format.ts` and `src/lib/qsl/pass-number.ts`
+    - `format.ts`: `formatElevation`, `formatLockedDuration`, `formatLockedRatio`, `formatPointingError` per design "Display rules" (D4, D5; `—` is U+2014).
+    - `pass-number.ts`: `passNumber(noradId, aosMs)` per design D10.
+    - _Requirements: 2.6, 2.7, 8.1, 8.6_
+  - [x] 1.3 Create `src/lib/qsl/card-model.ts` and `src/lib/qsl/index.ts`
+    - `cardKind`, `buildCardModel` (returns `null` for `completed: false`; frozen model otherwise), `cardFields` (fixed order of design), `describeCard`, per design "Card model > Functions". `buildCardModel` reads only its two parameters, `formatUtc`, `passNumber` and `QSL_COPY`.
+    - `index.ts`: barrel exporting the names created so far; later tasks extend it.
+    - _Requirements: 2.1–2.5, 2.8, 2.9, 3.1, 3.3–3.5, 4.1, 8.2–8.4_
+  - [x] 1.4 Write `tests/qsl/card-model.test.ts` and `tests/qsl/pass-number.test.ts`
+    - `card-model.test.ts`: Property 2 (the AO-7 fixture field by field and row by row, the IMAGE no-frequency case, the `null` best pointing error, the D4 examples), Property 3 (four combinations), the `null` case of Property 4.
+    - `pass-number.test.ts`: the pinned example `ZS-01002-1000` and stability of Property 7.
+    - Run these tests and `pnpm typecheck`.
+    - _Requirements: 2.10, 3.3, 3.4, 4.1, 8.5, 10.1, 10.2_
+  - [~] 1.5 Main agent: commit staging `.kiro/specs/qsl-card/.config.kiro`, `requirements.md`, `design.md`, `tasks.md`, the five `src/lib/qsl` files and the two test files by name, then push.
+- [ ] 2. Card face SVG
+  - Depends on: task 1.
+  - [~] 2.1 Create `src/lib/qsl/card-svg.ts` and extend `index.ts`
+    - `CARD_WIDTH` 600, `CARD_HEIGHT` 380, `escapeXml`, `buildCardSvg`, `svgDataUrl` per design "Card face" and "Honesty marks" (badge and frame from `demoMark` and `autoPointMark` separately, see ground rules). Every interpolated text goes through `escapeXml`; every shown string comes from the model, `cardFields` or `QSL_COPY`.
+    - _Requirements: 3.1, 3.6, 5.1–5.5_
+  - [~] 2.2 Write `tests/qsl/card-svg.test.ts`
+    - Property 5 only. Run it and `pnpm typecheck`.
+    - _Requirements: 3.1, 3.6, 5.2–5.4_
+  - [~] 2.3 Main agent: commit staging `src/lib/qsl/card-svg.ts`, `src/lib/qsl/index.ts` and `tests/qsl/card-svg.test.ts` by name, then push.
+- [ ] 3. Collection, addressing and source boundary
+  - Depends on: task 2.
+  - [~] 3.1 Create `src/lib/qsl/collection.ts` and extend `index.ts`
+    - `buildCollection` (steps 1–6 of design "Collection"), `cardHref`, `parseCardAddress`, `findCard` per design "Address helpers".
+    - _Requirements: 4.2, 7.1, 7.2, 7.6, 7.7_
+  - [~] 3.2 Create `tests/helpers/qsl-source-scan.ts` and `tests/qsl/source-boundary.test.ts`
+    - A copy of `tests/helpers/session-source-scan.ts` with root `src/lib/qsl` and allowed outside files the `session` and `catalog` barrels; the test mirrors `tests/session/source-boundary.test.ts` (Property 1).
+    - _Requirements: 1.2, 1.4_
+  - [~] 3.3 Write `tests/qsl/collection.test.ts`
+    - Property 4 (collection part), Property 6, and the shared and distinct Pass_Number part of Property 7, over the one fixture list of design Property 6.
+    - Run the `tests/qsl` folder and `pnpm typecheck`.
+    - _Requirements: 4.1, 4.2, 7.2, 7.6, 7.7, 8.5_
+  - [~] 3.4 Main agent: commit staging `src/lib/qsl/collection.ts`, `src/lib/qsl/index.ts`, `tests/helpers/qsl-source-scan.ts`, `tests/qsl/source-boundary.test.ts` and `tests/qsl/collection.test.ts` by name, then push.
+- [ ] 4. Controllers: collection read and downloads
+  - Depends on: task 3.
+  - [~] 4.1 Create `src/components/qsl/deps.ts`, `collection-reader.ts` and `card-download.ts`
+    - `deps.ts`: `Canvas2dLike`, `CanvasLike`, `DownloadDeps` (with `TimerApi` from `../pointing/deps`).
+    - `collection-reader.ts`: `readCollection(storage)` = `buildCollection(readSessionResults(storage))`, importing `readSessionResults` from `../session/result-store`.
+    - `card-download.ts`: `REVOKE_DELAY_MS` 1000, `PNG_WIDTH` 1200, `PNG_HEIGHT` 760, `PngOutcome`, `createCardDownloader(deps)` with `downloadSvg` and `downloadPng` per design "Downloads"; `downloadPng` never rejects.
+    - _Requirements: 4.4, 6.1–6.3, 7.9_
+  - [~] 4.2 Create `src/components/qsl/browser-deps.ts`
+    - `createQslBrowserDeps()` per design "Browser dependencies"; checked by review.
+    - _Requirements: 6.3, 7.9_
+  - [~] 4.3 Write `tests/qsl/collection-reader.test.ts` and `tests/qsl/card-download.test.ts`
+    - `collection-reader.test.ts`: the single case of design "Testing Strategy" with a mock `KeyValueStorage`.
+    - `card-download.test.ts`: Property 8 with recording mocks and a manual mock `TimerApi`.
+    - Run them and `pnpm typecheck`.
+    - _Requirements: 6.4, 7.9, 10.2_
+  - [~] 4.4 Main agent: commit staging the four `src/components/qsl` files and the two test files by name, then push.
+- [ ] 5. Pages, S4 link and scaffold checks
+  - Depends on: task 4.
+  - [~] 5.1 Create `src/app/cards/page.tsx`
+    - Per design "Pages > `/cards`": loading state, then `readCollection(createQslBrowserDeps().storage)` in `useEffect`; empty state with the link to `/session`; otherwise linked `<img>` cards using `svgDataUrl(buildCardSvg(card.model))` and `describeCard`.
+    - _Requirements: 7.1, 7.3, 7.4, 7.9_
+  - [~] 5.2 Create `src/app/cards/[noradId]/[aosMs]/[n]/page.tsx`
+    - Per design "Pages > `/cards/[noradId]/[aosMs]/[n]`": `parseCardAddress(useParams())`, `findCard(readCollection(...), address)`; not-found message and back link; found: large image, `<dl>` of kind label, `cardFields` and status label, both notice lines, the two download buttons through `createCardDownloader`, `QSL_COPY.pngFailed` after a failed outcome, back link.
+    - _Requirements: 6.1, 6.2, 7.4, 7.5, 7.7, 7.8, 7.9_
+  - [~] 5.3 Add the link to the S4 completion screen
+    - In `src/app/session/[noradId]/page.tsx`, inside the `phase === 'completed'` section after the New session button, add exactly `<p><Link href="/cards">View your QSL cards</Link></p>` (design D12). No other change to the file.
+    - _Requirements: 7.10_
+  - [~] 5.4 Extend `tests/scaffold/scaffold.test.ts`
+    - Add `CARDS_PAGES = ['cards/page.tsx', 'cards/[noradId]/[aosMs]/[n]/page.tsx']` to the rendered JSX texts of `checkedTexts`, add `['qsl copy strings', propertyStrings('src/lib/qsl/copy.ts')]`, and extend check 1.19 (title, `src/app` listing with `cards`, the `.tsx` list with both new page files). No other change to the file.
+    - _Requirements: 9.3, 9.4_
+  - [~] 5.5 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. If check 1.24 or 1.25 fails, fix the copy or move the text into `QSL_COPY`, never the check.
+    - Main agent: commit staging `src/app/cards/page.tsx`, `src/app/cards/[noradId]/[aosMs]/[n]/page.tsx`, `src/app/session/[noradId]/page.tsx` and `tests/scaffold/scaffold.test.ts` by name, then push.
+- [ ] 6. Final checkpoint and review items
+  - Depends on: task 5.
+  - [~] 6.1 Run `pnpm test`, `pnpm typecheck` and `pnpm run build` once more on the final tree; all must pass. Report any failure instead of changing tests. Confirm that every test of this spec is a `tests/**/*.test.ts` file in the `node` environment, runs offline under the network guard, and belongs to Properties 1 to 9 or the collection-reader case of design "Testing Strategy".
+    - _Requirements: 10.1, 10.2_
+  - [~] 6.2 Card_Visual_Check (review item, done by the project owner on a phone): follow design "Testing Strategy > Card_Visual_Check". Present the checklist to the project owner and record the outcome they report; do not automate it.
+    - _Requirements: 3.6, 10.3_
+  - [~] 6.3 Mark every task of this file complete and hand over for commit
+    - Main agent: commit staging `.kiro/specs/qsl-card/tasks.md` by name with `docs(qsl): mark qsl-card tasks complete (S5 task 6)`, then push.
+## Notes
+- Requirement coverage: every acceptance criterion of `requirements.md` is listed under at least one sub-task; the criteria not listed under a test sub-task are checked by review (requirements "Verification scope").
+- Tests are only those of design.md "Correctness Properties" (Properties 1 to 9) and the collection-reader case of "Testing Strategy".
+- Approved notes recorded with the tasks, design unchanged: (1) the Honesty_Marks are derived and rendered orthogonally, the DEMO banner from `mode` only and the AUTO-POINT badge and dashed frame from `autoPointUsed` only, so the four combinations render consistently; (2) the Pass_Number's injectivity is asserted by construction through format, stability, equal numbers within a pass and distinct numbers across distinct passes; (3) Group_Ordinal stability follows design "Collection > Group_Ordinal stability".
