@@ -110,15 +110,15 @@ Ground rules for the implementer:
     - Review: record the byte sizes of `wmm2025-cof.ts` and `declination.ts` (source size, an upper bound of the minified size) in the hand-over note; their sum must stay under 30 KB (Requirement 6.6).
     - Main agent: commit staging `src/lib/pointing/wmm2025-cof.ts`, `declination.ts`, `index.ts`, `tests/pointing/declination.test.ts`, `tests/pointing/lock.test.ts` by name, then push.
 
-- [ ] 4. Pointing source-boundary scan
+- [x] 4. Pointing source-boundary scan
   - Depends on: task 3 (the scan covers every core file).
-  - [~] 4.1 Create `tests/helpers/pointing-source-scan.ts`
+  - [x] 4.1 Create `tests/helpers/pointing-source-scan.ts`
     - A copy of `tests/helpers/catalog-source-scan.ts` with the root changed to `src/lib/pointing` and the names changed to `PointingSourceViolation`, `listPointingSourceFiles()`, `scanPointingSources()`. Same node handling, same rule (relative path resolving inside the directory). Do not import from or change the S1 or S2 helpers.
     - _Requirements: 1.2, 1.5_
-  - [~] 4.2 Create `tests/pointing/source-boundary.test.ts`
+  - [x] 4.2 Create `tests/pointing/source-boundary.test.ts`
     - **Property 1: Pointing source modules stay inside `src/lib/pointing`** — `expect(scanPointingSources()).toEqual([])` plus one sanity assertion that `listPointingSourceFiles()` contains `'index.ts'`. Nothing else.
     - **Validates: Requirements 1.2, 1.5**
-  - [~] 4.3 Verify task 4 and hand over for commit
+  - [x] 4.3 Verify task 4 and hand over for commit
     - Run `pnpm vitest run tests/pointing/source-boundary.test.ts` and `pnpm typecheck`; both must pass.
     - Review checklist (by reading): no file under `src/lib/pointing` references `window`, `document`, `navigator`, `screen`, `localStorage`, `DeviceOrientationEvent`, `setTimeout`, `fetch` or `AbsoluteOrientationSensor` (Requirements 1.3, 1.4, 3.9).
     - Main agent: commit staging `tests/helpers/pointing-source-scan.ts`, `tests/pointing/source-boundary.test.ts` by name, then push.
