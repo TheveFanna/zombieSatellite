@@ -9,4 +9,5 @@ export {
 } from './format';
 export { passNumber } from './pass-number';
 export { cardKind, buildCardModel, cardFields, describeCard } from './card-model';
+export { buildCollection, findCard, parseCardAddress, cardHref } from './collection';
 export { CARD_WIDTH, CARD_HEIGHT, escapeXml, buildCardSvg, svgDataUrl } from './card-svg';
