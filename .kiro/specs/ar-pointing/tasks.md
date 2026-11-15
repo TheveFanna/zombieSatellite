@@ -186,7 +186,7 @@ Ground rules for the implementer:
     - Review checklist (by reading): the page forwards events only and holds no pointing logic (13.3); display heading, lock and marker read one basis (3.8); the drag compass auto-activates on unavailable/denied and has a manual toggle (11.11, 12.4); no automatic `requestPermission` call on mount (11.3); no 8° constant in `src/lib/pointing`, `src/components/pointing` or the page (8.8).
     - Main agent: commit staging `src/components/pointing/pointing-session.ts`, `browser-deps.ts`, `src/app/pointing/page.tsx`, `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [~] 8. Final checkpoint
+- [x] 8. Final checkpoint
   - Depends on: task 7.
   - Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. Confirm with `git status` and `git diff <base> --stat`, where `<base>` is the commit just before the task 1 commit, that nothing under `src/lib/orbit`, `src/lib/catalog`, `tests/orbit`, `tests/catalog`, `tests/helpers/source-scan.ts`, `tests/helpers/catalog-source-scan.ts`, `package.json` or `pnpm-lock.yaml` changed, and that `tests/scaffold/scaffold.test.ts` changed only in test 1.19.
   - Review pass against requirements.md: Requirement 1.3 and 1.4 (core free of DOM globals and I/O), 6.5 and 6.6 (bundled data, size note from task 3.6), 8.8 (no 8°), 10 (projection independent of the lock), 13.3 (thin page).
