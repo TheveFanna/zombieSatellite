@@ -183,6 +183,7 @@ Ground rules for the implementer:
     - _Requirements: 2.3, 9.2_
   - [x] 7.2 Manual_Listening_Check (review item, done by the project owner on a phone): follow design "Testing Strategy > Manual_Listening_Check" for `/session/1002` (LES-1) and `/session/26113` (IMAGE). Present the checklist to the project owner and record the outcome they report; do not automate it.
     - _Requirements: 11.5_
+    - Outcome (project owner, real phone): passed. AO-7 CW keying, LES-1 tumble envelope (about 4 s swell and fade), IMAGE sparse ticks, and mute stopping the sound immediately were all correct.
   - [x] 7.3 Mark every task of this file complete and hand over for commit
     - Main agent: commit staging `.kiro/specs/seance-session/tasks.md` by name with `docs(session): mark seance-session tasks complete (S4 task 7)`, then push.
 
