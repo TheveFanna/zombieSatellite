@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { PointerEvent } from 'react';
 import type { PlayableEntry } from '../../../lib/catalog/index';
 import { CALIBRATION_STEP_DEG } from '../../../lib/pointing/index';
@@ -17,7 +17,8 @@ import { DEFAULT_VOLUME } from '../../../components/session/beacon-player';
 import { createSessionBrowserDeps } from '../../../components/session/browser-deps';
 import { SESSION_COPY } from '../../../components/session/copy';
 import { createSessionController } from '../../../components/session/session-controller';
-import { browserGeolocation } from '../../../components/shell/browser-deps';
+import { browserGeolocation, browserMediaDevices } from '../../../components/shell/browser-deps';
+import { createCameraController } from '../../../components/shell/camera';
 import { SHELL_COPY } from '../../../components/shell/copy';
 import { createLocator } from '../../../components/shell/geolocation';
 import type { LocateOutcome } from '../../../components/shell/geolocation';
@@ -31,6 +32,7 @@ import {
   resolvePlayableEntry,
 } from '../../../lib/session/index';
 import type { SessionResult } from '../../../lib/session/index';
+import { markerPlacement } from '../../../lib/shell/index';
 
 // Neutral pointing view used on the server and until the session exists in the browser.
 const INITIAL_POINTING_SNAPSHOT: PointingSnapshot = Object.freeze({
@@ -76,6 +78,7 @@ function initialSnapshot(entry: PlayableEntry): SessionSnapshot {
 type FieldName = 'lat' | 'lon';
 type Locator = ReturnType<typeof createLocator>;
 type LocateStatus = 'idle' | 'locating' | 'failed';
+type CameraController = ReturnType<typeof createCameraController>;
 
 const sectionStyle = { marginTop: '1.25rem' } as const;
 
@@ -108,6 +111,9 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
   const [invalid, setInvalid] = useState<Record<FieldName, boolean>>({ lat: false, lon: false });
   const [locator, setLocator] = useState<Locator | null>(null);
   const [locateStatus, setLocateStatus] = useState<LocateStatus>('idle');
+  const [camera, setCamera] = useState<CameraController | null>(null);
+  const [cameraOn, setCameraOn] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const serverSnapshot = useMemo(() => initialSnapshot(entry), [entry]);
   const getServerSnapshot = (): SessionSnapshot => serverSnapshot;
@@ -117,10 +123,12 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     const sessionDeps = createSessionBrowserDeps(createdPointing);
     const createdController = createSessionController(sessionDeps, entry);
     const createdLocator = createLocator({ geolocation: browserGeolocation(), storage: sessionDeps.storage });
+    const createdCamera = createCameraController({ mediaDevices: browserMediaDevices() });
     let active = true;
     setPointing(createdPointing);
     setController(createdController);
     setLocator(createdLocator);
+    setCamera(createdCamera);
     void createdLocator.autoLocate((position) => {
       if (!active) return false;
       const applied = createdController.setObserver(position);
@@ -129,11 +137,14 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     });
     return () => {
       active = false;
+      createdCamera.stop();
       createdController.dispose();
       createdPointing.dispose();
       setController(null);
       setPointing(null);
       setLocator(null);
+      setCamera(null);
+      setCameraOn(false);
     };
   }, [entry]);
 
@@ -244,6 +255,38 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
   const isDemo = snapshot.clockMode === 'demo';
   const audioStatus = snapshot.audio.status;
   const previewFailure = snapshot.failure ?? (snapshot.tleStatus === 'failed' ? 'tle-unavailable' : null);
+  const skyViewActive = phase === 'in-pass' && snapshot.clockMode === 'real';
+
+  // The camera stops whenever the page leaves the real-time in-pass phase (DD-2).
+  // cameraOn is a dependency too, so a start that resolves after the phase ended is stopped as well.
+  useEffect(() => {
+    if (skyViewActive) return;
+    camera?.stop();
+    setCameraOn(false);
+  }, [skyViewActive, camera, cameraOn]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!cameraOn || video === null || camera === null) return;
+    video.srcObject = camera.getStream() as MediaStream | null;
+  }, [cameraOn, camera]);
+
+  function toggleCamera() {
+    if (camera === null) return;
+    if (cameraOn) {
+      camera.stop();
+      setCameraOn(false);
+      return;
+    }
+    // Any outcome other than 'on' leaves the plain background, silently.
+    void camera.start().then((outcome) => setCameraOn(outcome === 'on'));
+  }
+
+  const placement = markerPlacement(
+    snapshot.orbitDataMissing || snapshot.target === null ? null : pointingSnapshot.target,
+    pointingSnapshot.calibrationOffsetDeg,
+    pointingSnapshot.basis,
+  );
 
   return (
     <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
@@ -391,6 +434,51 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
               {pointingSnapshot.permission === 'granted' ? (
                 <p>Motion sensors enabled. Heading source: {pointingSnapshot.source ?? '—'}</p>
               ) : null}
+              <h3>{SHELL_COPY.skyViewHeading}</h3>
+              <label style={{ display: 'block', marginBottom: '0.5rem' }}>
+                <input type="checkbox" checked={cameraOn} onChange={toggleCamera} disabled={camera === null} />{' '}
+                {SHELL_COPY.cameraToggle}
+              </label>
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  aspectRatio: '3 / 4',
+                  overflow: 'hidden',
+                  border: '1px solid currentColor',
+                }}
+              >
+                {cameraOn ? (
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : null}
+                {placement.kind === 'on-screen' ? (
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      left: `${placement.leftPct}%`,
+                      top: `${placement.topPct}%`,
+                      width: '1.5rem',
+                      height: '1.5rem',
+                      marginLeft: '-0.75rem',
+                      marginTop: '-0.75rem',
+                      borderRadius: '50%',
+                      border: `3px solid ${lock?.locked ? '#2ea043' : '#f0f6fc'}`,
+                      boxShadow: '0 0 0 1px #0d1117',
+                    }}
+                  />
+                ) : (
+                  <p style={{ position: 'absolute', left: 0, right: 0, bottom: 0, margin: 0, padding: '0.5rem' }}>
+                    {placement.kind === 'out-of-view' ? SHELL_COPY.markerOutOfView : SHELL_COPY.noPointingYet}
+                  </p>
+                )}
+              </div>
               <label>
                 <input
                   type="checkbox"
