@@ -41,3 +41,4 @@ export { effectiveAzimuthDeg, applyCalibrationInput, stepCalibrationOffset } fro
 export { evaluateLock } from './lock';
 export { projectMarker } from './projection';
 export { permissionTransition } from './permission';
+export { declinationDeg } from './declination';

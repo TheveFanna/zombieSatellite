@@ -88,24 +88,24 @@ Ground rules for the implementer:
     - Run `pnpm vitest run tests/pointing` and `pnpm typecheck`; both must pass.
     - Main agent: commit staging `src/lib/pointing/calibration.ts`, `lock.ts`, `projection.ts`, `permission.ts`, `index.ts`, `tests/pointing/calibration.test.ts`, `tests/pointing/lock.test.ts`, `tests/pointing/permission.test.ts` by name, then push.
 
-- [ ] 3. WMM2025 declination and the end-to-end correction chain
+- [x] 3. WMM2025 declination and the end-to-end correction chain
   - Depends on: task 2 (Property 11 extends `lock.test.ts`).
-  - [~] 3.1 Create `src/lib/pointing/wmm2025-cof.ts` (internal)
+  - [x] 3.1 Create `src/lib/pointing/wmm2025-cof.ts` (internal)
     - `export const WMM2025_COF = \`...\`;` holding the code block of design.md "Appendix: WMM2025 coefficients" exactly: header line, 90 coefficient rows, two terminator lines. Copy, do not retype.
     - _Requirements: 6.5_
-  - [~] 3.2 Create `src/lib/pointing/declination.ts`
+  - [x] 3.2 Create `src/lib/pointing/declination.ts`
     - Parse `WMM2025_COF` once at module load (skip the header, stop at the first line of `9`s; expect exactly 90 rows n = 1..12, m = 0..n; throw at load if not).
     - `declinationDeg(latitudeDeg, longitudeDeg, time: Date | number)`: `RangeError` for non-finite or out-of-range latitude/longitude or a non-finite time; decimal year and clamping to [2025.0, 2030.0] per design "WMM_Validity_Interval and clamping"; altitude 0 km always; synthesis per design "Declination > Algorithm", following the WMM2025 technical report linked there for the Legendre recursion, the field sums and the geodetic rotation.
     - No package, no I/O, no timers.
     - _Requirements: 1.4, 6.1, 6.2, 6.5, 6.6, 6.7, 6.8_
-  - [~] 3.3 Extend `src/lib/pointing/index.ts` with `declinationDeg`.
-  - [~] 3.4 Create `tests/pointing/declination.test.ts`
+  - [x] 3.3 Extend `src/lib/pointing/index.ts` with `declinationDeg`.
+  - [x] 3.4 Create `tests/pointing/declination.test.ts`
     - **Property 7: Declination at the acceptance points** — `declinationDeg(lat, lon, Date.UTC(2026, 10, 15))` within 0.5° of: Beijing (39.9042, 116.4074) −7.5631; Shanghai (31.23, 121.47) −6.55898; Ürümqi (43.83, 87.62) 2.49421; Guangzhou (23.13, 113.26) −3.28683.
     - **Validates: Requirements 6.10**
-  - [~] 3.5 Add Property 11 to `tests/pointing/lock.test.ts`
+  - [x] 3.5 Add Property 11 to `tests/pointing/lock.test.ts`
     - **Property 11: End-to-end correction chain** — exactly the setup, expected values and tolerances of design Property 11 (compass 30°, β 90, γ 0, σ 0, Beijing, `Date.UTC(2026, 10, 15)`, offset +10, target (24.4369, 0)).
     - **Validates: Requirements 9.3**
-  - [~] 3.6 Verify task 3 and hand over for commit
+  - [x] 3.6 Verify task 3 and hand over for commit
     - Run `pnpm vitest run tests/pointing` and `pnpm typecheck`; both must pass. If Property 7 fails, fix `declination.ts` against the report; never change the pinned values.
     - Review: record the byte sizes of `wmm2025-cof.ts` and `declination.ts` (source size, an upper bound of the minified size) in the hand-over note; their sum must stay under 30 KB (Requirement 6.6).
     - Main agent: commit staging `src/lib/pointing/wmm2025-cof.ts`, `declination.ts`, `index.ts`, `tests/pointing/declination.test.ts`, `tests/pointing/lock.test.ts` by name, then push.

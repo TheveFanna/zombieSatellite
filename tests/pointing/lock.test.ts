@@ -2,7 +2,12 @@
 // Feature: ar-pointing, Property 10: Lock geometry
 // **Validates: Requirements 8.9, 8.10**
 import { describe, expect, it } from 'vitest';
-import { evaluateLock, sceneDirection } from '../../src/lib/pointing/index';
+import {
+  cameraBasisFromSensor,
+  declinationDeg,
+  evaluateLock,
+  sceneDirection,
+} from '../../src/lib/pointing/index';
 import { expectClose, expectVec } from '../helpers/pointing-assert';
 
 function scaled20(azimuthDeg: number, elevationDeg: number) {
@@ -73,5 +78,26 @@ describe('lock geometry', () => {
     expectClose(r.elevationDifferenceDeg, -5, 1e-9);
     expect(r.locked).toBe(true);
     expect(r.behind).toBe(false);
+  });
+});
+
+// Feature: ar-pointing, Property 11: End-to-end correction chain
+// **Validates: Requirements 9.3**
+describe('end-to-end correction chain', () => {
+  it('compass 30°, Beijing, offset +10, target (24.4369, 0): heading 22.4369, error 8, locked', () => {
+    const time = Date.UTC(2026, 10, 15);
+    const declination = declinationDeg(39.9042, 116.4074, time);
+    const attitude = { source: 'compass', compassHeadingDeg: 30, betaDeg: 90, gammaDeg: 0 } as const;
+    const basis = cameraBasisFromSensor(attitude, 0, declination);
+    const lock = evaluateLock(basis.forward, { azimuthDeg: 24.4369, elevationDeg: 0 }, 10);
+
+    expect(lock.deviceHeadingDeg).not.toBeNull();
+    expect(lock.azimuthDifferenceDeg).not.toBeNull();
+    expectClose(lock.effectiveAzimuthDeg, 14.4369, 1e-9);
+    expectClose(lock.deviceHeadingDeg as number, 22.4369, 0.5);
+    expectClose(lock.azimuthDifferenceDeg as number, -8, 0.5);
+    expectClose(lock.pointingErrorDeg, 8, 0.5);
+    expect(lock.locked).toBe(true);
+    expect(lock.behind).toBe(false);
   });
 });
