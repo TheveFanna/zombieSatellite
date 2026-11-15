@@ -1,0 +1,11 @@
+export const LOCK_TOLERANCE_DEG = 10;
+export const LOCK_COMPARISON_EPSILON_DEG = 1e-9;      // D5
+export const VERTICAL_EPSILON = 1e-9;                 // Vertical_Forward
+export const SELECTION_WINDOW_MS = 300;
+export const NO_SAMPLE_TIMEOUT_MS = 3000;
+export const PERMISSION_TIMEOUT_MS = 5000;
+export const CALIBRATION_STEP_DEG = 5;
+export const DRAG_SENSITIVITY_DEG_PER_PX = 0.25;
+export const VERTICAL_FOV_DEG = 75;
+export const WMM_VALIDITY_START_MS = Date.UTC(2025, 0, 1);
+export const WMM_VALIDITY_END_MS = Date.UTC(2030, 0, 1);
