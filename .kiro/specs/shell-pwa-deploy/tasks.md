@@ -154,26 +154,26 @@ Ground rules for the implementer:
   - [x] 7B.3 Diff audit against the 7B scope (diff of `src` and `tests` from the commit before 7B.1): no change under `src/components` or `src/lib`; in the pages and layout only `className`, `data-*`, wrappers, decorative elements, inline `style` objects and the `viewport` entry; no copy string added, removed or reworded (compare the JSX text and every string literal); no handler, hook or state touched. Run the full suite and the build once more.
   - [x] 7B.4 Review item (project owner, real phone): the owner reviews the five areas on the Live_URL and reports. On approval: tick 7A.4, 7A and 7B and commit `.kiro/specs/shell-pwa-deploy/tasks.md` with task 7.
     - Owner review (real phone, Live_URL, 2026-11-16): PASSED. 7A.4 is closed with it, and tasks 7A and 7B are closed.
-- [ ] 8. English technical route
+- [x] 8. English technical route
   - Depends on: task 7 (may run in parallel with task 10).
-  - [ ] 8.1 Write `docs/reference/TECHNICAL_ROUTE.en.md` per design "Submission materials": section-by-section translation of the trimmed `docs/reference/TECHNICAL_ROUTE.md`, same headings and order, numbers, units, formulas, identifiers and code unchanged, the one-line translation note at the top, nothing added.
+  - [x] 8.1 Write `docs/reference/TECHNICAL_ROUTE.en.md` per design "Submission materials": section-by-section translation of the trimmed `docs/reference/TECHNICAL_ROUTE.md`, same headings and order, numbers, units, formulas, identifiers and code unchanged, the one-line translation note at the top, nothing added.
     - _Requirements: 15.1–15.3_
-  - [ ] 8.2 Main agent: commit staging `docs/reference/TECHNICAL_ROUTE.en.md` by name, then push.
+  - [x] 8.2 Main agent: commit staging `docs/reference/TECHNICAL_ROUTE.en.md` by name, then push.
 
-- [ ] 9. README final pass
+- [x] 9. README final pass
   - Depends on: task 8.
-  - [ ] 9.1 Rewrite `README.md` per design "Submission materials > README": the six sections in order, the Live_URL, the honesty statement verbatim from design, both Provenance_Sentences character for character, a link to the English_Route, the existing requirements, commands and live-test instructions kept accurate (add `node scripts/generate-icons.mjs` under commands). Check every paragraph against 1.24/1.25 while writing: no sentence pairs a reception word with a radio term; any block with a radio term also says simulated or synthesized.
+  - [x] 9.1 Rewrite `README.md` per design "Submission materials > README": the six sections in order, the Live_URL, the honesty statement verbatim from design, both Provenance_Sentences character for character, a link to the English_Route, the existing requirements, commands and live-test instructions kept accurate (add `node scripts/generate-icons.mjs` under commands). Check every paragraph against 1.24/1.25 while writing: no sentence pairs a reception word with a radio term; any block with a radio term also says simulated or synthesized.
     - Run `pnpm vitest run tests/scaffold/scaffold.test.ts`.
     - _Requirements: 16.1–16.5_
-  - [ ] 9.2 Main agent: commit staging `README.md` by name, then push.
+  - [x] 9.2 Main agent: commit staging `README.md` by name, then push.
 
-- [ ] 10. Devpost copy and video script
+- [x] 10. Devpost copy and video script
   - Depends on: task 7 (may run in parallel with task 8).
-  - [ ] 10.1 Write `docs/submission/DEVPOST.md` per design "Submission materials": English only, the headings in form order, the tagline verbatim from design, story anchors from `docs/reference/POSITIONING_AND_STORY.md` within its unconfirmed-claims list, every historical reception attributed to its named listener or source, the Built with list, the Kiro usage facts (test count from a fresh `pnpm test` run). No claim that the app receives real signals; no "satellite tracker" positioning.
+  - [x] 10.1 Write `docs/submission/DEVPOST.md` per design "Submission materials": English only, the headings in form order, the tagline verbatim from design, story anchors from `docs/reference/POSITIONING_AND_STORY.md` within its unconfirmed-claims list, every historical reception attributed to its named listener or source, the Built with list, the Kiro usage facts (test count from a fresh `pnpm test` run). No claim that the app receives real signals; no "satellite tracker" positioning.
     - _Requirements: 17.1–17.6_
-  - [ ] 10.2 Write `docs/submission/VIDEO_SCRIPT.md` per design: English only, the four-column table, the seven shots in the given arc and budget, a total row of at most 180 s (170 s planned), narration within the red lines.
+  - [x] 10.2 Write `docs/submission/VIDEO_SCRIPT.md` per design: English only, the four-column table, the seven shots in the given arc and budget, a total row of at most 180 s (170 s planned), narration within the red lines.
     - _Requirements: 18.1–18.5_
-  - [ ] 10.3 Main agent: commit staging `docs/submission/DEVPOST.md` and `docs/submission/VIDEO_SCRIPT.md` by name, then push.
+  - [x] 10.3 Main agent: commit staging `docs/submission/DEVPOST.md` and `docs/submission/VIDEO_SCRIPT.md` by name, then push.
 
 - [ ] 11. Final acceptance and Final_Submission_Checklist
   - Depends on: tasks 9 and 10.
