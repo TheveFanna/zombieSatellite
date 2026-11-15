@@ -77,15 +77,16 @@ Ground rules for the implementer:
     - _Requirements: 3.3, 3.4, 11.1–11.6, 12.4–12.6_
   - [ ] 3.5 Main agent: commit staging `src/components/shell/copy.ts`, `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/manifest.ts`, `scripts/generate-icons.mjs`, the three `public/icons/*.png`, `public/sw.js`, `src/components/shell/service-worker.ts`, `src/components/shell/service-worker-registrar.tsx`, `tests/shell/service-worker.test.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 4. Deployment (stop point)
+- [x] 4. Deployment (stop point)
   - Depends on: task 3.
-  - [ ] 4.1 Confirm the pushed `main` passes `pnpm test`, `pnpm typecheck` and `pnpm run build`, and that `git status` shows no staged or unpushed change (an unstaged `next.config.ts` edit is expected and stays).
+  - [x] 4.1 Confirm the pushed `main` passes `pnpm test`, `pnpm typecheck` and `pnpm run build`, and that `git status` shows no staged or unpushed change (an unstaged `next.config.ts` edit is expected and stays).
     - _Requirements: 13.2, 13.6_
-  - [ ] 4.2 STOP. Report to the project owner "ready to deploy" with the Vercel import points of design "Deployment" (steps 1 to 4). Do not deploy, do not install the Vercel CLI, and do not continue to task 5 until the owner reports the Live_URL.
+  - [x] 4.2 STOP. Report to the project owner "ready to deploy" with the Vercel import points of design "Deployment" (steps 1 to 4). Do not deploy, do not install the Vercel CLI, and do not continue to task 5 until the owner reports the Live_URL.
     - _Requirements: 13.1, 13.3_
-  - [ ] 4.3 After the owner reports the Live_URL: record it in this task with the date. Request `<Live_URL>/api/tle?CATNR=7530` once (PowerShell `Invoke-WebRequest`) and record the status; a 502 is reported to the owner (design Risk R-S6-1), not worked around. Add a "Live app" line with the Live_URL to `README.md`; run `pnpm vitest run tests/scaffold/scaffold.test.ts`.
+  - [x] 4.3 After the owner reports the Live_URL: record it in this task with the date. Request `<Live_URL>/api/tle?CATNR=7530` once (PowerShell `Invoke-WebRequest`) and record the status; a 502 is reported to the owner (design Risk R-S6-1), not worked around. Add a "Live app" line with the Live_URL to `README.md`; run `pnpm vitest run tests/scaffold/scaffold.test.ts`.
     - _Requirements: 13.4, 13.5, 13.7_
-  - [ ] 4.4 Main agent: commit staging `README.md` and `.kiro/specs/shell-pwa-deploy/tasks.md` by name, then push. From here on, every push redeploys the Deployed_Build.
+    - Outcome (2026-11-15): Live_URL `https://zombie-satellite.vercel.app/`, deployed by the project owner from `main` at `f55ee4f`. Home page 200. `GET /api/tle?CATNR=7530` answered 200 with the AO-7 TLE; first request `X-Vercel-Cache: MISS`, repeat `HIT` (`Age: 12`), so the CDN cache works. Vercel strips `s-maxage` from the client-facing `Cache-Control` (`public, max-age=0`), as expected.
+  - [x] 4.4 Main agent: commit staging `README.md` and `.kiro/specs/shell-pwa-deploy/tasks.md` by name, then push. From here on, every push redeploys the Deployed_Build.
 
 - [ ] 5. Geolocation
   - Depends on: task 4.

@@ -2,6 +2,10 @@
 
 zombieSatellite is a mobile-first web app for the Kiroween 2026 hackathon (category Resurrection). It predicts passes of seven zombie satellites from public CelesTrak TLE data. Only the orbital data is real: the beacon sound of later versions is simulated, synthesized in the browser from public TLE data.
 
+## Live app
+
+Live app: https://zombie-satellite.vercel.app/
+
 ## Origins
 
 The coordinate conventions and numeric acceptance baselines come from the author's earlier personal project SatAware AR.
