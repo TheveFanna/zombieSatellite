@@ -12,21 +12,26 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, title: 'zombieSat', statusBarStyle: 'black-translucent' },
 };
 
-export const viewport: Viewport = { themeColor: '#0d1117' };
-
-const headerStyle = { maxWidth: '40rem', margin: '0 auto', padding: '0.5rem 1rem 0' } as const;
+export const viewport: Viewport = { themeColor: '#0d1117', viewportFit: 'cover' };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <header style={headerStyle}>
+        {children}
+        <header className="tabbar">
           <nav aria-label={SHELL_COPY.navLabel}>
-            <Link href="/">{SHELL_COPY.navHome}</Link> · <Link href="/session">{SHELL_COPY.navSession}</Link> ·{' '}
-            <Link href="/cards">{SHELL_COPY.navCards}</Link>
+            <Link className="tab-home" href="/">
+              {SHELL_COPY.navHome}
+            </Link>
+            <Link className="tab-session" href="/session">
+              {SHELL_COPY.navSession}
+            </Link>
+            <Link className="tab-cards" href="/cards">
+              {SHELL_COPY.navCards}
+            </Link>
           </nav>
         </header>
-        {children}
         <ServiceWorkerRegistrar />
       </body>
     </html>
