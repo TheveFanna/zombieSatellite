@@ -217,10 +217,11 @@ describe('Requirement 1: project scaffold', () => {
     expect(Object.entries(pkg.scripts ?? {}).filter(([, command]) => OS_SPECIFIC_SYNTAX.test(command))).toEqual([]);
   });
 
-  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes and the named .ts files, and no .tsx file other than these pages and the shell service-worker registrar exists under src', () => {
+  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes, globals.css and the named .ts files, and no .tsx file other than these pages and the shell service-worker registrar exists under src', () => {
     expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual([
       'api',
       'cards',
+      'globals.css',
       'layout.tsx',
       'manifest.ts',
       'page.tsx',

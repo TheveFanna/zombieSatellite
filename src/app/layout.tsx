@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { SHELL_COPY } from '../components/shell/copy';
 import ServiceWorkerRegistrar from '../components/shell/service-worker-registrar';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'zombieSatellite',

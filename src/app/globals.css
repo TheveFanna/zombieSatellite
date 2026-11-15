@@ -1,0 +1,290 @@
+/*
+ * zombieSatellite global stylesheet (S6 task 7A). Style only: no logic, no copy.
+ *
+ * Location: src/app/globals.css, imported once by src/app/layout.tsx.
+ * Palette: the dark-space family of the QSL card face (src/lib/qsl/card-svg.ts): background #0d1117,
+ *   green #2ea043, orange #f0883e, violet #a371f7, amber #d29922, grey #8b949e, white #f0f6fc.
+ *   --surface and --border are neutral shades derived from the background for raised areas.
+ * Approach: element selectors style the existing markup, so the pages stay as they are. The few
+ *   class names that exist are listed below. Inline styles that pages carry today (container width,
+ *   section spacing, the video layer, the Sky_View box, the marker) are layout-equivalent and stay.
+ * Class names: .card (raised block), .button (link shaped like a button), .primary (main action),
+ *   .sky-view (Sky_View box), .drag-area (drag compass area).
+ */
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #30363d;
+  --border-strong: #484f58;
+  --text: #f0f6fc;
+  --muted: #8b949e;
+  --green: #2ea043;
+  --orange: #f0883e;
+  --violet: #a371f7;
+  --amber: #d29922;
+  --radius: 0.75rem;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+h1 {
+  margin: 0.75rem 0;
+  font-size: 1.8rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  margin: 0 0 0.6rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+h3 {
+  margin: 0.9rem 0 0.35rem;
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+p {
+  margin: 0.5rem 0;
+}
+
+a {
+  color: var(--green);
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--text);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* Header and navigation */
+body > header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+  color: var(--muted);
+}
+
+body > header nav a {
+  display: inline-block;
+  padding: 0.35rem 0.25rem;
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+body > header nav a:hover {
+  color: var(--green);
+}
+
+footer {
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Buttons and links shaped like buttons */
+button,
+.button {
+  display: inline-block;
+  min-height: 2.75rem;
+  margin: 0 0.25rem 0.4rem 0;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:hover,
+.button:hover {
+  border-color: var(--muted);
+  color: var(--text);
+}
+
+button:active,
+.button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button[aria-pressed='true'] {
+  border-color: var(--green);
+  background: rgba(46, 160, 67, 0.2);
+}
+
+.primary {
+  border-color: var(--green);
+  background: var(--green);
+  color: var(--bg);
+}
+
+.primary:hover {
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+/* Form controls */
+label {
+  display: block;
+}
+
+input[type='number'] {
+  width: 9rem;
+  min-height: 2.75rem;
+  margin-left: 0.25rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.5rem;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+input[aria-invalid='true'] {
+  border-color: var(--orange);
+}
+
+input[type='checkbox'],
+input[type='range'] {
+  accent-color: var(--green);
+}
+
+input[type='checkbox'] {
+  width: 1.15rem;
+  height: 1.15rem;
+  vertical-align: -0.2rem;
+}
+
+input[type='range'] {
+  width: 60%;
+  vertical-align: middle;
+}
+
+[role='alert'] {
+  color: var(--orange);
+}
+
+/* Readouts */
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.3rem 1rem;
+  margin: 0.5rem 0;
+}
+
+dl > div {
+  display: contents;
+}
+
+dt {
+  color: var(--muted);
+}
+
+dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Raised blocks */
+.card {
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.card > :first-child {
+  margin-top: 0;
+}
+
+.card > :last-child {
+  margin-bottom: 0;
+}
+
+details {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--bg);
+}
+
+summary {
+  min-height: 2rem;
+  color: var(--amber);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+details ul {
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
+}
+
+/* Sky view and drag compass */
+.sky-view {
+  margin: 0.5rem 0 0.75rem;
+  border-radius: var(--radius);
+  background: radial-gradient(ellipse at 50% 100%, #1b2432 0%, var(--bg) 70%);
+  color: var(--muted);
+}
+
+.drag-area {
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+}
+
+img,
+video {
+  max-width: 100%;
+}
+
+img {
+  border-radius: var(--radius);
+}
