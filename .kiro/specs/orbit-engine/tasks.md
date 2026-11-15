@@ -360,7 +360,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - Stage by name: `src/lib/orbit/index.ts` (if 10.1 changed it), `tests/orbit/environment.test.ts`, `tests/orbit/timezone.test.ts`, the files of 10.4 to 10.7 that were written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add public interface and cross-cutting engine checks`. Do not push
     - _Requirements: 2.3, 2.5_
 
-- [-] 11. Final checkpoint - Verify the whole project and push once
+- [x] 11. Final checkpoint - Verify the whole project and push once
   - Ensure all tests pass, ask the user if questions arise.
   - Run, in this order: `pnpm install --frozen-lockfile` (exit 0), `pnpm test` (single run, exit 0, Live_Test reported as skipped), `pnpm run build` (exit 0, `/` listed as static), `pnpm run typecheck` (zero errors; after the build, as Requirement 1, criterion 18 requires). Do not run the Live_Test again.
   - If any fix was needed, commit the changed files by name in one commit; never stage `.kiro/steering/workflow.md`.
