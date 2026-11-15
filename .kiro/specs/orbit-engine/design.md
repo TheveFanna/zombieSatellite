@@ -884,7 +884,7 @@ The test saves `process.env.TZ`, sets it to `'UTC'`, asserts `new Date('2026-11-
 
 | Generator | Produces |
 |---|---|
-| `observerArb({ altitudeKm })` | latitude `fc.double({ min: -90, max: 90, noNaN: true })`, longitude in [−180, 180], altitude range per property |
+| `observerArb({ altitudeKm })` | latitude and longitude drawn uniformly on a 10⁻⁴° grid (`fc.integer` divided by 10⁴, so mid-latitude Observers are as likely as polar ones; ranges [−90, 90] and [−180, 180], ends included), altitude range per property |
 | `instantArb(fromMs, toMs)` | integer instants in a range; variants with fractional values |
 | `tleFieldsArb` + `formatTle(fields)` | field values formatted into the C18 columns (`%05d` NORAD, 8-character designator, `yy`, `ddd.dddddddd`, `%8.4f` angles, 7 eccentricity digits, `%11.8f` mean motion in [0.5, 17] rev/day, eccentricity below 0.25); line-1 columns 33–68 and line-2 columns 63–68 copied from the ISS snapshot; no checksum recomputation (D1) |
 | `renderingArb(tle)` | name padding, trailing whitespace, LF/CRLF per line, blank and whitespace-only lines, optional final terminator (Property 1) |

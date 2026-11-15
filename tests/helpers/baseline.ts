@@ -1,7 +1,7 @@
 // Baseline_TLE_Snapshots and their expected fields (section 4.2), the Reference_Observer (section 4.1), the
-// section 4.3 instants and the 1 s reference of ISS pass 2 (section 4.7), copied from
-// docs/reference/TECHNICAL_ROUTE.md. Section 4 is normative: copy values from it, never recompute them. A later
-// task adds the section 4.6 pass tables to this file.
+// section 4.3 instants, the section 4.6 pass tables and the 1 s reference of ISS pass 2 (section 4.7), copied from
+// docs/reference/TECHNICAL_ROUTE.md, plus the 1 s peak of ISS pass 6 (Requirement 10, criterion 4), which that
+// document does not contain. Section 4 is normative: copy values from it, never recompute them.
 import type { Observer, Vec3 } from './oracles';
 
 /** The section 4.2 table of one Baseline_TLE_Snapshot, with the names of the TleRecord fields (D6). */
@@ -156,6 +156,49 @@ export const ZHTW_AT_1200Z: BaselineInstant = instant(ZHTW_BASELINE, '2026-11-09
 export const BASELINE_INSTANTS: readonly BaselineInstant[] = [ISS_AT_1123Z, ISS_AT_1200Z, ZHTW_AT_1200Z];
 
 /**
+ * One row of a section 4.6 table ("过境预测基线（1 min 采样）"), as printed. The tables hold the passes of the
+ * Reference_Observer with window start 2026-11-09T00:00:00Z, window 24 h and Min_Elevation 0°. The start and the end
+ * are 1-minute samples of 2026-11-09 UTC on a grid aligned with 00:00:00Z: the start is the first sample above 0° and
+ * the end is the first later sample at or below 0°, so each true crossing lies at most 60 s before the listed time
+ * (Requirement 13, criterion 2). The "#" column of the ISS table is the position in `ISS_PASS_TABLE` plus 1.
+ */
+export interface BaselinePassRow {
+  /** "开始 UTC": HH:MM on 2026-11-09. */
+  readonly startIso: string;
+  /** The same instant in ms since 1970-01-01T00:00:00Z: `Date.parse(startIso)`. */
+  readonly startMs: number;
+  /** "结束 UTC": HH:MM on 2026-11-09. */
+  readonly endIso: string;
+  /** The same instant in ms since 1970-01-01T00:00:00Z: `Date.parse(endIso)`. */
+  readonly endMs: number;
+  /** "最大仰角 (°)". */
+  readonly maxElevationDeg: number;
+  /** "持续 (min)". */
+  readonly durationMin: number;
+}
+
+/** A section 4.6 row from its printed columns; `start` and `end` are the printed "HH:MM" of 2026-11-09 UTC. */
+function passRow(start: string, end: string, maxElevationDeg: number, durationMin: number): BaselinePassRow {
+  const startIso = `2026-11-09T${start}:00Z`;
+  const endIso = `2026-11-09T${end}:00Z`;
+  return { startIso, startMs: Date.parse(startIso), endIso, endMs: Date.parse(endIso), maxElevationDeg, durationMin };
+}
+
+/** Section 4.6, "ISS（7 段）": rows 1 to 7 in table order (Requirement 13, criteria 1 to 3). */
+export const ISS_PASS_TABLE: readonly BaselinePassRow[] = [
+  passRow('09:45', '09:51', 3.66, 6),
+  passRow('11:19', '11:29', 45.42, 10),
+  passRow('12:56', '13:06', 23.64, 10),
+  passRow('14:34', '14:43', 11.58, 9),
+  passRow('16:12', '16:21', 15.39, 9),
+  passRow('17:48', '17:59', 54.83, 11),
+  passRow('19:26', '19:35', 14.96, 9),
+];
+
+/** Section 4.6, "ZHIHUI TIANWANG-1 01A（1 段，高轨长过境）": its single row (Requirement 13, criteria 5 and 9). */
+export const ZHTW_PASS_TABLE: readonly BaselinePassRow[] = [passRow('05:25', '12:37', 89.79, 432)];
+
+/**
  * The column "1 s 参考" of the section 4.7 table ("1 min 采样误差对照（ISS 第 2 段）"): rise, peak and set of ISS pass 2
  * for the Reference_Observer, found with 1 s sampling (window start 2026-11-09T00:00:00Z, window 24 h, Min_Elevation
  * 0°). Every instant is on 2026-11-09 UTC.
@@ -188,4 +231,27 @@ export const ISS_PASS_2_1S_REFERENCE: IssPass2Reference = {
   maxElevationDeg: 48.6098,
   setIso: ISS_PASS_2_SET_ISO,
   setMs: Date.parse(ISS_PASS_2_SET_ISO),
+};
+
+/**
+ * The 1 s peak of ISS pass 6 for the Reference_Observer: the peak of the Brute_Force_Pass of that pass, with the inputs
+ * of Requirement 13, criterion 1 (window start 2026-11-09T00:00:00Z, window 24 h, Min_Elevation 0°). Requirement 10,
+ * criterion 4 states the value, computed on 2026-11-14; it is not in the Reference_Document.
+ */
+export interface IssPass6Reference {
+  /** 17:53:20 UTC on 2026-11-09. */
+  readonly peakIso: string;
+  /** The same instant in ms since 1970-01-01T00:00:00Z: `Date.parse(peakIso)`. */
+  readonly peakMs: number;
+  /** The peak elevation: 58.5919°. */
+  readonly maxElevationDeg: number;
+}
+
+const ISS_PASS_6_PEAK_ISO = '2026-11-09T17:53:20Z';
+
+/** Requirement 10, criterion 4: the 1 s peak of ISS pass 6 (the Pass_Predictor is within ±0.5° of 58.5919°). */
+export const ISS_PASS_6_1S_REFERENCE: IssPass6Reference = {
+  peakIso: ISS_PASS_6_PEAK_ISO,
+  peakMs: Date.parse(ISS_PASS_6_PEAK_ISO),
+  maxElevationDeg: 58.5919,
 };

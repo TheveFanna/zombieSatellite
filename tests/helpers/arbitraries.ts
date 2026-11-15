@@ -416,13 +416,16 @@ export type AltitudeKm = number | { readonly min: number; readonly max: number }
 /**
  * Observers with latitude in [−90°, 90°], longitude in [−180°, 180°] and the altitude of `altitudeKm`: a number
  * gives that altitude every time, `{ min, max }` a generated altitude in the closed range (Properties 9, 11, 20
- * and 23). Every value is a finite number, so every Observer passes the checks of Requirement 7, criterion 4.
+ * and 23). Latitude and longitude are drawn uniformly on a 10⁻⁴° grid: an integer divided by 10⁴, ends included,
+ * so mid-latitude Observers are as likely as polar ones (`fc.double` yields almost only values near 0° or at the
+ * range ends). Every value is a finite number, so every Observer passes the checks of Requirement 7, criterion 4.
  */
 export function observerArb(options: { readonly altitudeKm: AltitudeKm }): fc.Arbitrary<Observer> {
   const { altitudeKm } = options;
   return fc.record({
-    latitudeDeg: fc.double({ min: -90, max: 90, noNaN: true }),
-    longitudeDeg: fc.double({ min: -180, max: 180, noNaN: true }),
+    // An integer divided by 10⁴ is uniform on the grid; `+ 0` turns a −0 into 0.
+    latitudeDeg: fc.integer({ min: -900_000, max: 900_000 }).map((n) => n / 10_000 + 0),
+    longitudeDeg: fc.integer({ min: -1_800_000, max: 1_800_000 }).map((n) => n / 10_000 + 0),
     altitudeKm:
       typeof altitudeKm === 'number'
         ? fc.constant(altitudeKm)

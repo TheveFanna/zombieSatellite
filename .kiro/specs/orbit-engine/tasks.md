@@ -257,7 +257,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - Stage by name: `src/lib/orbit/refine.ts`, the files of 7.2 to 7.4 that were written (including `tests/helpers/arbitraries.ts` if 7.4 changed it), `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add pass refinement primitives`. Do not push
     - _Requirements: 10.1, 10.2, 10.3_
 
-- [ ] 8. Implement the Pass_Predictor
+- [x] 8. Implement the Pass_Predictor
   - [x] 8.1 Implement `predictPasses` with validation, the Coarse_Scan and pass runs in `pass-predictor.ts`
     - Types `PassSearch` and `Pass` (D6); step 1 validation in the D18 order (`search` object, Observer, TleRecord, start through `toTimeMs`, `durationHours` and `minElevationDeg` tested with `=== undefined` for the defaults 24 h and 0°, window end `S + Math.round(h · 3 600 000)` within ±8.64 × 10¹⁵ ms (D14), then `createSatrec`)
     - Step 2 memoised elevation oracle on integer instants with one prepared Observer (`above` strict, `score` with −∞ for propagation failures); step 3 `coarseScanInstants`; step 4 passes from runs of samples above Min_Elevation with truncation flags, `bisectCrossing` for rise and set, the peak bracket rules including the window-edge brackets, and the peak as the earliest argmax of every instant evaluated by `maximizeOnGrid` inside [rise, set] (D15); step 6 sorting by rise and `durationMin = (setMs − riseMs) / 60_000`
@@ -290,33 +290,33 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - **Property 21: No passes above +90°**
     - **Validates: Requirements 9.14**
 
-  - [-] 8.7 Run the suite and commit task 8
+  - [x] 8.7 Run the suite and commit task 8
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/pass-predictor.ts`, `src/lib/orbit/index.ts`, `tests/helpers/baseline.ts`, `tests/orbit/pass-predictor.test.ts`, `tests/orbit/propagator.test.ts`, the files of 8.4 to 8.6 that were written (including `tests/helpers/arbitraries.ts` if 8.4 changed it), `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add pass predictor`. Do not push
     - _Requirements: 9.1, 9.11, 11.7_
 
 - [ ] 9. Verify the Pass_Predictor against the Brute_Force_Reference and the baselines
-  - [ ] 9.1 Write the Brute_Force_Reference helper and the pass baseline data
+  - [x] 9.1 Write the Brute_Force_Reference helper and the pass baseline data
     - `tests/helpers/brute-force.ts`: `bruteForceSamples(satrec, observer, startMs, endMs)` evaluating `observeAt` at the start, every 1 s step before the end and the end into a `Float64Array` (NaN for a failure), never calling `predictPasses`; `bruteForcePasses(samples, minEl)` returning the maximal runs with `riseMs`, `lastAboveMs`, `setMs`, `peakDeg`, `peakMs`, `beforeMs`; and the overlap rule `riseMs ≤ pass.setMs && lastAboveMs ≥ pass.riseMs` used for the exemption of passes without exactly one Brute_Force_Pass
     - `tests/helpers/baseline.ts`: add the section 4.6 ISS and ZHIHUI TIANWANG-1 01A pass tables and the 58.5919° peak of ISS pass 6 from Requirement 10, criterion 4
     - _Requirements: 10.12, 14.6_
 
-  - [ ] 9.2 Write the pass baseline tests
+  - [x] 9.2 Write the pass baseline tests
     - `tests/orbit/pass-baselines.test.ts`: one `it` per criterion of 13.1 to 13.9, none skipped (13.10), with every stated value and tolerance; 10.4 (passes 2 and 6 within ±0.5° of 48.61° and 58.59°); 13.6 against Brute_Force_References of the three runs (13.1, 13.5, 13.7) computed in a `beforeAll` hook with a 120 000 ms timeout (D20)
     - Run `pnpm exec vitest run tests/orbit/pass-baselines.test.ts`
     - _Requirements: 10.4, 10.5, 10.6, 10.7, 12.1, 12.2, 13.1, 13.2, 13.3, 13.4, 13.5, 13.6, 13.7, 13.8, 13.9, 13.10, 14.6, 14.11_
 
-  - [ ] 9.3 Write the property test for agreement with the Brute_Force_Reference
+  - [x] 9.3 Write the property test for agreement with the Brute_Force_Reference
     - `tests/orbit/property-22-brute-force-agreement.test.ts`; samples for the six satellite–Observer pairs computed once in a 120 000 ms `beforeAll` and reused for every generated Min_Elevation; passes without exactly one Brute_Force_Pass exempted (10.12)
     - **Property 22: Agreement with the Brute_Force_Reference**
     - **Validates: Requirements 10.5, 10.6, 10.7, 10.12, 12.1, 12.2, 12.3**
 
-  - [ ] 9.4 Write the property test for window-shift stability
+  - [x] 9.4 Write the property test for window-shift stability
     - `tests/orbit/property-23-window-shift.test.ts`; required by Requirement 14, criterion 7 (at least 100 cases, seed reported by fast-check); Min_Elevation biased toward [−10°, 60°], composed inline from `observerArb` and `instantArb`; 60 000 ms timeout (D20)
     - **Property 23: Window-shift stability**
     - **Validates: Requirements 12.4, 14.7**
 
-  - [ ] 9.5 Run the suite and commit task 9
+  - [-] 9.5 Run the suite and commit task 9
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `tests/helpers/brute-force.ts`, `tests/helpers/baseline.ts`, `tests/orbit/pass-baselines.test.ts`, `tests/orbit/property-23-window-shift.test.ts`, `tests/orbit/property-22-brute-force-agreement.test.ts` if written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add pass baseline and stability tests`. Do not push
     - _Requirements: 13.10_
