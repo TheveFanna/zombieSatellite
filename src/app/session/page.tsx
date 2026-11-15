@@ -7,6 +7,10 @@ import { DEFAULT_OBSERVER } from '../../components/pointing/pointing-session';
 import { createPickerBrowserDeps } from '../../components/session/browser-deps';
 import { SESSION_COPY } from '../../components/session/copy';
 import { createPickerController } from '../../components/session/picker-controller';
+import { browserGeolocation } from '../../components/shell/browser-deps';
+import { SHELL_COPY } from '../../components/shell/copy';
+import { createLocator } from '../../components/shell/geolocation';
+import type { LocateOutcome } from '../../components/shell/geolocation';
 import type { PickerController, PickerRow, PickerSnapshot } from '../../components/session/picker-controller';
 import { formatDurationMin, formatUtc, parseCoordinateInput } from '../../lib/session/index';
 
@@ -25,6 +29,8 @@ const getServerSnapshot = (): PickerSnapshot => INITIAL_SNAPSHOT;
 const noopSubscribe = (): (() => void) => () => {};
 
 type FieldName = 'lat' | 'lon';
+type Locator = ReturnType<typeof createLocator>;
+type LocateStatus = 'idle' | 'locating' | 'failed';
 
 const sectionStyle = { marginTop: '1.25rem' } as const;
 
@@ -58,15 +64,46 @@ export default function SessionPickerPage() {
   // null means "show the value from the snapshot"; text is what the user typed.
   const [raw, setRaw] = useState<Record<FieldName, string | null>>({ lat: null, lon: null });
   const [invalid, setInvalid] = useState<Record<FieldName, boolean>>({ lat: false, lon: false });
+  const [locator, setLocator] = useState<Locator | null>(null);
+  const [locateStatus, setLocateStatus] = useState<LocateStatus>('idle');
 
   useEffect(() => {
-    const created = createPickerController(createPickerBrowserDeps());
+    const deps = createPickerBrowserDeps();
+    const created = createPickerController(deps);
+    const createdLocator = createLocator({ geolocation: browserGeolocation(), storage: deps.storage });
+    let active = true;
     setController(created);
+    setLocator(createdLocator);
+    void createdLocator.autoLocate((position) => {
+      if (!active) return false;
+      const applied = created.setObserver(position);
+      if (applied) resetFields();
+      return applied;
+    });
     return () => {
+      active = false;
       created.dispose();
       setController(null);
+      setLocator(null);
     };
   }, []);
+
+  function resetFields() {
+    setRaw({ lat: null, lon: null });
+    setInvalid({ lat: false, lon: false });
+  }
+
+  function locateNow() {
+    if (locator === null || controller === null) return;
+    setLocateStatus('locating');
+    void locator
+      .locateNow((position) => {
+        const applied = controller.setObserver(position);
+        if (applied) resetFields();
+        return applied;
+      })
+      .then((outcome: LocateOutcome) => setLocateStatus(outcome === 'applied' || outcome === 'skipped' ? 'idle' : 'failed'));
+  }
 
   const snapshot = useSyncExternalStore(
     controller ? controller.subscribe : noopSubscribe,
@@ -112,6 +149,12 @@ export default function SessionPickerPage() {
         <h2>Observer</h2>
         {field('lat', 'Observer latitude (°)', 'a number from −90 to 90', snapshot.observer.latitudeDeg)}
         {field('lon', 'Observer longitude (°)', 'a number from −180 to 180', snapshot.observer.longitudeDeg)}
+        <p>
+          <button type="button" onClick={locateNow} disabled={locator === null || locateStatus === 'locating'}>
+            {locateStatus === 'locating' ? SHELL_COPY.locating : SHELL_COPY.useMyLocation}
+          </button>
+        </p>
+        {locateStatus === 'failed' ? <p>{SHELL_COPY.locationFailed}</p> : null}
       </section>
 
       <section style={sectionStyle}>

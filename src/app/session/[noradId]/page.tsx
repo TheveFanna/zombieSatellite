@@ -17,6 +17,10 @@ import { DEFAULT_VOLUME } from '../../../components/session/beacon-player';
 import { createSessionBrowserDeps } from '../../../components/session/browser-deps';
 import { SESSION_COPY } from '../../../components/session/copy';
 import { createSessionController } from '../../../components/session/session-controller';
+import { browserGeolocation } from '../../../components/shell/browser-deps';
+import { SHELL_COPY } from '../../../components/shell/copy';
+import { createLocator } from '../../../components/shell/geolocation';
+import type { LocateOutcome } from '../../../components/shell/geolocation';
 import type { SessionController, SessionSnapshot } from '../../../components/session/session-controller';
 import {
   formatCountdown,
@@ -70,6 +74,8 @@ function initialSnapshot(entry: PlayableEntry): SessionSnapshot {
 }
 
 type FieldName = 'lat' | 'lon';
+type Locator = ReturnType<typeof createLocator>;
+type LocateStatus = 'idle' | 'locating' | 'failed';
 
 const sectionStyle = { marginTop: '1.25rem' } as const;
 
@@ -100,22 +106,53 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
   // null means "show the value from the snapshot"; text is what the user typed.
   const [raw, setRaw] = useState<Record<FieldName, string | null>>({ lat: null, lon: null });
   const [invalid, setInvalid] = useState<Record<FieldName, boolean>>({ lat: false, lon: false });
+  const [locator, setLocator] = useState<Locator | null>(null);
+  const [locateStatus, setLocateStatus] = useState<LocateStatus>('idle');
 
   const serverSnapshot = useMemo(() => initialSnapshot(entry), [entry]);
   const getServerSnapshot = (): SessionSnapshot => serverSnapshot;
 
   useEffect(() => {
     const createdPointing = createPointingSession(createBrowserDeps());
-    const createdController = createSessionController(createSessionBrowserDeps(createdPointing), entry);
+    const sessionDeps = createSessionBrowserDeps(createdPointing);
+    const createdController = createSessionController(sessionDeps, entry);
+    const createdLocator = createLocator({ geolocation: browserGeolocation(), storage: sessionDeps.storage });
+    let active = true;
     setPointing(createdPointing);
     setController(createdController);
+    setLocator(createdLocator);
+    void createdLocator.autoLocate((position) => {
+      if (!active) return false;
+      const applied = createdController.setObserver(position);
+      if (applied) resetFields();
+      return applied;
+    });
     return () => {
+      active = false;
       createdController.dispose();
       createdPointing.dispose();
       setController(null);
       setPointing(null);
+      setLocator(null);
     };
   }, [entry]);
+
+  function resetFields() {
+    setRaw({ lat: null, lon: null });
+    setInvalid({ lat: false, lon: false });
+  }
+
+  function locateNow() {
+    if (locator === null || controller === null) return;
+    setLocateStatus('locating');
+    void locator
+      .locateNow((position) => {
+        const applied = controller.setObserver(position);
+        if (applied) resetFields();
+        return applied;
+      })
+      .then((outcome: LocateOutcome) => setLocateStatus(outcome === 'applied' || outcome === 'skipped' ? 'idle' : 'failed'));
+  }
 
   const snapshot = useSyncExternalStore(
     controller ? controller.subscribe : noopSubscribe,
@@ -238,6 +275,12 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
           <h2>Select a pass</h2>
           {field('lat', 'Observer latitude (°)', 'a number from −90 to 90', snapshot.observer.latitudeDeg)}
           {field('lon', 'Observer longitude (°)', 'a number from −180 to 180', snapshot.observer.longitudeDeg)}
+          <p>
+            <button type="button" onClick={locateNow} disabled={locator === null || locateStatus === 'locating'}>
+              {locateStatus === 'locating' ? SHELL_COPY.locating : SHELL_COPY.useMyLocation}
+            </button>
+          </p>
+          {locateStatus === 'failed' ? <p>{SHELL_COPY.locationFailed}</p> : null}
           {previewFailure === 'tle-unavailable' ? <p>Orbit data unavailable.</p> : null}
           {previewFailure === 'no-pass-found' ? <p>No pass found in the next 7 days.</p> : null}
           {previewFailure === null && snapshot.tleStatus === 'loading' ? <p>Loading orbit data…</p> : null}
