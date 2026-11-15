@@ -70,6 +70,7 @@ function parseAppPath(relativePath: string): ts.SourceFile {
 }
 
 const SESSION_PAGES = ['session/page.tsx', 'session/[noradId]/page.tsx'];
+const CARDS_PAGES = ['cards/page.tsx', 'cards/[noradId]/[aosMs]/[n]/page.tsx'];
 
 /** The string values of every property assignment of a file, including nested objects. */
 function propertyStrings(file: string): string[] {
@@ -133,9 +134,14 @@ function checkedTexts(): Array<[string, string[]]> {
     ['page metadata strings', APP_FILES.flatMap((file) => metadataStrings(parseApp(file)))],
     [
       'rendered JSX text',
-      [...APP_FILES.flatMap((file) => jsxTexts(parseApp(file))), ...SESSION_PAGES.flatMap((file) => jsxTexts(parseAppPath(file)))],
+      [
+        ...APP_FILES.flatMap((file) => jsxTexts(parseApp(file))),
+        ...SESSION_PAGES.flatMap((file) => jsxTexts(parseAppPath(file))),
+        ...CARDS_PAGES.flatMap((file) => jsxTexts(parseAppPath(file))),
+      ],
     ],
     ['session copy strings', propertyStrings('src/components/session/copy.ts')],
+    ['qsl copy strings', propertyStrings('src/lib/qsl/copy.ts')],
   ];
 }
 
@@ -202,12 +208,14 @@ describe('Requirement 1: project scaffold', () => {
     expect(Object.entries(pkg.scripts ?? {}).filter(([, command]) => OS_SPECIFIC_SYNTAX.test(command))).toEqual([]);
   });
 
-  it('1.19 src/app holds only layout.tsx, page.tsx and the approved pointing and session routes, and no other .tsx file exists under src', () => {
-    expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual(['layout.tsx', 'page.tsx', 'pointing', 'session']);
+  it('1.19 src/app holds only layout.tsx, page.tsx and the approved cards, pointing and session routes, and no other .tsx file exists under src', () => {
+    expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual(['cards', 'layout.tsx', 'page.tsx', 'pointing', 'session']);
     const tsxFiles = readdirSync(join(root, 'src'), { encoding: 'utf8', recursive: true })
       .filter((file) => file.endsWith('.tsx'))
       .map((file) => file.split(sep).join('/'));
     expect(tsxFiles.sort()).toEqual([
+      'app/cards/[noradId]/[aosMs]/[n]/page.tsx',
+      'app/cards/page.tsx',
       'app/layout.tsx',
       'app/page.tsx',
       'app/pointing/page.tsx',

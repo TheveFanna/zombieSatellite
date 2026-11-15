@@ -384,6 +384,9 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
           <button type="button" onClick={() => controller?.newSession()} disabled={controller === null}>
             New session
           </button>
+          <p>
+            <Link href="/cards">View your QSL cards</Link>
+          </p>
         </section>
       ) : null}
 
