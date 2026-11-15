@@ -166,22 +166,22 @@ Ground rules for the implementer:
     - Run `pnpm vitest run tests/pointing` and `pnpm typecheck`; both must pass.
     - Main agent: commit staging `src/components/pointing/calibration-store.ts`, `drag-compass.ts`, `tests/pointing/calibration-store.test.ts`, `tests/pointing/drag-compass.test.ts` by name, then push.
 
-- [ ] 7. Session composition, browser binding, `/pointing` page and the scaffold test edit
+- [x] 7. Session composition, browser binding, `/pointing` page and the scaffold test edit
   - Depends on: task 6.
-  - [~] 7.1 Create `src/components/pointing/pointing-session.ts`
+  - [x] 7.1 Create `src/components/pointing/pointing-session.ts`
     - Per design "`pointing-session.ts`": compose stream, flow, calibration store and drag compass; drag compass activated on entering unavailable or denied and never deactivated automatically; manual toggle; sensor basis only when an attitude exists; Declination for "absolute"/"compass" from the observer and `clock.nowMs()`, recomputed on observer change or UTC date change, previous value kept if `declinationDeg` throws; frozen snapshot per change; `subscribe`/`getSnapshot` for `useSyncExternalStore`. Defaults: observer (39.9042, 116.4074), target (90, 30).
     - Review only, no test.
     - _Requirements: 3.8, 6.3, 6.4, 9.1, 9.2, 11.11, 11.13, 12.4, 12.5_
-  - [~] 7.2 Create `src/components/pointing/browser-deps.ts`
+  - [x] 7.2 Create `src/components/pointing/browser-deps.ts`
     - Per design "`browser-deps.ts`": the only component-layer file touching `window`, `document`, `screen`, `localStorage` and `DeviceOrientationEvent`; `localStorage` wrapped against exceptions; `requestPermission` only when it is a function; no `AbsoluteOrientationSensor`. Declare the `requestPermission` and `webkitCompassHeading` typings locally if `lib.dom` lacks them.
     - _Requirements: 3.9, 11.3, 11.8_
-  - [~] 7.3 Create `src/app/pointing/page.tsx`
+  - [x] 7.3 Create `src/app/pointing/page.tsx`
     - `'use client'`; the session is created in `useEffect` with `browser-deps`; `useSyncExternalStore` for the snapshot; render exactly the items of design "`src/app/pointing/page.tsx`": permission UI per state (the enable button's `onClick` calls `session.requestPermission()` directly; denied shows an error and "Try again"), drag toggle and drag surface (`touch-action: none`, `setPointerCapture`), ±5° buttons, the four numeric inputs with the stated defaults and range checks, the readout, a React 19 `<title>`.
     - No pointing logic in the page, no text about radio signals or beacons, no 8° anywhere.
     - _Requirements: 7.8, 11.8, 12.4, 13.3_
-  - [~] 7.4 Edit `tests/scaffold/scaffold.test.ts`, test `1.19` only
+  - [x] 7.4 Edit `tests/scaffold/scaffold.test.ts`, test `1.19` only
     - Change the expected `readdirSync(join(root, 'src', 'app'))` list to `['layout.tsx', 'page.tsx', 'pointing']` and the expected `.tsx` list to `['app/layout.tsx', 'app/page.tsx', 'app/pointing/page.tsx']`. You may update the test title text to name the `/pointing` route. Change nothing else in the file (design D10, OQ-D5).
-  - [~] 7.5 Verify task 7 and hand over for commit
+  - [x] 7.5 Verify task 7 and hand over for commit
     - Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass (the build prerenders `/pointing` without touching browser globals).
     - Review checklist (by reading): the page forwards events only and holds no pointing logic (13.3); display heading, lock and marker read one basis (3.8); the drag compass auto-activates on unavailable/denied and has a manual toggle (11.11, 12.4); no automatic `requestPermission` call on mount (11.3); no 8° constant in `src/lib/pointing`, `src/components/pointing` or the page (8.8).
     - Main agent: commit staging `src/components/pointing/pointing-session.ts`, `browser-deps.ts`, `src/app/pointing/page.tsx`, `tests/scaffold/scaffold.test.ts` by name, then push.

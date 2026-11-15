@@ -181,12 +181,12 @@ describe('Requirement 1: project scaffold', () => {
     expect(Object.entries(pkg.scripts ?? {}).filter(([, command]) => OS_SPECIFIC_SYNTAX.test(command))).toEqual([]);
   });
 
-  it('1.19 src/app holds only layout.tsx and page.tsx, and no other .tsx file exists under src', () => {
-    expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual(['layout.tsx', 'page.tsx']);
+  it('1.19 src/app holds only layout.tsx, page.tsx and the approved pointing route, and no other .tsx file exists under src', () => {
+    expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual(['layout.tsx', 'page.tsx', 'pointing']);
     const tsxFiles = readdirSync(join(root, 'src'), { encoding: 'utf8', recursive: true })
       .filter((file) => file.endsWith('.tsx'))
       .map((file) => file.split(sep).join('/'));
-    expect(tsxFiles.sort()).toEqual(['app/layout.tsx', 'app/page.tsx']);
+    expect(tsxFiles.sort()).toEqual(['app/layout.tsx', 'app/page.tsx', 'app/pointing/page.tsx']);
   });
 
   it.each(APP_FILES)('1.20, 1.21 %s has no use client, fetch, async function, next/font or next/image', (file) => {
