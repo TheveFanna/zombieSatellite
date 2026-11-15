@@ -223,7 +223,7 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
 
   function dragArea(label: string) {
     return (
-      <div
+      <div className="drag-area"
         style={{
           touchAction: 'none',
           marginTop: '0.5rem',
@@ -338,7 +338,7 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
             </p>
           ) : null}
           <p>
-            <button type="button" onClick={startRealTime} disabled={controller === null}>
+            <button type="button" className="primary" onClick={startRealTime} disabled={controller === null}>
               Start in real time
             </button>{' '}
             <button type="button" onClick={startDemo} disabled={controller === null}>
@@ -439,7 +439,7 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
                 <input type="checkbox" checked={cameraOn} onChange={toggleCamera} disabled={camera === null} />{' '}
                 {SHELL_COPY.cameraToggle}
               </label>
-              <div
+              <div className="sky-view"
                 style={{
                   position: 'relative',
                   width: '100%',

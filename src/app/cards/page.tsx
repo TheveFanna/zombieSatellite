@@ -32,7 +32,7 @@ export default function CardsPage() {
       ) : (
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {cards.map((card) => (
-            <li key={card.href} style={{ marginBottom: '1rem' }}>
+            <li key={card.href} className="card">
               <Link href={card.href}>
                 <img
                   src={svgDataUrl(buildCardSvg(card.model))}

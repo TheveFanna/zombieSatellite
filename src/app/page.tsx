@@ -8,7 +8,7 @@ const sectionStyle = { marginTop: '1.25rem' } as const;
 
 function EntryArticle({ entry }: { entry: CatalogEntry }) {
   return (
-    <article style={{ marginBottom: '1.5rem' }}>
+    <article className="card">
       <h3>{entry.name}</h3>
       <p>
         {entry.playable ? SHELL_COPY.playableLabel : SHELL_COPY.storyOnlyLabel} ·{' '}
@@ -30,7 +30,7 @@ function EntryArticle({ entry }: { entry: CatalogEntry }) {
       </details>
       {entry.playable ? (
         <p>
-          <Link href={`/session/${entry.noradId}`}>{SHELL_COPY.openSession}</Link>
+          <Link className="button" href={`/session/${entry.noradId}`}>{SHELL_COPY.openSession}</Link>
         </p>
       ) : (
         <p>{SHELL_COPY.unplayableReasons[entry.unplayableReason]}</p>
@@ -46,7 +46,7 @@ export default function HomePage() {
       <p>{SHELL_COPY.appStatement}</p>
       <section style={sectionStyle}>
         <p>
-          <Link href="/session">{SHELL_COPY.startSession}</Link> · <Link href="/cards">{SHELL_COPY.openCards}</Link>
+          <Link className="button primary" href="/session">{SHELL_COPY.startSession}</Link>{' '}<Link className="button" href="/cards">{SHELL_COPY.openCards}</Link>
         </p>
         <p>{SHELL_COPY.demoHint}</p>
       </section>

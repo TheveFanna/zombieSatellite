@@ -146,7 +146,7 @@ export default function PointingPage() {
           />{' '}
           Drag compass
         </label>
-        <div
+        <div className="drag-area"
           style={{
             touchAction: 'none',
             marginTop: '0.5rem',

@@ -164,14 +164,14 @@ export default function SessionPickerPage() {
         <h2>Satellites</h2>
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {snapshot.rows.map((row) => (
-            <li key={row.entry.noradId} style={{ marginBottom: '1rem' }}>
+            <li key={row.entry.noradId} className="card">
               <h3>{row.entry.name}</h3>
               <p>
                 Difficulty: {row.entry.difficulty} · {SESSION_COPY.statusLabels[row.entry.status]}
                 {row.entry.beacon.sunlitOnly ? ' · Sunlit only' : ''}
               </p>
               <PassInfo row={row} onRetry={() => controller?.retry()} />
-              <Link href={`/session/${row.entry.noradId}`}>Open session</Link>
+              <Link className="button primary" href={`/session/${row.entry.noradId}`}>Open session</Link>
             </li>
           ))}
         </ul>
