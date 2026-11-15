@@ -61,7 +61,24 @@ function stringValues(value: unknown): string[] {
 }
 
 function parseApp(file: string): ts.SourceFile {
-  return ts.createSourceFile(file, read(`src/app/${file}`), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  return parseAppPath(file);
+}
+
+/** Parses a TSX file below src/app; the path may be nested, e.g. `session/[noradId]/page.tsx`. */
+function parseAppPath(relativePath: string): ts.SourceFile {
+  return ts.createSourceFile(relativePath, read(`src/app/${relativePath}`), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+}
+
+const SESSION_PAGES = ['session/page.tsx', 'session/[noradId]/page.tsx'];
+
+/** The string values of every property assignment of a file, including nested objects. */
+function propertyStrings(file: string): string[] {
+  const source = ts.createSourceFile(file, read(file), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  const strings: string[] = [];
+  walk(source, (node) => {
+    if (ts.isPropertyAssignment(node) && ts.isStringLiteralLike(node.initializer)) strings.push(node.initializer.text);
+  });
+  return strings;
 }
 
 function walk(node: ts.Node, visit: (node: ts.Node) => void): void {
@@ -114,7 +131,11 @@ function checkedTexts(): Array<[string, string[]]> {
     ['README.md paragraphs and list items', markdownBlocks(read('README.md'))],
     ['package.json strings', stringValues(pkg)],
     ['page metadata strings', APP_FILES.flatMap((file) => metadataStrings(parseApp(file)))],
-    ['rendered JSX text', APP_FILES.flatMap((file) => jsxTexts(parseApp(file)))],
+    [
+      'rendered JSX text',
+      [...APP_FILES.flatMap((file) => jsxTexts(parseApp(file))), ...SESSION_PAGES.flatMap((file) => jsxTexts(parseAppPath(file)))],
+    ],
+    ['session copy strings', propertyStrings('src/components/session/copy.ts')],
   ];
 }
 
@@ -181,12 +202,18 @@ describe('Requirement 1: project scaffold', () => {
     expect(Object.entries(pkg.scripts ?? {}).filter(([, command]) => OS_SPECIFIC_SYNTAX.test(command))).toEqual([]);
   });
 
-  it('1.19 src/app holds only layout.tsx, page.tsx and the approved pointing route, and no other .tsx file exists under src', () => {
-    expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual(['layout.tsx', 'page.tsx', 'pointing']);
+  it('1.19 src/app holds only layout.tsx, page.tsx and the approved pointing and session routes, and no other .tsx file exists under src', () => {
+    expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual(['layout.tsx', 'page.tsx', 'pointing', 'session']);
     const tsxFiles = readdirSync(join(root, 'src'), { encoding: 'utf8', recursive: true })
       .filter((file) => file.endsWith('.tsx'))
       .map((file) => file.split(sep).join('/'));
-    expect(tsxFiles.sort()).toEqual(['app/layout.tsx', 'app/page.tsx', 'app/pointing/page.tsx']);
+    expect(tsxFiles.sort()).toEqual([
+      'app/layout.tsx',
+      'app/page.tsx',
+      'app/pointing/page.tsx',
+      'app/session/[noradId]/page.tsx',
+      'app/session/page.tsx',
+    ]);
   });
 
   it.each(APP_FILES)('1.20, 1.21 %s has no use client, fetch, async function, next/font or next/image', (file) => {
