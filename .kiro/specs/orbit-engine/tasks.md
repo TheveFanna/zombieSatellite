@@ -321,7 +321,7 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - Stage by name: `tests/helpers/brute-force.ts`, `tests/helpers/baseline.ts`, `tests/orbit/pass-baselines.test.ts`, `tests/orbit/property-23-window-shift.test.ts`, `tests/orbit/property-22-brute-force-agreement.test.ts` if written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add pass baseline and stability tests`. Do not push
     - _Requirements: 13.10_
 
-- [ ] 10. Complete the Public_Interface and add the cross-cutting checks
+- [x] 10. Complete the Public_Interface and add the cross-cutting checks
   - [x] 10.1 Align `index.ts` with the design's Public_Interface table
     - Confirm that `index.ts` exports exactly the functions, the class, the two constants and the types of the table, and none of the internals (`TleCache`, `toTimeMs`, the `assert*` validators, `propagateMs`, `observeMs`, `prepareObserver`, the `refine.ts` functions, `radToDeg`, other constants); add or remove exports as needed
     - _Requirements: 2.1, 2.2, 7.10_
@@ -355,12 +355,12 @@ Each top-level task ends with a sub-task that runs the suite and makes exactly o
     - **Property 7: Date and millisecond inputs are interchangeable**
     - **Validates: Requirements 2.4**
 
-  - [-] 10.8 Run the suite and commit task 10
+  - [x] 10.8 Run the suite and commit task 10
     - Run `pnpm test` (exit 0) and `pnpm run typecheck` (zero errors)
     - Stage by name: `src/lib/orbit/index.ts` (if 10.1 changed it), `tests/orbit/environment.test.ts`, `tests/orbit/timezone.test.ts`, the files of 10.4 to 10.7 that were written, `.kiro/specs/orbit-engine/tasks.md`; check `git diff --cached --name-only` (no `.kiro/steering/workflow.md`); commit, for example `Add public interface and cross-cutting engine checks`. Do not push
     - _Requirements: 2.3, 2.5_
 
-- [ ] 11. Final checkpoint - Verify the whole project and push once
+- [-] 11. Final checkpoint - Verify the whole project and push once
   - Ensure all tests pass, ask the user if questions arise.
   - Run, in this order: `pnpm install --frozen-lockfile` (exit 0), `pnpm test` (single run, exit 0, Live_Test reported as skipped), `pnpm run build` (exit 0, `/` listed as static), `pnpm run typecheck` (zero errors; after the build, as Requirement 1, criterion 18 requires). Do not run the Live_Test again.
   - If any fix was needed, commit the changed files by name in one commit; never stage `.kiro/steering/workflow.md`.
