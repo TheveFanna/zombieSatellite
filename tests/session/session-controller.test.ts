@@ -130,3 +130,34 @@ describe('Property 13: Results persisted at LOS and on Abort', () => {
     expect(all[1]).toMatchObject({ completed: false, losMs: abortInstant, mode: 'demo', noradId: 7530 });
   });
 });
+
+// Feature: seance-session, approved addition (joined flag, post-review)
+describe('joined flag (approved addition)', () => {
+  /** Scans start times in 1-minute steps for the first real-time start that lands in the wanted phase. */
+  async function startWhere(wanted: 'in-pass' | 'awaiting-pass') {
+    for (let stepMin = 0; stepMin < 24 * 60; stepMin += 1) {
+      const ctx = setup(START_MS + stepMin * 60_000);
+      const started = await ctx.controller.startRealTime();
+      if (started.ok && started.phase === wanted) return ctx;
+      ctx.controller.dispose();
+    }
+    throw new Error(`no clock start time yields ${wanted}`);
+  }
+
+  it('is true only after a join, and false after abort or new session', async () => {
+    const joinedCtx = await startWhere('in-pass');
+    const joinedSnapshot = joinedCtx.controller.getSnapshot();
+    expect(joinedSnapshot.clockMode).toBe('real');
+    expect(joinedSnapshot.joined).toBe(true);
+    expect(joinedCtx.controller.abort().ok).toBe(true);
+    expect(joinedCtx.controller.getSnapshot().phase).toBe('completed');
+    expect(joinedCtx.controller.newSession().ok).toBe(true);
+    expect(joinedCtx.controller.getSnapshot().joined).toBe(false);
+
+    const waitingCtx = await startWhere('awaiting-pass');
+    expect(waitingCtx.controller.getSnapshot().joined).toBe(false);
+    expect(waitingCtx.controller.abort().ok).toBe(true);
+    expect(waitingCtx.controller.getSnapshot().phase).toBe('selecting');
+    expect(waitingCtx.controller.getSnapshot().joined).toBe(false);
+  });
+});

@@ -565,6 +565,7 @@ export interface SessionSnapshot {
   readonly audio: { readonly status: AudioStatus; readonly muted: boolean; readonly volume: number };
   readonly lastRejection: TransitionRejection | null;
   readonly result: SessionResult | null;
+  readonly joined: boolean;                     // true after a `join` dispatch (real-time start in a pass in progress); reset by newSession, awaiting-pass abort and dispose
 }
 ```
 
@@ -628,7 +629,7 @@ Sections:
 1. Header: entry name, difficulty, status label, `displayFrequency` verbatim or `SESSION_COPY.noFrequency` (Requirement 7, criteria 1 and 4), the sunlit note where `sunlitOnly` is true (Requirement 9, criterion 6), the IMAGE note where `downlinkMhz` is null, and `SESSION_COPY.utcNote`.
 2. Selecting: observer inputs (editable here only), the preview pass, "Start in real time" and "Start demo (60×)" buttons, the failure note. Both start handlers call `controller.enableAudio()` first, synchronously, then the start method.
 3. Awaiting-pass: the Target_Pass times and `snapshot.countdownMs` with `formatCountdown` (`T−01:23:45`), "Start demo instead", "Abort".
-4. In-pass: Session_Instant (UTC), Target_Direction or `SESSION_COPY.noOrbitData`, the Doppler_Readout with `formatDopplerReadout`, `SESSION_COPY.glideNote`, Pointing_Error and locked flag; in a Demo_Session the auto/manual switch with `SESSION_COPY.autoPointNote`; the drag area (forwarded to `controller.pointer*`) in manual mode and in real time; in real time the S3 controls read from the S3 snapshot (permission button calling `pointing.requestPermission()`, drag toggle, ±5° calibration); "Abort".
+4. In-pass: Session_Instant (UTC), Target_Direction or `SESSION_COPY.noOrbitData`, the Doppler_Readout with `formatDopplerReadout`, `SESSION_COPY.glideNote`, `SESSION_COPY.joinNote` when `snapshot.joined` is true (the page reads the flag and does not derive it), Pointing_Error and locked flag; in a Demo_Session the auto/manual switch with `SESSION_COPY.autoPointNote`; the drag area (forwarded to `controller.pointer*`) in manual mode and in real time; in real time the S3 controls read from the S3 snapshot (permission button calling `pointing.requestPermission()`, drag toggle, ±5° calibration); "Abort".
 5. Completed: the Session_Result as plain values (locked seconds, ratio in %, best Pointing_Error, completed or aborted, mode), and "New session". No QSL card (Requirement 8, criterion 9).
 6. Audio: `SESSION_COPY.enableSound` button while the status is `off` or `suspended`, `SESSION_COPY.audioUnavailable` when `unavailable`, a mute checkbox and a volume range input (0 to 1).
 7. Footer: `SESSION_COPY.simulationNotice`.

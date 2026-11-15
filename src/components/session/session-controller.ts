@@ -80,6 +80,7 @@ export interface SessionSnapshot {
   readonly audio: { readonly status: AudioStatus; readonly muted: boolean; readonly volume: number };
   readonly lastRejection: TransitionRejection | null;
   readonly result: SessionResult | null;
+  readonly joined: boolean;
 }
 
 export interface SessionController {
@@ -132,6 +133,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
   let lastRejection: TransitionRejection | null = null;
   let result: SessionResult | null = null;
   let pointingSource: 'sensor' | 'auto' | 'manual' | null = null;
+  let joined = false;
 
   // TLE and Satrec.
   let tleStatus: 'loading' | 'ready' | 'failed' = 'loading';
@@ -196,6 +198,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
       audio: Object.freeze({ status: beaconPlayer.status(), muted, volume }),
       lastRejection,
       result,
+      joined,
     });
   }
 
@@ -538,6 +541,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
     anchor = null;
     clockMode = 'real';
     pointingSource = 'sensor';
+    joined = event === 'join';
     targetPass = pass;
     result = null;
     deps.pointing.setObserver(observer);
@@ -562,6 +566,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
       clockMode = null;
       anchor = null;
       pointingSource = null;
+      joined = false;
       publish();
       return { ok: true, phase };
     }
@@ -588,6 +593,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
     clockMode = null;
     anchor = null;
     pointingSource = null;
+    joined = false;
     failure = null;
     resetSampleState();
     computePreview();
@@ -637,6 +643,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
       }
     }
     disposed = true;
+    joined = false;
     clearTick();
     beaconPlayer.dispose();
     compass.deactivate();

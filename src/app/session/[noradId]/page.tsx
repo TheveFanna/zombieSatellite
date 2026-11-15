@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { PointerEvent } from 'react';
 import type { PlayableEntry } from '../../../lib/catalog/index';
 import { CALIBRATION_STEP_DEG } from '../../../lib/pointing/index';
@@ -65,6 +65,7 @@ function initialSnapshot(entry: PlayableEntry): SessionSnapshot {
     audio: Object.freeze({ status: 'off', muted: false, volume: DEFAULT_VOLUME }),
     lastRejection: null,
     result: null,
+    joined: false,
   });
 }
 
@@ -99,8 +100,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
   // null means "show the value from the snapshot"; text is what the user typed.
   const [raw, setRaw] = useState<Record<FieldName, string | null>>({ lat: null, lon: null });
   const [invalid, setInvalid] = useState<Record<FieldName, boolean>>({ lat: false, lon: false });
-  const [joined, setJoined] = useState(false);
-  const previousPhase = useRef<SessionSnapshot['phase']>('selecting');
 
   const serverSnapshot = useMemo(() => initialSnapshot(entry), [entry]);
   const getServerSnapshot = (): SessionSnapshot => serverSnapshot;
@@ -128,16 +127,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     pointing ? pointing.getSnapshot : getServerPointingSnapshot,
     getServerPointingSnapshot,
   );
-
-  // A real-time session that goes selecting -> in-pass joined a pass already overhead.
-  useEffect(() => {
-    if (snapshot.phase === 'in-pass' && previousPhase.current === 'selecting' && snapshot.clockMode === 'real') {
-      setJoined(true);
-    } else if (snapshot.phase === 'selecting') {
-      setJoined(false);
-    }
-    previousPhase.current = snapshot.phase;
-  }, [snapshot.phase, snapshot.clockMode]);
 
   function onField(name: FieldName, text: string) {
     setRaw((prev) => ({ ...prev, [name]: text }));
@@ -297,7 +286,7 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
       {phase === 'in-pass' ? (
         <section style={sectionStyle}>
           <h2>Pass in progress</h2>
-          {joined ? <p>{SESSION_COPY.joinNote}</p> : null}
+          {snapshot.joined ? <p>{SESSION_COPY.joinNote}</p> : null}
           {targetPass !== null ? (
             <p>
               Target pass: {formatUtc(targetPass.riseMs)} to {formatUtc(targetPass.setMs)}
