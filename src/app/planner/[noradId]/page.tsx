@@ -1,5 +1,5 @@
 'use client';
-
+// Planner page (S11 task 1): one list of compact pass rows; the details of one pass open in a sheet.
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
@@ -20,7 +20,7 @@ import {
 import type { IlluminationProfile, TuningPoint } from '../../../lib/field/index';
 import { observeAt } from '../../../lib/orbit/index';
 import type { Pass } from '../../../lib/orbit/index';
-import { formatUtc, resolvePlayableEntry } from '../../../lib/session/index';
+import { formatDurationMin, formatUtc, resolvePlayableEntry } from '../../../lib/session/index';
 import { formatLocalTimeNote } from '../../../lib/shell/index';
 import { createFieldBrowserDeps } from '../../../components/field/browser-deps';
 import type { FieldBrowserDeps } from '../../../components/field/browser-deps';
@@ -31,6 +31,7 @@ import { createTleSource } from '../../../components/field/tle-source';
 import { GroundTrackMap } from '../../../components/field/ground-track-map';
 import { IlluminationBadge, InstrumentDetail } from '../../../components/field/visuals/field-bits';
 import { SkyTrackView } from '../../../components/field/visuals/sky-track';
+import { ConsoleSheet } from '../../../components/console/console-sheet';
 import { DEFAULT_OBSERVER } from '../../../components/pointing/pointing-session';
 import { createPickerBrowserDeps } from '../../../components/session/browser-deps';
 import { SHELL_COPY } from '../../../components/shell/copy';
@@ -67,6 +68,11 @@ function shadowLines(profile: IlluminationProfile | null): string[] {
 
 function azimuthText(value: number | null): string {
   return value === null ? '—' : `${value.toFixed(0)}°`;
+}
+
+/** "MM-DD HH:MMZ" from a UTC instant. */
+function shortUtc(ms: number): string {
+  return `${formatUtc(ms).slice(5, 16)}Z`;
 }
 
 function PassDetail({
@@ -153,12 +159,15 @@ function PassDetail({
   }
 
   return (
-    <section className="planner-detail">
-      <p>
+    <div className="plan-detail">
+      <p className="plan-local">
+        {SHELL_COPY.localTimeLabel} {formatLocalTimeNote(pass.riseMs, -new Date(pass.riseMs).getTimezoneOffset())}
+      </p>
+      <div className="plan-detail-actions">
         <button type="button" onClick={addToCalendar}>
           {FIELD_COPY.addToCalendar}
         </button>
-      </p>
+      </div>
       <IlluminationBadge profile={profile} sunlitOnly={entry.beacon.sunlitOnly === true} />
       <SkyTrackView
         track={track}
@@ -202,36 +211,38 @@ function PassDetail({
         {minutes.kind === 'rows' ? (
           <>
             <h3>{FIELD_COPY.minuteTableHeading}</h3>
-            <table className="tuning minute-table">
-              <thead>
-                <tr>
-                  <th>{FIELD_COPY.minuteTimeHeading}</th>
-                  <th>{FIELD_COPY.tuningFrequencyHeading}</th>
-                  <th>{FIELD_COPY.tuningShiftHeading}</th>
-                  <th>{FIELD_COPY.minuteAzimuthHeading}</th>
-                  <th>{FIELD_COPY.minuteElevationHeading}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {minutes.rows.map((r) => (
-                  <tr key={r.tMs}>
-                    <th scope="row">{formatUtc(r.tMs).slice(11, 19)}</th>
-                    <td>{r.frequencyMhz.toFixed(4)}</td>
-                    <td>{signedKhz(r.shiftKhz)}</td>
-                    <td>{r.azimuthDeg.toFixed(1)}</td>
-                    <td>{r.elevationDeg.toFixed(1)}</td>
+            <div className="plan-scroll">
+              <table className="tuning minute-table">
+                <thead>
+                  <tr>
+                    <th>{FIELD_COPY.minuteTimeHeading}</th>
+                    <th>{FIELD_COPY.tuningFrequencyHeading}</th>
+                    <th>{FIELD_COPY.tuningShiftHeading}</th>
+                    <th>{FIELD_COPY.minuteAzimuthHeading}</th>
+                    <th>{FIELD_COPY.minuteElevationHeading}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <p>
+                </thead>
+                <tbody>
+                  {minutes.rows.map((r) => (
+                    <tr key={r.tMs}>
+                      <th scope="row">{formatUtc(r.tMs).slice(11, 19)}</th>
+                      <td>{r.frequencyMhz.toFixed(4)}</td>
+                      <td>{signedKhz(r.shiftKhz)}</td>
+                      <td>{r.azimuthDeg.toFixed(1)}</td>
+                      <td>{r.elevationDeg.toFixed(1)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="plan-detail-actions">
               <button type="button" onClick={() => void copy()}>
                 {FIELD_COPY.copyTable}
-              </button>{' '}
+              </button>
               <button type="button" onClick={downloadCsv}>
                 {FIELD_COPY.downloadCsv}
               </button>
-            </p>
+            </div>
             {notice !== null ? <p role="status">{notice}</p> : null}
           </>
         ) : null}
@@ -243,7 +254,7 @@ function PassDetail({
         meanMotion={(satrec.no * 1440) / (2 * Math.PI)}
         entryName={entry.name}
       />
-    </section>
+    </div>
   );
 }
 
@@ -318,36 +329,49 @@ function PlannerView({ entry }: { entry: PlayableEntry }) {
   const selectedRow = selected === null ? null : (shown.find((r) => r.pass.riseMs === selected) ?? null);
 
   return (
-    <main data-tab="session" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+    <main data-tab="session" className="plan-page">
       <title>{`${FIELD_COPY.plannerHeading} · ${entry.name} · zombieSatellite`}</title>
-      <header>
-        <h1>{FIELD_COPY.plannerHeading}</h1>
-        <h2>{entry.name}</h2>
-        <p>
+      <header className="plan-head">
+        <Link className="plan-back" href="/session">
+          {FIELD_COPY.plannerBackLink}
+        </Link>
+        <h1>{entry.name}</h1>
+        <div className="plan-actions">
           <Link className="button primary" href={`/session/${entry.noradId}`}>
-            {FIELD_COPY.plannerSessionLink}
-          </Link>{' '}
-          <Link href={`/guide/${entry.noradId}`}>{FIELD_COPY.guideLink}</Link>{' '}
-          <Link href="/session">{FIELD_COPY.plannerBackLink}</Link>
-        </p>
+            {SHELL_COPY.openSession}
+          </Link>
+          <Link className="button" href={`/guide/${entry.noradId}`}>
+            {FIELD_COPY.guideLink}
+          </Link>
+          <Link className="button" href={`/catalog#${entry.slug}`}>
+            {SHELL_COPY.storyLink}
+          </Link>
+        </div>
       </header>
 
-      <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-        {FIELD_COPY.plannerFilterLabel}{' '}
-        <select value={minElevation} onChange={(e) => setMinElevation(Number(e.target.value))}>
+      <div className="plan-filter" role="radiogroup" aria-label={FIELD_COPY.plannerFilterLabel}>
+        <span>{FIELD_COPY.plannerFilterLabel}</span>
+        <div className="seg">
           {PLANNER_MIN_ELEVATIONS.map((n) => (
-            <option key={n} value={n}>
+            <button
+              key={n}
+              type="button"
+              role="radio"
+              aria-checked={n === minElevation}
+              className={n === minElevation ? 'seg-on' : undefined}
+              onClick={() => setMinElevation(n)}
+            >
               {`${n}°`}
-            </option>
+            </button>
           ))}
-        </select>
-      </label>
+        </div>
+      </div>
 
-      {snapshot.status === 'loading' ? <p>{FIELD_COPY.plannerLoading}</p> : null}
-      {snapshot.status === 'searching' ? <p>{FIELD_COPY.plannerSearching}</p> : null}
-      {snapshot.status === 'badging' ? <p>{FIELD_COPY.plannerBadging}</p> : null}
+      {snapshot.status === 'loading' ? <p className="plan-note">{FIELD_COPY.plannerLoading}</p> : null}
+      {snapshot.status === 'searching' ? <p className="plan-note">{FIELD_COPY.plannerSearching}</p> : null}
+      {snapshot.status === 'badging' ? <p className="plan-note">{FIELD_COPY.plannerBadging}</p> : null}
       {snapshot.status === 'tle-unavailable' ? (
-        <p>
+        <p className="plan-note">
           {FIELD_COPY.plannerTleUnavailable}{' '}
           <button type="button" onClick={() => controller?.retry()}>
             {FIELD_COPY.plannerRetry}
@@ -355,10 +379,10 @@ function PlannerView({ entry }: { entry: PlayableEntry }) {
         </p>
       ) : null}
       {!busy && snapshot.status !== 'tle-unavailable' && snapshot.rows.length === 0 ? (
-        <p>{FIELD_COPY.plannerNoPass}</p>
+        <p className="plan-note">{FIELD_COPY.plannerNoPass}</p>
       ) : null}
       {!busy && snapshot.rows.length > 0 && shown.length === 0 ? (
-        <p>
+        <p className="plan-note">
           {`${FIELD_COPY.plannerNoPassAtElevationPrefix} ${minElevation}${FIELD_COPY.plannerNoPassAtElevationSuffix}`}{' '}
           {FIELD_COPY.plannerLowerFilterHint}
         </p>
@@ -367,45 +391,51 @@ function PlannerView({ entry }: { entry: PlayableEntry }) {
       {shown.length > 0 ? (
         <section>
           <h2>{FIELD_COPY.plannerPassesHeading}</h2>
-          <p>{FIELD_COPY.plannerSelectHint}</p>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {shown.map((row, index) => {
+          <ul className="plan-list">
+            {shown.map((row) => {
               const { pass } = row;
               const az = azimuths.get(pass);
-              const isFirst = index === 0 && shown[0] === snapshot.rows[0];
               return (
-                <li key={pass.riseMs} className="card">
+                <li key={pass.riseMs}>
                   <button
                     type="button"
+                    className="plan-row"
                     aria-pressed={selected === pass.riseMs}
-                    onClick={() => setSelected(selected === pass.riseMs ? null : pass.riseMs)}
+                    onClick={() => setSelected(pass.riseMs)}
                   >
-                    {pass.startTruncated ? `${FIELD_COPY.plannerNowInProgress}: ` : ''}
-                    {formatUtc(pass.riseMs)} to {formatUtc(pass.setMs)}
+                    <span className="plan-when">
+                      {pass.startTruncated ? `${FIELD_COPY.plannerNowInProgress} · ` : ''}
+                      {shortUtc(pass.riseMs)}
+                    </span>
+                    <span className="plan-stats">
+                      {pass.maxElevationDeg.toFixed(0)}° · {formatDurationMin(pass.durationMin)}
+                    </span>
+                    <span className="plan-az">
+                      {FIELD_COPY.plannerAosAzimuthLabel} {azimuthText(az?.aos ?? null)} ·{' '}
+                      {FIELD_COPY.plannerLosAzimuthLabel} {azimuthText(az?.los ?? null)}
+                    </span>
+                    <span className="plan-badge">
+                      <IlluminationBadge profile={row.profile} sunlitOnly={entry.beacon.sunlitOnly === true} />
+                    </span>
                   </button>
-                  <p>
-                    {FIELD_COPY.plannerAosAzimuthLabel} {azimuthText(az?.aos ?? null)} ·{' '}
-                    {FIELD_COPY.plannerMaxElevationLabel} {pass.maxElevationDeg.toFixed(1)}° ·{' '}
-                    {FIELD_COPY.plannerLosAzimuthLabel} {azimuthText(az?.los ?? null)}
-                  </p>
-                  <IlluminationBadge profile={row.profile} sunlitOnly={entry.beacon.sunlitOnly === true} />
-                  <InstrumentDetail>
-                    <p>
-                      {SHELL_COPY.localTimeLabel}{' '}
-                      {formatLocalTimeNote(pass.riseMs, -new Date(pass.riseMs).getTimezoneOffset())}
-                    </p>
-                  </InstrumentDetail>
-                  {isFirst ? <p>{FIELD_COPY.plannerNextPassMark}</p> : null}
                 </li>
               );
             })}
           </ul>
+          <p className="plan-note">{FIELD_COPY.plannerSelectHint}</p>
         </section>
       ) : null}
 
-      {selectedRow !== null ? (
-        <PassDetail entry={entry} snapshot={snapshot} row={selectedRow} nowMs={nowMs} fieldDeps={fieldDeps} />
-      ) : null}
+      <ConsoleSheet
+        open={selectedRow !== null}
+        title={selectedRow === null ? '' : `${shortUtc(selectedRow.pass.riseMs)} · ${entry.name}`}
+        closeLabel={SHELL_COPY.closeLabel}
+        onClose={() => setSelected(null)}
+      >
+        {selectedRow !== null ? (
+          <PassDetail entry={entry} snapshot={snapshot} row={selectedRow} nowMs={nowMs} fieldDeps={fieldDeps} />
+        ) : null}
+      </ConsoleSheet>
     </main>
   );
 }
@@ -416,7 +446,7 @@ export default function PlannerPage() {
 
   if (entry === null) {
     return (
-      <main data-tab="session" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+      <main data-tab="session" className="plan-page">
         <title>{`${FIELD_COPY.plannerNotFoundHeading} · zombieSatellite`}</title>
         <h1>{FIELD_COPY.plannerNotFoundHeading}</h1>
         <p>{FIELD_COPY.plannerNotFoundText}</p>

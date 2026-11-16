@@ -24,6 +24,8 @@ export const SHELL_COPY = Object.freeze({
   entryArchiveBody: 'Stories, lifelines and 3D models of each satellite.',
   entryCardsBody: 'Cards from the sessions you finished.',
   entryLogBody: 'Your logged observations.',
+  storyLink: 'Story',
+  closeLabel: 'Close',
   startSession: 'Find a pass',
   openCards: 'Your QSL cards',
   openSession: 'Open session',
