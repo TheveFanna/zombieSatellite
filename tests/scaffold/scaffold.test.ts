@@ -85,6 +85,7 @@ const SHELL_VISUALS = [
 const FIELD_COMPONENTS = [
   'src/components/field/ar-view.tsx',
   'src/components/field/ground-track-map.tsx',
+  'src/components/field/model-viewer.tsx',
   'src/components/field/session-panel.tsx',
   'src/components/field/visuals/ar-overlay.tsx',
   'src/components/field/visuals/field-bits.tsx',
@@ -273,6 +274,7 @@ describe('Requirement 1: project scaffold', () => {
       'app/session/page.tsx',
       'components/field/ar-view.tsx',
       'components/field/ground-track-map.tsx',
+      'components/field/model-viewer.tsx',
       'components/field/session-panel.tsx',
       'components/field/visuals/ar-overlay.tsx',
       'components/field/visuals/field-bits.tsx',

@@ -1421,3 +1421,11 @@ table.tuning td:first-of-type {
   font-size: 0.78rem;
   color: var(--dim);
 }
+
+.model-canvas {
+  display: block;
+  max-width: 100%;
+  margin: 0.75rem auto;
+  border: 1px solid var(--hair);
+  background: var(--night);
+}

@@ -189,7 +189,7 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.5, 23.4_
   - [x] 12.4 Main agent: commit staging `src/lib/field/guide.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/app/guide/[noradId]/page.tsx`, `src/app/session/page.tsx`, `src/components/field/session-panel.tsx`, `src/app/planner/[noradId]/page.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push. The Should tier is complete here.
 
-- [ ] 13. Satellite models: research, register and model core
+- [x] 13. Satellite models: research, register and model core
   - Depends on: task 12.
   - [x] 13.1 Run the model research and write `docs/reference/MODELS.md` (parallel with 13.2; files `docs/reference/MODELS.md` and `public/models/*.obj` only)
     - Follow the research plan of design "Models": the search order, one Model_Record per candidate, the adoption rule (redistribution allowed, `.obj`, at most 150 KB), the table layout, a dimension-source section per Illustrative_Model, the Coastline_Data section and the research date. Commit adopted originals as `public/models/<slug>.obj`. Record the decision per entry for 13.2 (the main agent hands the list to the code sub-task).
@@ -200,17 +200,17 @@ Ground rules for the implementer:
   - [x] 13.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: checks 1.24 and 1.25 `checkedTexts()` gains `['models register strings', propertyStrings('src/lib/field/models.ts')]`. Check 1.19 is unchanged in this task. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [-] 13.4 Main agent: commit staging `docs/reference/MODELS.md`, each adopted `public/models/<slug>.obj` by name, the seven new `src/lib/field` files, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 13.4 Main agent: commit staging `docs/reference/MODELS.md`, each adopted `public/models/<slug>.obj` by name, the seven new `src/lib/field` files, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 14. Model viewer and download on the Home_Page
   - Depends on: task 13.
-  - [~] 14.1 Create `src/components/field/model-viewer.tsx` and add it to the Home_Page
+  - [x] 14.1 Create `src/components/field/model-viewer.tsx` and add it to the Home_Page
     - Canvas 2D viewer per design "Models": `requestAnimationFrame` at 30 fps at most, 18°/s, `IntersectionObserver` and `document.visibilityState` gating, never mounted while its `details` block is closed, the Illustrative label or the author and licence line, the same-origin `.obj` fetch on tap with the Illustrative_Model fallback; Model_Download as one stored ZIP (`<slug>.obj` and `<slug>-ATTRIBUTION.txt`) through `downloadBytes`. One `details` block per entry card in `src/app/page.tsx`; the home page stays free of `'use client'`, `fetch`, `async`, `next/font` and `next/image` (checks 1.20 and 1.21). Append `.model-canvas` to `src/app/globals.css`.
     - _Requirements: 16.1–16.6, 15.4_
-  - [~] 14.2 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 14.2 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/model-viewer.tsx`; the `FIELD_COMPONENTS` group of checks 1.24 and 1.25 gains it by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.6, 23.4_
-  - [~] 14.3 Main agent: commit staging `src/components/field/model-viewer.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [-] 14.3 Main agent: commit staging `src/components/field/model-viewer.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 15. Listening_Log
   - Depends on: task 14.

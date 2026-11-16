@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { listCatalogEntries } from '../lib/catalog/index';
 import type { CatalogEntry } from '../lib/catalog/index';
 import { FIELD_COPY } from '../lib/field/index';
+import { ModelViewer } from '../components/field/model-viewer';
 import { SESSION_COPY } from '../components/session/copy';
 import { SHELL_COPY } from '../components/shell/copy';
 import { GhostSky } from '../components/shell/visuals/sky-dome';
@@ -33,6 +34,7 @@ function EntryArticle({ entry }: { entry: CatalogEntry }) {
           ))}
         </ul>
       </details>
+      <ModelViewer slug={entry.slug} />
       {entry.playable ? (
         <p>
           <Link className="button" href={`/session/${entry.noradId}`}>{SHELL_COPY.openSession}</Link>{' '}
