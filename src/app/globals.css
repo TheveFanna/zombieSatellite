@@ -32,6 +32,7 @@
   --ember: #e3a982;
   --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', 'Songti SC', Georgia, serif;
   --mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  --ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
   --tabbar-h: 3.4rem;
   --tick: rgba(233, 228, 216, 0.5);
   color-scheme: dark;
@@ -169,7 +170,7 @@ summary:focus-visible {
   z-index: 50;
   padding-bottom: env(safe-area-inset-bottom);
   border-top: 1px solid var(--hair);
-  background: linear-gradient(180deg, rgba(10, 15, 28, 0.72), rgba(5, 7, 13, 0.92));
+  background: linear-gradient(180deg, rgba(10, 15, 28, 0.6), rgba(5, 7, 13, 0.85));
   -webkit-backdrop-filter: saturate(140%) blur(18px);
   backdrop-filter: saturate(140%) blur(18px);
 }
@@ -255,7 +256,7 @@ main > section,
   margin-bottom: 1rem;
   padding: 1.15rem 1.2rem;
   border: 1px solid var(--hair);
-  border-radius: 2px;
+  border-radius: 10px;
   background:
     linear-gradient(var(--tick), var(--tick)) top left / 9px 1px no-repeat,
     linear-gradient(var(--tick), var(--tick)) top left / 1px 9px no-repeat,
@@ -266,6 +267,9 @@ main > section,
     linear-gradient(var(--tick), var(--tick)) bottom right / 9px 1px no-repeat,
     linear-gradient(var(--tick), var(--tick)) bottom right / 1px 9px no-repeat,
     linear-gradient(180deg, rgba(17, 26, 46, 0.5), rgba(10, 15, 28, 0.28));
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
 }
 
 main > section > :first-child,
@@ -348,18 +352,18 @@ button,
   margin: 0;
   padding: 0.55rem 1.05rem;
   border: 1px solid var(--faint);
-  border-radius: 2px;
+  border-radius: 10px;
   background: rgba(10, 15, 28, 0.55);
   color: var(--bone);
   font: inherit;
-  font-family: var(--mono);
-  font-size: 0.74rem;
+  font-family: var(--ui);
+  font-size: 0.86rem;
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.01em;
   line-height: 1.25;
   text-align: center;
   text-decoration: none;
-  text-transform: uppercase;
+  text-transform: none;
   cursor: pointer;
   transition:
     border-color 0.2s ease,
@@ -696,7 +700,7 @@ details ul a {
 .sky-view {
   margin: 0.6rem 0 0.9rem;
   border: 1px solid var(--hair) !important;
-  border-radius: 2px;
+  border-radius: 10px;
   background:
     radial-gradient(ellipse at 50% 120%, rgba(38, 54, 92, 0.55) 0%, rgba(5, 7, 13, 0) 65%),
     var(--night);
@@ -713,7 +717,7 @@ details ul a {
 
 .drag-area {
   border: 1px dashed var(--faint) !important;
-  border-radius: 2px;
+  border-radius: 10px;
   background: repeating-linear-gradient(90deg, transparent 0 23px, rgba(233, 228, 216, 0.05) 23px 24px);
   color: var(--dim);
   font-family: var(--mono);
@@ -729,7 +733,7 @@ video {
 }
 
 img {
-  border-radius: 2px;
+  border-radius: 10px;
 }
 
 .card:has(> a > img),
@@ -1175,7 +1179,7 @@ main > img {
   margin: 0.4rem 0 0.6rem;
   padding: 0.25rem 0.7rem;
   border: 1px solid var(--hair);
-  border-radius: 2px;
+  border-radius: 10px;
   font-family: var(--mono);
   font-size: 0.78rem;
   letter-spacing: 0.08em;
@@ -1512,9 +1516,9 @@ table.tuning td:first-of-type {
 }
 
 /* Console: sheets and tabs (S8 task 6) */
-.sheet { position: fixed; inset: auto 0 0 0; width: 100%; max-width: none; max-height: 85vh; height: auto; margin: 0; padding: 0; border: 1px solid currentColor; border-radius: 1rem 1rem 0 0; overflow: auto; background: Canvas; color: CanvasText; }
+.sheet { position: fixed; inset: auto 0 0 0; width: 100%; max-width: none; max-height: 85vh; height: auto; margin: 0; padding: 0; border: 1px solid currentColor; border-radius: 12px 12px 0 0; overflow: auto; background: Canvas; color: CanvasText; }
 .sheet::backdrop { background: rgba(0, 0, 0, 0.6); }
-.sheetInline { position: static; max-height: none; border-radius: 0.5rem; margin: 1rem 0; }
+.sheetInline { position: static; max-height: none; border-radius: 10px; margin: 1rem 0; }
 .sheetHead { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.5rem 1rem; background: inherit; border-bottom: 1px solid currentColor; }
 .sheetTitle { margin: 0; font-size: 1.1rem; }
 .sheetClose { min-width: 44px; min-height: 44px; padding: 0 0.9rem; cursor: pointer; }
@@ -1776,7 +1780,7 @@ table.tuning td:first-of-type {
   bottom: -3px;
   width: 2px;
   margin-left: -1px;
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--ember);
 }
 .ar-vis-sat {

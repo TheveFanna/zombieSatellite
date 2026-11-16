@@ -15,12 +15,12 @@ Ground rules: one commit per task after its tests pass, then push at once; never
   - [x] 2.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
   - [x] 2.3 Main agent: commit by name, then push.
 
-- [ ] 3. Visual tokens
+- [x] 3. Visual tokens
   - Depends on: task 2.
-  - [ ] 3.1 Apply the radius, material and touch-size tokens to panels, cards, buttons, the tab bar and the sheet in `globals.css`.
+  - [x] 3.1 Apply the radius, material and touch-size tokens to panels, cards, buttons, the tab bar and the sheet in `globals.css`.
     - _Requirements: 1.1 to 1.3_
-  - [ ] 3.2 Run `pnpm test`, `pnpm run build`.
-  - [ ] 3.3 Main agent: commit by name, then push.
+  - [x] 3.2 Run `pnpm test`, `pnpm run build`.
+  - [x] 3.3 Main agent: commit by name, then push.
 
 - [ ] 4. Archive page and home split
   - Depends on: task 3.
