@@ -28,6 +28,21 @@ zombieSatellite is a finding, pointing and Doppler aid for amateur radio and sat
 - **Collect.** Each completed pass issues a QSL card with the satellite, the UTC times, the maximum elevation, the frequency and an explicit note that the card confirms a simulated session.
 - **Try it without hardware.** A 60× demo mode plays the next complete real pass in a few minutes and can aim for you.
 
+### Field companion
+
+A second layer of features turns the app into a planning aid for someone who wants to try a real listening session with their own radio. Every screen opens in a simple view, and an "Instrument" detail shows the technical numbers one tap away.
+
+- **Sunlight and shadow.** A sunlight model (the USNO approximate solar coordinates algorithm with an Earth-shadow test) marks each predicted pass as sunlit, partly sunlit or in shadow. For the satellites documented as transmitting only in sunlight, the simulated beacon goes quiet while the satellite is in shadow. This is a geometric prediction, not a measurement of any real transmitter.
+- **Tuning table.** For a pass, the receive frequency at AOS, TCA and LOS (nominal downlink plus the computed Doppler shift), with a per-minute table that can be copied or exported as CSV. IMAGE has no documented downlink, so the app shows no frequency for it. LES-1 is described as "about 237 MHz" and its table is marked approximate.
+- **Pass planner.** The passes of the next seven days with a minimum-elevation filter (default 10°), rise and set azimuths, UTC times, and an `.ics` calendar export.
+- **Sky track.** The full pass drawn on the sky view, with AOS and LOS marks, time ticks, and the shadow segments drawn differently.
+- **AR view.** The camera picture with the satellite, its upcoming track, the horizon, the cardinal directions, an edge arrow when the satellite is off screen, and a ±10° lock ring. The camera is a visual layer only: nothing is captured, uploaded or stored. A field-of-view calibration is available because the default 75° can drift on some phones.
+- **Ground-track map.** A world map with the sub-satellite point, one orbit of track on each side, the visibility footprint, the observer's pin and the day and night terminator. The coastline is Natural Earth data (public domain), bundled in the repository.
+- **Listening guide.** Per satellite, the documented downlink, the simplest setup that the cited sources support, the sunlight condition and links to public recordings. The guide says that the listener's own radio does the receiving, and not the app.
+- **Models.** A slowly rotating model of each satellite. No licensed original was found for any of the seven, so all seven are hand-built illustrative models, labelled as such.
+- **Listening log.** A listener who heard a satellite with their own radio can note it. Entries are stored in the browser only, are self-reported, and are marked that way on their face. The app cannot verify them, and they are kept apart from the simulated QSL cards.
+- **First run.** A short, skippable guide for a newcomer, shown once.
+
 zombieSatellite receives no RF. Beacon audio is synthesized live from public orbital data. Bring your own radio for the real thing; the app does the finding, pointing and Doppler math.
 
 ## Who it is for
@@ -53,12 +68,12 @@ The zombie-satellite hobby exists because amateurs did the work that institution
 
 The project was built spec by spec with Kiro, and the specs are in the repository under `.kiro/specs`.
 
-- **Six specs:** orbit-engine, zombie-catalog, ar-pointing, seance-session, qsl-card and shell-pwa-deploy. Each has its own requirements, design and tasks documents.
+- **Seven specs:** orbit-engine, zombie-catalog, ar-pointing, seance-session, qsl-card, shell-pwa-deploy and field-companion. Each has its own requirements, design and tasks documents.
 - **Models:** Opus wrote the requirements and the designs; Sonnet did most of the implementation.
 - **Review gates:** a human review between stages. The requirements, the design and the task list of each spec were approved by the author before the next stage started, and several designs were changed after review.
 - **Steering:** two steering files in `.kiro/steering` hold the project scope (a fixed catalog, no custom backend, UTC everywhere, no claim of real reception) and the workflow rules.
 - **Commits:** one commit per task, made after that task's tests passed, staging files by name.
-- **Verification:** the landed test suite, which has 348 passing tests in 72 test files at the time of writing, plus one opt-in test against the live CelesTrak endpoint. It includes property-based tests (fast-check) for the orbit engine and scaffold checks that scan the app's own text for wording that could suggest real reception.
+- **Verification:** the landed test suite, which has 368 passing tests in 78 test files at the time of writing (one more test is skipped by default), plus the opt-in test against the live CelesTrak endpoint. It includes property-based tests (fast-check) for the orbit engine and scaffold checks that scan the app's own text for wording that could suggest real reception.
 - **What Kiro did not do:** deploy the app, or run the device checks. The author deployed to Vercel and runs the device checklist on real phones.
 
 ## Challenges
@@ -75,8 +90,15 @@ Writing the numeric baselines down first, and then building tests against them, 
 ## What's next
 
 - Calibrating the camera field of view for each device.
-- An eclipse model, so that satellites that work only in sunlight are silent in the shadow during a simulated session.
 - Exports of the collection of QSL cards.
+- Licensed original 3D models, where an agency or museum releases them, in place of the illustrative ones.
+
+## Credits and limits
+
+- Coastlines: Natural Earth, public domain. Sun position: the USNO approximate solar coordinates algorithm.
+- The satellite models are illustrative, built from published dimensions and photographs. They are not original engineering models.
+- The listening log is self-reported and unverified.
+- The shadow prediction is geometric. A real transmitter may switch on or off at slightly different moments.
 
 ## Built with
 

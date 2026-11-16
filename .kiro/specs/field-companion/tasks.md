@@ -225,7 +225,7 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.5, 23.4_
   - [x] 15.4 Main agent: commit staging `src/lib/field/log.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/field/log-store.ts`, `src/components/field/visuals/field-bits.tsx`, `src/app/log/page.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 16. First_Run_Guide and the Instrument_Detail pass
+- [x] 16. First_Run_Guide and the Instrument_Detail pass
   - Depends on: task 15.
   - [x] 16.1 Create `src/components/field/first-run-guide.tsx` and `first-run-store.ts`; mount on the Home_Page
     - Four steps, Skip on every step, Done on the last, flag `zombieSatellite.field.firstRunDone` read in an effect so the server render and the first client render match, nothing rendered afterwards, no session started, per design "Two depths of use". Extend `FIELD_COPY` with the first-run steps. Add the card to `src/app/page.tsx` (checks 1.20 and 1.21 stay true). Append `.first-run` to `src/app/globals.css`.
@@ -236,22 +236,22 @@ Ground rules for the implementer:
   - [x] 16.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/first-run-guide.tsx`; the `FIELD_COMPONENTS` group of checks 1.24 and 1.25 gains it by name. The `.tsx` inventory now holds the twelve landed entries plus the eleven field entries of design "Scaffold check changes". Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.6, 23.4_
-  - [-] 16.4 Main agent: commit staging `src/components/field/first-run-guide.tsx`, `src/components/field/first-run-store.ts`, `src/lib/field/copy.ts`, `src/app/page.tsx`, `src/app/globals.css`, `tests/scaffold/scaffold.test.ts` and any other file changed by 16.2, each by name, then push. The Could tier is complete here.
+  - [x] 16.4 Main agent: commit staging `src/components/field/first-run-guide.tsx`, `src/components/field/first-run-store.ts`, `src/lib/field/copy.ts`, `src/app/page.tsx`, `src/app/globals.css`, `tests/scaffold/scaffold.test.ts` and any other file changed by 16.2, each by name, then push. The Could tier is complete here.
 
 - [ ] 17. Submission materials update
   - Depends on: task 16.
-  - [~] 17.1 Update `README.md`
+  - [x] 17.1 Update `README.md`
     - Per design "Submission materials": a "Field companion" feature list and a "Credits" list (Natural Earth public domain, the USNO approximate solar coordinates algorithm, each Original_Model with author and licence, and the statement that the other models are illustrative). Keep both Provenance_Sentences character for character (checks 1.22 and 1.23). Check every new paragraph against 1.24 and 1.25 while writing. Run `pnpm vitest run tests/scaffold/scaffold.test.ts`.
     - _Requirements: 24.1, 24.4, 15.7, 13.8, 21.6_
-  - [~] 17.2 Update `docs/submission/DEVPOST.md` (parallel with 17.3; disjoint file)
+  - [x] 17.2 Update `docs/submission/DEVPOST.md` (parallel with 17.3; disjoint file)
     - The S7 features and the seven-spec workflow stated factually; the S6 red lines kept: no claim of real reception, every historical reception attributed, unconfirmed claims respected, English only. Refresh the test count from a fresh `pnpm test` run.
     - _Requirements: 24.2, 24.5_
-  - [~] 17.3 Update `docs/submission/VIDEO_SCRIPT.md` (parallel with 17.2; disjoint file)
+  - [x] 17.3 Update `docs/submission/VIDEO_SCRIPT.md` (parallel with 17.2; disjoint file)
     - Add the strongest S7 moments (the AR_View with the Track_Arc over the sky, the Ground_Track_Map); the shot durations still sum to at most 180 s; same red lines.
     - _Requirements: 24.3, 24.5_
-  - [~] 17.4 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. Review `DEVPOST.md` and `VIDEO_SCRIPT.md` against the red lines and record the result in this task.
+  - [x] 17.4 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. Review `DEVPOST.md` and `VIDEO_SCRIPT.md` against the red lines and record the result in this task.
     - _Requirements: 24.5, 23.4_
-  - [~] 17.5 Main agent: commit staging `README.md`, `docs/submission/DEVPOST.md` and `docs/submission/VIDEO_SCRIPT.md` by name, then push.
+  - [-] 17.5 Main agent: commit staging `README.md`, `docs/submission/DEVPOST.md` and `docs/submission/VIDEO_SCRIPT.md` by name, then push.
 
 - [ ] 18. Owner's acceptance on a real phone (review items, executed by the project owner)
   - Depends on: task 17, with its push deployed (confirm that the Live_URL serves the final push).

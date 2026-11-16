@@ -14,6 +14,26 @@ Live app: https://zombie-satellite.vercel.app/
 
 New to satellites? Every session has a demo mode that plays the next complete real pass at 60× speed, so you can try the whole loop in a few minutes.
 
+## Field companion features
+
+The field companion update adds these tools around each pass. All of them are computed in the browser from public TLE data.
+
+- **Illumination and Shadow_Silence.** A sunlight model shows whether the satellite is lit or in Earth's shadow. While it is in shadow, the simulated beacon goes silent.
+- **Tuning table.** A table of the Doppler-shifted frequencies over the pass, which you can copy or export as CSV.
+- **Pass planner and calendar export.** Lists upcoming passes with a minimum peak elevation filter (default 10°) and exports a pass as a calendar event.
+- **Sky track.** The path of the satellite across the sky, drawn for one orbit back and one forward.
+- **AR view.** The camera picture with the track arc, a lock ring, an edge arrow that points toward an off-screen satellite, and a field-of-view calibration.
+- **Ground track map.** A world map with the ground track and the current sub-satellite point.
+- **Listening guide.** Links to documented listening sources for each satellite. The in-app beacon stays simulated.
+- **Models.** An illustrative model of each spacecraft that you can view and download.
+- **Listening log.** A local log of your own sessions, stored on your device only.
+- **First-run guide.** A short walkthrough on the first visit.
+
+## Credits
+
+- Coastline data: [Natural Earth](https://www.naturalearthdata.com/), public domain.
+- Spacecraft models are illustrative. They were authored by this project, not taken from agency or vendor files. See [docs/reference/MODELS.md](docs/reference/MODELS.md).
+
 ## Honesty
 
 The beacon sound is simulated: the browser synthesizes it from public TLE data. zombieSatellite has no radio hardware and processes no real-world transmission; the only real input is public orbital data.
