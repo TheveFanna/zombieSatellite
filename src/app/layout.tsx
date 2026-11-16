@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, title: 'zombieSat', statusBarStyle: 'black-translucent' },
 };
 
-export const viewport: Viewport = { themeColor: '#0d1117', viewportFit: 'cover' };
+export const viewport: Viewport = { themeColor: '#05070d', viewportFit: 'cover' };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

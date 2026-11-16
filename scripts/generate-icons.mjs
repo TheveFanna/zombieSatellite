@@ -1,18 +1,18 @@
 // Generates the App_Icons of zombieSatellite (S6 design "App icons") with Node built-ins only.
 // Run: node scripts/generate-icons.mjs   Output: public/icons/icon-192.png, icon-512.png, apple-touch-icon.png
-// Drawing, in units of the icon side s, centre (0.5, 0.5): background #0d1117; orbit ring of radius
-// 0.30s and width 0.035s in #8b949e; planet disk of radius 0.12s in #f0f6fc; satellite disk of radius
-// 0.07s in #2ea043 on the ring at 45 degrees (upper right). Everything lies inside the 0.40s maskable
+// Drawing, in units of the icon side s, centre (0.5, 0.5): background #05070d (night); orbit ring of radius
+// 0.30s and width 0.035s in #c9a66b (brass); planet disk of radius 0.12s in #e9e4d8 (bone); satellite disk of radius
+// 0.07s in #a8f0cf (phosphor) on the ring at 45 degrees (upper right). Everything lies inside the 0.40s maskable
 // safe zone. Edges use 4x4 supersampling.
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { crc32, deflateSync } from 'node:zlib';
 
-const BACKGROUND = [0x0d, 0x11, 0x17];
-const GREY = [0x8b, 0x94, 0x9e];
-const WHITE = [0xf0, 0xf6, 0xfc];
-const GREEN = [0x2e, 0xa0, 0x43];
+const BACKGROUND = [0x05, 0x07, 0x0d];
+const GREY = [0xc9, 0xa6, 0x6b];
+const WHITE = [0xe9, 0xe4, 0xd8];
+const GREEN = [0xa8, 0xf0, 0xcf];
 
 const RING_RADIUS = 0.3;
 const RING_WIDTH = 0.035;
