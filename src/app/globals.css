@@ -1064,6 +1064,98 @@ main > img {
   text-anchor: middle;
 }
 
+/* Doppler dial (src/components/shell/visuals/doppler-dial.tsx) */
+.dial {
+  margin: 0.9rem auto 0.4rem;
+  max-width: 20rem;
+  text-align: center;
+}
+
+.dial svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--mono);
+}
+
+.dial-arc {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 0.7;
+}
+
+.dial-tick {
+  stroke: var(--faint);
+  stroke-width: 0.6;
+}
+
+.dial-tick-strong {
+  stroke: var(--bone-2);
+  stroke-width: 0.9;
+}
+
+.dial-number {
+  fill: var(--dim);
+  font-size: 7px;
+  letter-spacing: 0.04em;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.dial-sweep {
+  fill: none;
+  stroke: var(--phosphor);
+  stroke-width: 1.6;
+  filter: drop-shadow(0 0 3px rgba(168, 240, 207, 0.8));
+}
+
+.dial-needle {
+  stroke: var(--phosphor);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 2px var(--phosphor));
+  transition: all 0.4s ease;
+}
+
+.dial-hub {
+  fill: var(--night);
+  stroke: var(--phosphor);
+  stroke-width: 0.9;
+}
+
+.dial-unit {
+  fill: var(--dim);
+  font-size: 6px;
+  letter-spacing: 0.2em;
+  text-anchor: middle;
+}
+
+.dial figcaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  margin-top: 0.2rem;
+}
+
+.dial-value {
+  color: var(--phosphor);
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 14px var(--phosphor-glow);
+}
+
+.dial-caption {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -74,6 +74,7 @@ const CARDS_PAGES = ['cards/page.tsx', 'cards/[noradId]/[aosMs]/[n]/page.tsx'];
 const SHELL_REGISTRAR = 'src/components/shell/service-worker-registrar.tsx';
 /** The presentational SVG components of task 7C, listed by name. */
 const SHELL_VISUALS = [
+  'src/components/shell/visuals/doppler-dial.tsx',
   'src/components/shell/visuals/lifeline.tsx',
   'src/components/shell/visuals/pass-profile.tsx',
   'src/components/shell/visuals/sky-dome.tsx',
@@ -251,6 +252,7 @@ describe('Requirement 1: project scaffold', () => {
       'app/session/[noradId]/page.tsx',
       'app/session/page.tsx',
       'components/shell/service-worker-registrar.tsx',
+      'components/shell/visuals/doppler-dial.tsx',
       'components/shell/visuals/lifeline.tsx',
       'components/shell/visuals/pass-profile.tsx',
       'components/shell/visuals/sky-dome.tsx',

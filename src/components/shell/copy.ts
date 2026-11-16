@@ -39,4 +39,5 @@ export const SHELL_COPY = Object.freeze({
   heroLine1: 'They died decades ago.',
   heroLine2: 'A few are still talking.',
   domeHeading: 'Sky dome',
+  dialCaption: 'Simulated tone · real Doppler figure',
 });

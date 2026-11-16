@@ -34,6 +34,7 @@ import {
 import type { SessionResult } from '../../../lib/session/index';
 import { markerPlacement } from '../../../lib/shell/index';
 import { PassDome } from '../../../components/shell/visuals/sky-dome';
+import { DopplerDial } from '../../../components/shell/visuals/doppler-dial';
 
 // Neutral pointing view used on the server and until the session exists in the browser.
 const INITIAL_POINTING_SNAPSHOT: PointingSnapshot = Object.freeze({
@@ -393,6 +394,7 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
             <dt>Locked</dt>
             <dd>{lock === null ? '—' : lock.locked ? 'yes' : 'no'}</dd>
           </dl>
+          <DopplerDial readout={snapshot.doppler} caption={SHELL_COPY.dialCaption} />
           <p>{SESSION_COPY.glideNote}</p>
 
           {isDemo ? (
