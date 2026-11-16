@@ -1,7 +1,7 @@
 import { observeAt } from '../orbit/index';
 import type { Observer, Pass, Satrec } from '../orbit/index';
 import { formatUtc } from '../session/index';
-import { MAX_TICKS, SKY_MAX_STEPS, SKY_STEP_MS } from './constants';
+import { MAX_TICKS, SKY_MAX_STEPS, SKY_PAD_MS, SKY_PAD_STEP_MS, SKY_STEP_MS } from './constants';
 import { shadowedAt } from './illumination';
 import type { IlluminationProfile } from './illumination';
 
@@ -12,6 +12,9 @@ export type SkySampleOk = Extract<SkySample, { ok: true }>;
 
 export interface SkyTrack {
   readonly samples: readonly SkySample[];
+  /** Samples before AOS and after LOS, for the AR Track_Arc only (the dome ignores them). */
+  readonly lead: readonly SkySample[];
+  readonly tail: readonly SkySample[];
   readonly tickMs: readonly number[];
   readonly aos: SkySample;
   readonly tca: SkySample;
@@ -45,8 +48,14 @@ export function buildSkyTrack(satrec: Satrec, observer: Observer, pass: Pass): S
   for (let t = pass.riseMs + step; t < pass.setMs; t += step) instants.add(t);
   const samples = [...instants].sort((a, b) => a - b).map((t) => sampleAt(satrec, observer, t));
   const find = (t: number): SkySample => samples.find((s) => s.tMs === t) ?? { ok: false, tMs: t };
+  const lead: SkySample[] = [];
+  for (let t = pass.riseMs - SKY_PAD_MS; t < pass.riseMs; t += SKY_PAD_STEP_MS) lead.push(sampleAt(satrec, observer, t));
+  const tail: SkySample[] = [];
+  for (let t = pass.setMs + SKY_PAD_STEP_MS; t <= pass.setMs + SKY_PAD_MS; t += SKY_PAD_STEP_MS) tail.push(sampleAt(satrec, observer, t));
   return {
     samples,
+    lead,
+    tail,
     tickMs: ticks,
     aos: find(pass.riseMs),
     tca: find(pass.peakMs),
@@ -83,6 +92,34 @@ export function trackSegments(
   return out;
 }
 
+/** Track_Arc segments for the AR view: split at illumination changes and at the horizon (el < 0), lead and tail included. */
+export function arTrackSegments(
+  track: SkyTrack,
+  profile: IlluminationProfile,
+): ReadonlyArray<{ inShadow: boolean; belowHorizon: boolean; samples: readonly SkySampleOk[] }> {
+  type Segment = { inShadow: boolean; belowHorizon: boolean; samples: SkySampleOk[] };
+  const out: Segment[] = [];
+  let current: Segment | null = null;
+  for (const s of [...track.lead, ...track.samples, ...track.tail]) {
+    if (!s.ok) {
+      current = null;
+      continue;
+    }
+    const inShadow = shadowedAt(profile, s.tMs) === true;
+    const belowHorizon = s.elevationDeg < 0;
+    if (current === null) {
+      current = { inShadow, belowHorizon, samples: [s] };
+      out.push(current);
+    } else if (current.inShadow === inShadow && current.belowHorizon === belowHorizon) {
+      current.samples.push(s);
+    } else {
+      const last: SkySampleOk = current.samples[current.samples.length - 1];
+      current = { inShadow, belowHorizon, samples: [last, s] };
+      out.push(current);
+    }
+  }
+  return out;
+}
 export function tickLabel(tMs: number): string {
   return `${formatUtc(tMs).slice(11, 16)}Z`;
 }

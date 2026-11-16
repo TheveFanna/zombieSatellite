@@ -269,6 +269,10 @@ Terms defined by S1 to S6 keep their landed meaning and are not repeated here, a
 13. THE AR projection math (projection at a given Vertical_FOV, Track_Arc projection with the Behind rule, Horizon_Line and Cardinal_Marks, Lock_Ring radius, Edge_Arrow direction) SHALL be pure functions of the Field_Core with example tests that the design states; THE drawing SHALL be a presentational layer over them, checked by review on a real phone.
 14. THE AR_Overlay SHALL redraw at a rate the design states, and SHALL stay usable on a mid-range phone (review item).
 15. Risk R1 of S3 (the iOS compass under steep tilt) SHALL keep applying; THE app SHALL NOT build a fallback for it unless the S6 Device_Checklist shows the heading flip, and then only under R1's recorded policy.
+16. THE Track_Arc SHALL extend 10 minutes before AOS and 10 minutes after LOS; THE AR_Overlay SHALL draw the samples whose elevation is below 0° dashed and the samples at or above 0° solid. This supersedes the dash use of criterion 11 in the AR_Overlay; the Sky_Track on the dome (Requirement 6) is unchanged.
+17. WHERE the entry is a Sunlit_Only_Entry, THE AR_Overlay SHALL tell In_Shadow segments from sunlit ones by colour only (brass against phosphor), because the dash now means below the horizon.
+18. THE AR_Overlay SHALL draw the Current_Point as a filled dot with a halo, inside the Lock_Ring, whenever the satellite direction is in front of the camera.
+19. THE AR_Overlay SHALL draw the Time_Ticks smaller than before: a dot of radius 1.5 and a label of font size 9.
 
 ### Requirement 8: AR view camera, fallback and demo
 

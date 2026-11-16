@@ -11,7 +11,12 @@ import { AR_NDC_LIMIT } from './constants';
 import type { SkySampleOk, SkyTrack } from './sky-track';
 
 export interface ArPoint { readonly ndcX: number; readonly ndcY: number }
-export interface ArPiece { readonly inShadow: boolean; readonly points: readonly ArPoint[] }
+export interface ArPiece {
+  readonly inShadow: boolean;
+  /** Elevation below 0°: the overlay draws the piece dashed. */
+  readonly belowHorizon: boolean;
+  readonly points: readonly ArPoint[];
+}
 
 const DEG = Math.PI / 180;
 
@@ -54,6 +59,7 @@ function drawable(m: MarkerPosition): m is Extract<MarkerPosition, { inFront: tr
 function projectPolyline(
   pts: ReadonlyArray<{ az: number; el: number }>,
   inShadow: boolean,
+  belowHorizon: boolean,
   offsetDeg: number,
   basis: CameraBasis,
   aspect: number,
@@ -69,7 +75,7 @@ function projectPolyline(
     }
     if (cur === null) {
       cur = [];
-      out.push({ inShadow, points: cur });
+      out.push({ inShadow, belowHorizon, points: cur });
     }
     cur.push({ ndcX: m.ndcX, ndcY: m.ndcY });
   }
@@ -77,7 +83,7 @@ function projectPolyline(
 }
 
 export function projectTrackArc(
-  segments: ReadonlyArray<{ inShadow: boolean; samples: readonly SkySampleOk[] }>,
+  segments: ReadonlyArray<{ inShadow: boolean; belowHorizon?: boolean; samples: readonly SkySampleOk[] }>,
   offsetDeg: number,
   basis: CameraBasis,
   aspect: number,
@@ -86,7 +92,7 @@ export function projectTrackArc(
   const out: ArPiece[] = [];
   for (const seg of segments) {
     const pts = seg.samples.map((s) => ({ az: s.azimuthDeg, el: s.elevationDeg }));
-    out.push(...projectPolyline(pts, seg.inShadow, offsetDeg, basis, aspect, fovDeg));
+    out.push(...projectPolyline(pts, seg.inShadow, seg.belowHorizon === true, offsetDeg, basis, aspect, fovDeg));
   }
   return out;
 }
@@ -116,7 +122,7 @@ export function horizonLine(
 ): ArPiece[] {
   const pts: Array<{ az: number; el: number }> = [];
   for (let az = 0; az <= 360; az += 5) pts.push({ az, el: 0 });
-  return projectPolyline(pts, false, offsetDeg, basis, aspect, fovDeg);
+  return projectPolyline(pts, false, false, offsetDeg, basis, aspect, fovDeg);
 }
 
 export function cardinalMarks(
@@ -180,7 +186,7 @@ export function lockRing(
     }
     if (cur === null) {
       cur = [];
-      pieces.push({ inShadow: false, points: cur });
+      pieces.push({ inShadow: false, belowHorizon: false, points: cur });
     }
     cur.push({ ndcX: m.ndcX, ndcY: m.ndcY });
   }

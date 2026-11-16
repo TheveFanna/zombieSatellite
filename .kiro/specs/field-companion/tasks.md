@@ -1,4 +1,12 @@
-# Implementation Plan: field-companion (S7)
+# Implemen- [x] 19. AR Track_Arc refinement (Requirement 7, criteria 16 to 19)
+  - Depends on: task 7.
+  - [x] 19.1 Field_Core: `buildSkyTrack` returns `lead` and `tail` (10 min each side, 30 s step); add `arTrackSegments` (split by shadow and by elevation < 0); `ArPiece.belowHorizon`; `projectTrackArc` passes the flag. Add example cases to `tests/field/ar-projection.test.ts`. Run `pnpm vitest run tests/field`.
+    - _Requirements: 7.16, 7.17_
+  - [x] 19.2 Overlay: dashed below the horizon, colour-only shadow, filled Current_Point with halo, smaller Time_Ticks; `ar-view.tsx` uses `arTrackSegments`. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`.
+    - _Requirements: 7.16, 7.17, 7.18, 7.19_
+  - [x] 19.3 Main agent: commit by name, then push.
+
+tation Plan: field-companion (S7)
 
 ## Overview
 
@@ -238,7 +246,7 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.6, 23.4_
   - [x] 16.4 Main agent: commit staging `src/components/field/first-run-guide.tsx`, `src/components/field/first-run-store.ts`, `src/lib/field/copy.ts`, `src/app/page.tsx`, `src/app/globals.css`, `tests/scaffold/scaffold.test.ts` and any other file changed by 16.2, each by name, then push. The Could tier is complete here.
 
-- [ ] 17. Submission materials update
+- [x] 17. Submission materials update
   - Depends on: task 16.
   - [x] 17.1 Update `README.md`
     - Per design "Submission materials": a "Field companion" feature list and a "Credits" list (Natural Earth public domain, the USNO approximate solar coordinates algorithm, each Original_Model with author and licence, and the statement that the other models are illustrative). Keep both Provenance_Sentences character for character (checks 1.22 and 1.23). Check every new paragraph against 1.24 and 1.25 while writing. Run `pnpm vitest run tests/scaffold/scaffold.test.ts`.
@@ -251,7 +259,7 @@ Ground rules for the implementer:
     - _Requirements: 24.3, 24.5_
   - [x] 17.4 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. Review `DEVPOST.md` and `VIDEO_SCRIPT.md` against the red lines and record the result in this task.
     - _Requirements: 24.5, 23.4_
-  - [-] 17.5 Main agent: commit staging `README.md`, `docs/submission/DEVPOST.md` and `docs/submission/VIDEO_SCRIPT.md` by name, then push.
+  - [x] 17.5 Main agent: commit staging `README.md`, `docs/submission/DEVPOST.md` and `docs/submission/VIDEO_SCRIPT.md` by name, then push.
 
 - [ ] 18. Owner's acceptance on a real phone (review items, executed by the project owner)
   - Depends on: task 17, with its push deployed (confirm that the Live_URL serves the final push).
@@ -262,6 +270,13 @@ Ground rules for the implementer:
     - _Requirements: 25.3, 26.4_
   - [~] 18.3 Main agent: after the owner has reported every item, mark the tasks of this file that are complete, then commit staging `.kiro/specs/field-companion/tasks.md` by name with `docs(field): record owner acceptance (S7 task 18)`, then push.
 
+- [x] 19. AR Track_Arc refinement (Requirement 7, criteria 16 to 19)
+  - Depends on: task 7.
+  - [x] 19.1 Field_Core: `buildSkyTrack` returns `lead` and `tail` (10 min each side, 30 s step); add `arTrackSegments` (split by shadow and by elevation < 0); `ArPiece.belowHorizon`; `projectTrackArc` passes the flag. Add example cases to `tests/field/ar-projection.test.ts`. Run `pnpm vitest run tests/field`.
+    - _Requirements: 7.16, 7.17_
+  - [x] 19.2 Overlay: dashed below the horizon, colour-only shadow, filled Current_Point with halo, smaller Time_Ticks; `ar-view.tsx` uses `arTrackSegments`. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`.
+    - _Requirements: 7.16, 7.17, 7.18, 7.19_
+  - [x] 19.3 Main agent: commit by name, then push.
 ## Notes
 
 - Requirement coverage: every acceptance criterion of `requirements.md` is listed under at least one sub-task. Criteria not listed under a test sub-task are checked by build, review or the owner's phone acceptance (requirements "Verification scope").

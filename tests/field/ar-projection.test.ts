@@ -9,6 +9,7 @@ import {
   lockRing,
   projectAr,
   projectTrackArc,
+  arTrackSegments,
 } from '../../src/lib/field/index';
 
 const basis = cameraBasisFromDrag({ headingDeg: 0, pitchDeg: 0 });
@@ -85,5 +86,24 @@ describe('AR math', () => {
     const up = edgeArrow(0, 70, 0, basis, 0.5, 75);
     expect(up).not.toBeNull();
     expect(up!.angleRad).toBeCloseTo(Math.PI / 2, 9);
+  });
+  it('7. arTrackSegments splits at the horizon, lead and tail included, and the flag reaches the pieces', () => {
+    const s = (tMs: number, elevationDeg: number) => ({ ok: true as const, tMs, azimuthDeg: 0, elevationDeg });
+    const track = {
+      samples: [s(2, 0), s(3, 10), s(4, 0)],
+      lead: [s(0, -10), s(1, -5)],
+      tail: [s(5, -5)],
+      tickMs: [],
+      aos: s(2, 0),
+      tca: s(3, 10),
+      los: s(4, 0),
+    };
+    const segs = arTrackSegments(track, { kind: 'sunlit' });
+    expect(segs.map((g) => g.belowHorizon)).toEqual([true, false, true]);
+    expect(segs[0].samples.map((x) => x.tMs)).toEqual([0, 1]);
+    expect(segs[1].samples.map((x) => x.tMs)).toEqual([1, 2, 3, 4]);
+    expect(segs[2].samples.map((x) => x.tMs)).toEqual([4, 5]);
+    const pieces = projectTrackArc(segs, 0, basis, 0.5, 75);
+    expect(pieces.map((p) => p.belowHorizon)).toEqual([true, false, true]);
   });
 });

@@ -16,7 +16,7 @@ import {
   projectTicks,
   projectTrackArc,
   tickLabel,
-  trackSegments,
+  arTrackSegments,
 } from '../../lib/field/index';
 import type { ArPiece } from '../../lib/field/index';
 import { formatCountdown, formatDopplerReadout } from '../../lib/session/index';
@@ -134,7 +134,7 @@ export function ArView({ snapshot, field, pointing, pointingSnapshot, controller
     let arc: readonly ArPiece[] = NO_PIECES;
     let ticks: ArOverlayModel['ticks'] = [];
     if (field.track !== null && field.profile !== null) {
-      arc = projectTrackArc(trackSegments(field.track, field.profile), offsetDeg, basis, aspect, fovDeg);
+      arc = projectTrackArc(arTrackSegments(field.track, field.profile), offsetDeg, basis, aspect, fovDeg);
       ticks = projectTicks(field.track, offsetDeg, basis, aspect, fovDeg).map((t) => ({
         label: tickLabel(t.tMs),
         ndcX: t.ndcX,

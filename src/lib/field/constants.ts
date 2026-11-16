@@ -4,6 +4,9 @@ export const MAX_ILLUMINATION_SAMPLES = 600;
 export const ILLUMINATION_REFINE_MS = 1000;
 export const SKY_STEP_MS = 10_000;
 export const SKY_MAX_STEPS = 180;
+/** AR Track_Arc extends this far before AOS and after LOS, sampled every SKY_PAD_STEP_MS. */
+export const SKY_PAD_MS = 600_000;
+export const SKY_PAD_STEP_MS = 30_000;
 export const MAX_TICKS = 12;
 export const GROUND_TRACK_STEPS = 180;
 export const TERMINATOR_STEP_DEG = 2;

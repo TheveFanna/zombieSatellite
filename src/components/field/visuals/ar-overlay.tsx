@@ -52,13 +52,13 @@ export function ArOverlay({ model }: { model: ArOverlayModel }) {
           fill="none"
           stroke={piece.inShadow ? SHADOW_COLOR : SUN_COLOR}
           strokeWidth={2}
-          strokeDasharray={piece.inShadow ? '6 5' : undefined}
+          strokeDasharray={piece.belowHorizon ? '6 5' : undefined}
         />
       ))}
       {model.ticks.map((t) => (
         <g key={t.label}>
-          <circle cx={px(t.ndcX)} cy={py(t.ndcY)} r={2.5} fill={SUN_COLOR} />
-          <text x={px(t.ndcX) + 6} y={py(t.ndcY) - 4} fill={SUN_COLOR} fontSize={11}>
+          <circle cx={px(t.ndcX)} cy={py(t.ndcY)} r={1.5} fill={SUN_COLOR} />
+          <text x={px(t.ndcX) + 4} y={py(t.ndcY) - 3} fill={SUN_COLOR} fontSize={9}>
             {t.label}
           </text>
         </g>
@@ -67,14 +67,10 @@ export function ArOverlay({ model }: { model: ArOverlayModel }) {
         <path key={`r${i}`} className="ar-ring" d={path(piece)} fill="none" stroke={ringColor} strokeWidth={2} />
       ))}
       {model.marker !== null ? (
-        <circle
-          cx={px(model.marker.ndcX)}
-          cy={py(model.marker.ndcY)}
-          r={9}
-          fill="none"
-          stroke={ringColor}
-          strokeWidth={3}
-        />
+        <g className="ar-current">
+          <circle cx={px(model.marker.ndcX)} cy={py(model.marker.ndcY)} r={10} fill={ringColor} fillOpacity={0.35} />
+          <circle cx={px(model.marker.ndcX)} cy={py(model.marker.ndcY)} r={5} fill={ringColor} stroke="#0d1117" strokeWidth={1} />
+        </g>
       ) : null}
       {model.edge !== null ? (
         <g
