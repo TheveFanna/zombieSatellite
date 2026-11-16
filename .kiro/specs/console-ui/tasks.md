@@ -90,19 +90,19 @@ Ground rules for the implementer:
     - _Requirements: 14.1–14.3, 14.6_
   - [x] 5.4 Main agent: commit staging `src/lib/console/ring.ts`, `src/lib/console/index.ts`, `src/components/console/copy.ts`, `src/components/console/countdown-ring.tsx`, `src/components/console/pass-timeline.tsx`, `src/components/console/session-console.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 6. Sheet and tab primitives, `sections` prop and story panel
+- [x] 6. Sheet and tab primitives, `sections` prop and story panel
   - Depends on: task 5.
-  - [ ] 6.1 Create `src/components/console/console-sheet.tsx` and `console-tabs.tsx` (parallel with 6.2; disjoint files, no edit of `copy.ts`, `globals.css` or `scaffold.test.ts`)
+  - [x] 6.1 Create `src/components/console/console-sheet.tsx` and `console-tabs.tsx` (parallel with 6.2; disjoint files, no edit of `copy.ts`, `globals.css` or `scaffold.test.ts`)
     - `ConsoleSheet` per design "Sheets and tabs": native `<dialog>` with `showModal()` and `close()`, `onClose` from the `close` event, 44 × 44 close button, children mounted only while open, progressive inline fallback when `HTMLDialogElement` is unsupported. `ConsoleTabs`: `role="tablist"`, `role="tab"`, `aria-selected`, `aria-controls`, roving `tabindex`, Left/Right/Home/End keys, `role="tabpanel"`. Strings come as props or from `CONSOLE_COPY` keys the main agent adds before dispatch (close label, sheet titles, tab labels).
     - _Requirements: 10.3, 10.4, 11.1_
-  - [ ] 6.2 Add the `sections` prop to `src/components/field/session-panel.tsx` and create `src/components/console/story-panel.tsx` (parallel with 6.1; disjoint files)
+  - [x] 6.2 Add the `sections` prop to `src/components/field/session-panel.tsx` and create `src/components/console/story-panel.tsx` (parallel with 6.1; disjoint files)
     - `FieldSessionPanel`: one optional `sections?: ReadonlyArray<'overview' | 'tuning' | 'minutes' | 'map' | 'links'>`, default all five, rendering exactly what it renders today when omitted (design C11 and "Re-hosting the S7 panels").
     - `story-panel.tsx`: the markup of the landed `EntryArticle` (story, history, sources, lifeline, Model_Viewer and its download, landed unplayable reason) copied from `src/app/page.tsx` as a presentational component with links unchanged. The original in `page.tsx` stays untouched until task 11.
     - _Requirements: 1.3, 1.4, 10.5, 10.6, 13.2_
-  - [ ] 6.3 Main agent: append the sheet, tab and dock string groups to `src/components/console/copy.ts` (close label, sheet titles, tab labels) and the `.sheet*` and `.tabs*` classes to the "Console" block of `src/app/globals.css`, then extend `tests/scaffold/scaffold.test.ts`
+  - [x] 6.3 Main agent: append the sheet, tab and dock string groups to `src/components/console/copy.ts` (close label, sheet titles, tab labels) and the `.sheet*` and `.tabs*` classes to the "Console" block of `src/app/globals.css`, then extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/console/console-sheet.tsx`, `components/console/console-tabs.tsx` and `components/console/story-panel.tsx`; the `CONSOLE_COMPONENTS` group of checks 1.24 and 1.25 gains the same three files by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 14.1–14.3, 14.6_
-  - [ ] 6.4 Main agent: commit staging `src/components/console/console-sheet.tsx`, `src/components/console/console-tabs.tsx`, `src/components/console/story-panel.tsx`, `src/components/console/copy.ts`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 6.4 Main agent: commit staging `src/components/console/console-sheet.tsx`, `src/components/console/console-tabs.tsx`, `src/components/console/story-panel.tsx`, `src/components/console/copy.ts`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 7. Session dock: S7 panels behind sheets and tabs
   - Depends on: task 6.

@@ -12,12 +12,17 @@ import Link from 'next/link';
 import { IlluminationBadge, InstrumentDetail } from './visuals/field-bits';
 import { SkyTrackView } from './visuals/sky-track';
 
+export type FieldSessionSection = 'overview' | 'tuning' | 'minutes' | 'map' | 'links';
+
+const ALL_SECTIONS: ReadonlyArray<FieldSessionSection> = ['overview', 'tuning', 'minutes', 'map', 'links'];
+
 export interface FieldSessionPanelProps {
   readonly entry: PlayableEntry;
   readonly snapshot: SessionSnapshot;
   readonly field: PassFieldSnapshot;
   readonly onCopy: (text: string) => Promise<boolean>;
   readonly onDownloadCsv: (csv: string, aosMs: number) => void;
+  readonly sections?: ReadonlyArray<FieldSessionSection>;
 }
 
 function rowLabel(point: TuningPoint, fallback: string): string {
@@ -37,7 +42,8 @@ function signedKhz(value: number): string {
   return `${value < 0 ? '\u2212' : '+'}${Math.abs(value).toFixed(2)} kHz`;
 }
 
-export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCsv }: FieldSessionPanelProps) {
+export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCsv, sections = ALL_SECTIONS }: FieldSessionPanelProps) {
+  const show = (s: FieldSessionSection) => sections.includes(s);
   const [notice, setNotice] = useState<string | null>(null);
   // Fallback instant for phases without a Session_Instant (1 Hz).
   const [nowMs, setNowMs] = useState(() => Date.now());
@@ -84,7 +90,9 @@ export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCs
 
   return (
     <section>
-      <h2>{FIELD_COPY.panelHeading}</h2>
+      {show('overview') ? <h2>{FIELD_COPY.panelHeading}</h2> : null}
+      {show('overview') ? (
+        <>
       <IlluminationBadge profile={profile} sunlitOnly={entry.beacon.sunlitOnly === true} />
       {field.track !== null ? (
         <SkyTrackView
@@ -99,7 +107,11 @@ export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCs
       <p>
         {FIELD_COPY.maxElevationLabel}: {pass.maxElevationDeg.toFixed(1)}°
       </p>
+        </>
+      ) : null}
 
+      {show('tuning') ? (
+        <>
       {tuning !== null && tuning.kind === 'no-frequency' ? <p>{FIELD_COPY.noFrequencyNote}</p> : null}
       {tuning !== null && tuning.kind === 'table' ? (
         <table className="tuning">
@@ -124,7 +136,10 @@ export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCs
       {nominalLine !== null ? <p>{nominalLine}</p> : null}
       {hasTable && entry.slug === 'les-1' ? <p>{FIELD_COPY.les1Note}</p> : null}
       {hasTable && entry.slug === 'prospero' ? <p>{FIELD_COPY.prosperoNote}</p> : null}
+        </>
+      ) : null}
 
+      {show('minutes') ? (
       <InstrumentDetail>
         <dl>
           <dt>{FIELD_COPY.azimuthLabel}</dt>
@@ -174,6 +189,8 @@ export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCs
           </>
         ) : null}
       </InstrumentDetail>
+      ) : null}
+      {show('map') ? (
       <GroundTrackMap
         satrec={field.satrec}
         observer={observer}
@@ -181,10 +198,13 @@ export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCs
         meanMotion={field.tle === null ? null : field.tle.MEAN_MOTION}
         entryName={entry.name}
       />
+      ) : null}
+      {show('links') ? (
       <p>
         <Link href={`/planner/${entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>{' '}
         <Link href={`/guide/${entry.noradId}`}>{FIELD_COPY.guideLink}</Link>
       </p>
+      ) : null}
     </section>
   );
 }

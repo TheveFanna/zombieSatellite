@@ -82,7 +82,7 @@ const SHELL_VISUALS = [
   'src/components/shell/visuals/sky-dome.tsx',
 ];
 /** The console components, listed by name. */
-const CONSOLE_COMPONENTS = ['src/components/console/alignment-meter.tsx', 'src/components/console/countdown-ring.tsx', 'src/components/console/pass-timeline.tsx', 'src/components/console/radar-panel.tsx', 'src/components/console/session-console.tsx'];
+const CONSOLE_COMPONENTS = ['src/components/console/alignment-meter.tsx', 'src/components/console/console-sheet.tsx', 'src/components/console/console-tabs.tsx', 'src/components/console/countdown-ring.tsx', 'src/components/console/pass-timeline.tsx', 'src/components/console/radar-panel.tsx', 'src/components/console/session-console.tsx', 'src/components/console/story-panel.tsx'];
 /** The field companion components, listed by name. */
 const FIELD_COMPONENTS = [
   'src/components/field/ar-view.tsx',
@@ -280,10 +280,13 @@ describe('Requirement 1: project scaffold', () => {
       'app/session/[noradId]/page.tsx',
       'app/session/page.tsx',
       'components/console/alignment-meter.tsx',
+      'components/console/console-sheet.tsx',
+      'components/console/console-tabs.tsx',
       'components/console/countdown-ring.tsx',
       'components/console/pass-timeline.tsx',
       'components/console/radar-panel.tsx',
       'components/console/session-console.tsx',
+      'components/console/story-panel.tsx',
       'components/field/ar-view.tsx',
       'components/field/first-run-guide.tsx',
       'components/field/ground-track-map.tsx',

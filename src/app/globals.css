@@ -1505,3 +1505,19 @@ table.tuning td:first-of-type {
 @media (prefers-reduced-motion: reduce) {
   .ring-fill { transition: none; }
 }
+
+/* Console: sheets and tabs (S8 task 6) */
+.sheet { position: fixed; inset: auto 0 0 0; width: 100%; max-width: none; max-height: 85vh; height: auto; margin: 0; padding: 0; border: 1px solid currentColor; border-radius: 1rem 1rem 0 0; overflow: auto; background: Canvas; color: CanvasText; }
+.sheet::backdrop { background: rgba(0, 0, 0, 0.6); }
+.sheetInline { position: static; max-height: none; border-radius: 0.5rem; margin: 1rem 0; }
+.sheetHead { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.5rem 1rem; background: inherit; border-bottom: 1px solid currentColor; }
+.sheetTitle { margin: 0; font-size: 1.1rem; }
+.sheetClose { min-width: 44px; min-height: 44px; padding: 0 0.9rem; cursor: pointer; }
+.sheetBody { padding: 1rem; }
+.tabsList { display: flex; flex-wrap: wrap; gap: 0.25rem; border-bottom: 1px solid currentColor; }
+.tabsTab { min-width: 44px; min-height: 44px; padding: 0 1rem; border: 1px solid transparent; background: none; color: inherit; font: inherit; cursor: pointer; }
+.tabsTab[aria-selected="true"] { border-color: currentColor; border-bottom-color: transparent; font-weight: 700; text-decoration: underline; }
+.tabsPanel { padding: 1rem 0; }
+@media (prefers-reduced-motion: reduce) {
+  .sheet, .tabsTab { transition: none; animation: none; }
+}
