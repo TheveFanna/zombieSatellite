@@ -54,4 +54,6 @@ export {
   filterPassesByElevation,
 } from './planner';
 export { buildCalendarEvent, calendarFileName } from './ics';
+export { GUIDE_ENTRIES, GUIDE_NONE, getGuideEntry } from './guide';
+export type { GuideEntry, GuideFact, GuideFacts, GuideLink, GuideRecordings } from './guide';
 export { FIELD_COPY } from './copy';

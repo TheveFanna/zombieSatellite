@@ -166,28 +166,28 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.5, 23.4_
   - [x] 10.4 Main agent: commit staging `src/lib/field/planner.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/field/planner-controller.ts`, `src/app/planner/[noradId]/page.tsx`, `src/app/session/page.tsx`, `src/components/field/session-panel.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 11. Calendar export
+- [x] 11. Calendar export
   - Depends on: task 10.
   - [x] 11.1 Create `src/lib/field/ics.ts` and wire the button
     - `buildCalendarEvent`, `calendarFileName`, escaping and 75-octet folding per design "Calendar event" (RFC 5545 only, VALARM 10 min before AOS, UID `<noradId>-<riseMs>@zombiesatellite`, `stampMs` from `clock.nowMs()`); extend `index.ts` and `copy.ts` (calendar pieces). Add the "Add to calendar" button to the planner detail in `src/app/planner/[noradId]/page.tsx`, delivered through `field-downloader.ts` as `text/calendar;charset=utf-8`. No test; the owner imports the file on a phone in task 18.
     - _Requirements: 11.1–11.5_
   - [x] 11.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 23.4_
-  - [-] 11.3 Main agent: commit staging `src/lib/field/ics.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `src/app/planner/[noradId]/page.tsx` by name, then push.
+  - [x] 11.3 Main agent: commit staging `src/lib/field/ics.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `src/app/planner/[noradId]/page.tsx` by name, then push.
 
 - [ ] 12. Listening_Guide
   - Depends on: task 11.
-  - [~] 12.1 Confirm the new sources, then create `src/lib/field/guide.ts`
+  - [x] 12.1 Confirm the new sources, then create `src/lib/field/guide.ts`
     - Open each of the sources N1 to N5 of design "Listening guide" once and confirm the fact it is meant to support. Drop any fact the page does not support and write "none documented" instead. Record the outcome per source in the commit message body. No setup is promised for AO-7, Prospero or IMAGE unless a source supports it.
     - `guide.ts` per design: named `facts` properties each `{ text, source }`, named `recordings`, explicit `none` texts, the red lines (Transit 5B-5 identity dispute, no nuclear-battery claim, Prospero "later reports are unconfirmed", IMAGE "silent again since August 2018" with no frequency, LES-1 "about 237 MHz"). Extend `index.ts` and `copy.ts` (guide page labels, the fixed own-equipment line).
     - _Requirements: 14.1–14.7_
-  - [~] 12.2 Create `src/app/guide/[noradId]/page.tsx` and link it
+  - [x] 12.2 Create `src/app/guide/[noradId]/page.tsx` and link it
     - Client page on the `session/[noradId]` pattern; frequency from `displayFrequency` verbatim or the No_Frequency_Note, mode from `beaconMode`, the setup line, the illumination condition, recordings as links only, the fixed line. Add the "Guide" link to each row of `src/app/session/page.tsx`, to `session-panel.tsx` (block 6), to the planner header in `src/app/planner/[noradId]/page.tsx` and to the Home_Page entry cards in `src/app/page.tsx`. Append guide classes to `src/app/globals.css` (serif prose).
     - _Requirements: 14.1–14.8, 18.1_
-  - [~] 12.3 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 12.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 directory listing gains `guide`; the `.tsx` inventory gains `app/guide/[noradId]/page.tsx`; checks 1.24 and 1.25 `checkedTexts()` gains `['listening guide strings', propertyStrings('src/lib/field/guide.ts')]`; the `FIELD_PAGES` group gains the guide page by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. Any guide string the scan rejects is reworded.
     - _Requirements: 21.3–21.5, 23.4_
-  - [~] 12.4 Main agent: commit staging `src/lib/field/guide.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/app/guide/[noradId]/page.tsx`, `src/app/session/page.tsx`, `src/components/field/session-panel.tsx`, `src/app/planner/[noradId]/page.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push. The Should tier is complete here.
+  - [-] 12.4 Main agent: commit staging `src/lib/field/guide.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/app/guide/[noradId]/page.tsx`, `src/app/session/page.tsx`, `src/components/field/session-panel.tsx`, `src/app/planner/[noradId]/page.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push. The Should tier is complete here.
 
 - [ ] 13. Satellite models: research, register and model core
   - Depends on: task 12.

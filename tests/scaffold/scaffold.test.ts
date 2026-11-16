@@ -71,7 +71,7 @@ function parseAppPath(relativePath: string): ts.SourceFile {
 
 const SESSION_PAGES = ['session/page.tsx', 'session/[noradId]/page.tsx'];
 /** The field companion pages, listed by name. */
-const FIELD_PAGES = ['planner/[noradId]/page.tsx'];
+const FIELD_PAGES = ['planner/[noradId]/page.tsx', 'guide/[noradId]/page.tsx'];
 const CARDS_PAGES = ['cards/page.tsx', 'cards/[noradId]/[aosMs]/[n]/page.tsx'];
 const SHELL_REGISTRAR = 'src/components/shell/service-worker-registrar.tsx';
 /** The presentational SVG components of task 7C, listed by name. */
@@ -172,6 +172,7 @@ function checkedTexts(): Array<[string, string[]]> {
     ['qsl copy strings', propertyStrings('src/lib/qsl/copy.ts')],
     ['shell copy strings', propertyStrings('src/components/shell/copy.ts')],
     ['field copy strings', propertyStrings('src/lib/field/copy.ts')],
+    ['listening guide strings', propertyStrings('src/lib/field/guide.ts')],
     ['manifest strings', propertyStrings('src/app/manifest.ts')],
   ];
 }
@@ -244,6 +245,7 @@ describe('Requirement 1: project scaffold', () => {
       'api',
       'cards',
       'globals.css',
+      'guide',
       'layout.tsx',
       'manifest.ts',
       'page.tsx',
@@ -261,6 +263,7 @@ describe('Requirement 1: project scaffold', () => {
     expect(tsxFiles.sort()).toEqual([
       'app/cards/[noradId]/[aosMs]/[n]/page.tsx',
       'app/cards/page.tsx',
+      'app/guide/[noradId]/page.tsx',
       'app/layout.tsx',
       'app/page.tsx',
       'app/planner/[noradId]/page.tsx',

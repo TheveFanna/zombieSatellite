@@ -327,6 +327,7 @@ function PlannerView({ entry }: { entry: PlayableEntry }) {
           <Link className="button primary" href={`/session/${entry.noradId}`}>
             {FIELD_COPY.plannerSessionLink}
           </Link>{' '}
+          <Link href={`/guide/${entry.noradId}`}>{FIELD_COPY.guideLink}</Link>{' '}
           <Link href="/session">{FIELD_COPY.plannerBackLink}</Link>
         </p>
       </header>

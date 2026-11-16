@@ -36,7 +36,8 @@ function EntryArticle({ entry }: { entry: CatalogEntry }) {
       {entry.playable ? (
         <p>
           <Link className="button" href={`/session/${entry.noradId}`}>{SHELL_COPY.openSession}</Link>{' '}
-          <Link className="button" href={`/planner/${entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>
+          <Link className="button" href={`/planner/${entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>{' '}
+          <Link className="button" href={`/guide/${entry.noradId}`}>{FIELD_COPY.guideLink}</Link>
         </p>
       ) : (
         <p>{SHELL_COPY.unplayableReasons[entry.unplayableReason]}</p>

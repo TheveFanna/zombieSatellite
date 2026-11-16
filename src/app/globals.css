@@ -1399,3 +1399,25 @@ table.tuning td:first-of-type {
 
 .planner-detail { margin-top: 1.25rem; }
 .planner-detail .tuning { width: 100%; }
+
+/* Field companion: listening guide */
+.guide-simple dl {
+  margin: 0.8rem 0;
+}
+.guide-simple dd {
+  margin: 0 0 0.6rem;
+  font-family: var(--mono);
+}
+.guide-prose {
+  margin-top: 1.25rem;
+  font-family: var(--serif);
+  line-height: 1.55;
+}
+.guide-prose ul {
+  padding-left: 1.1rem;
+}
+.guide-source {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--dim);
+}

@@ -182,7 +182,8 @@ export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCs
         entryName={entry.name}
       />
       <p>
-        <Link href={`/planner/${entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>
+        <Link href={`/planner/${entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>{' '}
+        <Link href={`/guide/${entry.noradId}`}>{FIELD_COPY.guideLink}</Link>
       </p>
     </section>
   );

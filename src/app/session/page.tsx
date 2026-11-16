@@ -177,7 +177,8 @@ export default function SessionPickerPage() {
               </p>
               <PassInfo row={row} onRetry={() => controller?.retry()} />
               <Link className="button primary" href={`/session/${row.entry.noradId}`}>Open session</Link>{' '}
-              <Link className="button" href={`/planner/${row.entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>
+              <Link className="button" href={`/planner/${row.entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>{' '}
+              <Link className="button" href={`/guide/${row.entry.noradId}`}>{FIELD_COPY.guideLink}</Link>
             </li>
           ))}
         </ul>
