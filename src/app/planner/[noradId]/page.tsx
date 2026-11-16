@@ -8,7 +8,9 @@ import {
   DEFAULT_PLANNER_MIN_ELEVATION_DEG,
   FIELD_COPY,
   PLANNER_MIN_ELEVATIONS,
+  buildCalendarEvent,
   buildSkyTrack,
+  calendarFileName,
   filterPassesByElevation,
   minuteTable,
   tuningCsv,
@@ -125,8 +127,38 @@ function PassDetail({
     );
   }
 
+  function addToCalendar() {
+    if (fieldDeps === null || satrec === null) return;
+    const a = observeAt(satrec, pass.riseMs, observer);
+    const l = observeAt(satrec, pass.setMs, observer);
+    if (!a.ok || !l.ok) return;
+    const ics = buildCalendarEvent({
+      entry: {
+        slug: entry.slug,
+        name: entry.name,
+        noradId: entry.noradId,
+        displayFrequency: entry.beacon.displayFrequency,
+      },
+      pass,
+      aosAzimuthDeg: a.lookAngles.azimuthDeg,
+      losAzimuthDeg: l.lookAngles.azimuthDeg,
+      profile: profile ?? { kind: 'unavailable' },
+      stampMs: fieldDeps.clock.nowMs(),
+    });
+    createFieldDownloader(fieldDeps.download).downloadText(
+      ics,
+      'text/calendar;charset=utf-8',
+      calendarFileName(entry.slug, pass.riseMs),
+    );
+  }
+
   return (
     <section className="planner-detail">
+      <p>
+        <button type="button" onClick={addToCalendar}>
+          {FIELD_COPY.addToCalendar}
+        </button>
+      </p>
       <IlluminationBadge profile={profile} sunlitOnly={entry.beacon.sunlitOnly === true} />
       <SkyTrackView
         track={track}

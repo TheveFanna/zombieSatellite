@@ -53,4 +53,5 @@ export {
   PLANNER_WINDOW_HOURS,
   filterPassesByElevation,
 } from './planner';
+export { buildCalendarEvent, calendarFileName } from './ics';
 export { FIELD_COPY } from './copy';

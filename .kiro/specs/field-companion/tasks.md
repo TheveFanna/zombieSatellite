@@ -153,7 +153,7 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.5, 23.4_
   - [x] 9.3 Main agent: commit staging `src/components/field/ground-track-map.tsx`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 10. Pass_Planner page
+- [x] 10. Pass_Planner page
   - Depends on: task 9.
   - [x] 10.1 Create `src/lib/field/planner.ts` and `src/components/field/planner-controller.ts`
     - `planner.ts` constants and `filterPassesByElevation` per design "Pass planner core". The controller per design "Planner": states `loading`, `searching`, `badging`, `ready`, `tle-unavailable`; `predictPasses` over 168 h at 0° in a `setTimeout(…, 0)` task; illumination profiles in chunks of 6 passes per task; a generation counter dropping stale work; no Web Worker. Extend `index.ts` and `copy.ts` (planner texts, empty-state texts).
@@ -164,16 +164,16 @@ Ground rules for the implementer:
   - [x] 10.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 directory listing gains `planner`; the `.tsx` inventory gains `app/planner/[noradId]/page.tsx`; the `.ts` list under `src/app` is unchanged; the rendered-JSX group of checks 1.24 and 1.25 gains `FIELD_PAGES` with that page by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [-] 10.4 Main agent: commit staging `src/lib/field/planner.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/field/planner-controller.ts`, `src/app/planner/[noradId]/page.tsx`, `src/app/session/page.tsx`, `src/components/field/session-panel.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 10.4 Main agent: commit staging `src/lib/field/planner.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/field/planner-controller.ts`, `src/app/planner/[noradId]/page.tsx`, `src/app/session/page.tsx`, `src/components/field/session-panel.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 11. Calendar export
   - Depends on: task 10.
-  - [~] 11.1 Create `src/lib/field/ics.ts` and wire the button
+  - [x] 11.1 Create `src/lib/field/ics.ts` and wire the button
     - `buildCalendarEvent`, `calendarFileName`, escaping and 75-octet folding per design "Calendar event" (RFC 5545 only, VALARM 10 min before AOS, UID `<noradId>-<riseMs>@zombiesatellite`, `stampMs` from `clock.nowMs()`); extend `index.ts` and `copy.ts` (calendar pieces). Add the "Add to calendar" button to the planner detail in `src/app/planner/[noradId]/page.tsx`, delivered through `field-downloader.ts` as `text/calendar;charset=utf-8`. No test; the owner imports the file on a phone in task 18.
     - _Requirements: 11.1–11.5_
-  - [~] 11.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
+  - [x] 11.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 23.4_
-  - [~] 11.3 Main agent: commit staging `src/lib/field/ics.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `src/app/planner/[noradId]/page.tsx` by name, then push.
+  - [-] 11.3 Main agent: commit staging `src/lib/field/ics.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `src/app/planner/[noradId]/page.tsx` by name, then push.
 
 - [ ] 12. Listening_Guide
   - Depends on: task 11.
