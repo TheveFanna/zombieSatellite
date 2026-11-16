@@ -283,6 +283,7 @@ describe('Requirement 1: project scaffold', () => {
       'app/session/page.tsx',
       'components/ar/ar-scene.tsx',
       'components/ar/ar-tab.tsx',
+      'components/ar/visibility-bar.tsx',
       'components/console/alignment-meter.tsx',
       'components/console/console-home.tsx',
       'components/console/console-preview.tsx',

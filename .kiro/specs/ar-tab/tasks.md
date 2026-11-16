@@ -16,12 +16,12 @@ Ground rules: one commit per task after its tests pass, then push at once; never
   - [x] 2.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
   - [x] 2.3 Main agent: commit by name, then push.
 
-- [ ] 3. Visibility bar and Sky_Slider
+- [x] 3. Visibility bar and Sky_Slider
   - Depends on: task 2.
-  - [ ] 3.1 Add `src/components/ar/visibility-bar.tsx`; wire the bar, its text, the slider and the Night_Sky stars into `ar-tab.tsx` and `ar-scene.tsx`. Add `components/ar/visibility-bar.tsx` to the check 1.19 list.
+  - [x] 3.1 Add `src/components/ar/visibility-bar.tsx`; wire the bar, its text, the slider and the Night_Sky stars into `ar-tab.tsx` and `ar-scene.tsx`. Add `components/ar/visibility-bar.tsx` to the check 1.19 list.
     - _Requirements: 7.1 to 7.4, 8.1 to 8.4_
-  - [ ] 3.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
-  - [ ] 3.3 Main agent: commit by name, then push.
+  - [x] 3.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
+  - [x] 3.3 Main agent: commit by name, then push.
 
 - [ ] 4. Review items for the project owner on a real phone (executed by the owner)
   - Depends on: task 3, with its push deployed.

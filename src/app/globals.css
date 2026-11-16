@@ -1640,17 +1640,19 @@ table.tuning td:first-of-type {
   right: 0.6rem;
   text-align: right;
 }
-.ar-tab-controls {
+.ar-tab-bottom {
   position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
+  background: linear-gradient(0deg, rgba(5, 8, 13, 0.85), transparent);
+}
+.ar-tab-controls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.5rem;
-  background: linear-gradient(0deg, rgba(5, 8, 13, 0.8), transparent);
+  padding: 0.3rem 0.5rem 0.5rem;
   font-size: 0.72rem;
 }
 .ar-tab-controls button {
@@ -1662,4 +1664,64 @@ table.tuning td:first-of-type {
   color: var(--bone);
   font-family: var(--mono);
   font-size: 0.72rem;
+}
+.ar-vis {
+  padding: 0.4rem 0.6rem 0;
+}
+.ar-vis-track {
+  position: relative;
+  height: 1.1rem;
+  border: 1px solid var(--hair);
+  border-radius: 0.3rem;
+  background: rgba(10, 15, 28, 0.7);
+}
+.ar-vis-win {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--phosphor-2);
+}
+.ar-vis-running {
+  background: var(--phosphor);
+}
+.ar-vis-tick {
+  position: absolute;
+  top: 100%;
+  padding-left: 2px;
+  border-left: 1px solid var(--tick);
+  color: var(--dim);
+  font-size: 0.55rem;
+  line-height: 1;
+}
+.ar-vis-now {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 0;
+  width: 2px;
+  background: var(--ember);
+}
+.ar-vis-text {
+  margin: 0.9rem 0 0;
+  font-size: 0.7rem;
+  text-shadow: 0 0 4px #000;
+}
+.ar-sky {
+  position: absolute;
+  top: 50%;
+  right: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  transform: translateY(-50%);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.ar-sky input {
+  height: 8rem;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  accent-color: var(--phosphor);
 }

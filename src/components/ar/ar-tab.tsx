@@ -1,6 +1,6 @@
 'use client';
 // AR tab (S9): standalone AR with its own pointing session, camera, TLE source and observer.
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 import { listPlayableEntries } from '../../lib/catalog/index';
 import {
@@ -11,6 +11,8 @@ import {
   FOV_STEP_DEG,
   RING_MORPH_MS,
   RING_REFRESH_MS,
+  STAR_COUNT,
+  STAR_SEED,
   arMarker,
   blendDirection,
   blendRings,
@@ -18,13 +20,17 @@ import {
   cardinalMarks,
   guideAngleRad,
   horizonLine,
+  hourTicks,
   lockRing,
+  projectStars,
   projectTrackArc,
   ringSegments,
   ringTicks,
+  starField,
+  visibilityWindows,
 } from '../../lib/field/index';
-import type { ArPiece, Direction, OrbitRing } from '../../lib/field/index';
-import { observeAt } from '../../lib/orbit/index';
+import type { ArPiece, Direction, OrbitRing, VisibilityWindow } from '../../lib/field/index';
+import { observeAt, predictPasses } from '../../lib/orbit/index';
 import type { Observer, Satrec, TleRecord } from '../../lib/orbit/index';
 import { CALIBRATION_STEP_DEG, evaluateLock } from '../../lib/pointing/index';
 import { formatUtc } from '../../lib/session/index';
@@ -40,6 +46,7 @@ import { browserGeolocation, browserMediaDevices } from '../shell/browser-deps';
 import { createCameraController } from '../shell/camera';
 import { createLocator } from '../shell/geolocation';
 import { ArScene } from './ar-scene';
+import { VisibilityBar } from './visibility-bar';
 import type { ArSceneModel } from './ar-scene';
 
 const ENTRIES = listPlayableEntries();
@@ -94,6 +101,10 @@ export function ArTab() {
   const [cameraState, setCameraState] = useState<'idle' | 'on' | 'off'>('idle');
   const [pointing, setPointing] = useState<PointingSession | null>(null);
   const [, setFrame] = useState(0);
+  const [cameraLevel, setCameraLevel] = useState(100);
+  const [observerStamp, setObserverStamp] = useState(0);
+  const [bar, setBar] = useState<{ nowMs: number; windows: readonly VisibilityWindow[] }>({ nowMs: 0, windows: [] });
+  const stars = useMemo(() => starField(STAR_COUNT, STAR_SEED), []);
 
   // Mount: shared deps, observer, pointing session, camera. Cleanup releases every resource.
   useEffect(() => {
@@ -114,6 +125,7 @@ export function ArTab() {
         observerRef.current = position;
         simRef.current.ringAnchor = 0;
         session.setObserver(position);
+        setObserverStamp((n) => n + 1);
       }
       return applied;
     });
@@ -157,6 +169,33 @@ export function ArTab() {
       active = false;
     };
   }, [selectedId]);
+
+  // The 24-hour windows of the selected satellite, recomputed on a change and every minute.
+  useEffect(() => {
+    const data = loadedRef.current.get(selectedId);
+    if (status !== 'ready' || data === undefined) {
+      setBar({ nowMs: Date.now(), windows: [] });
+      return;
+    }
+    const compute = () => {
+      const now = Date.now();
+      try {
+        const passes = predictPasses({
+          observer: { ...observerRef.current, altitudeKm: 0 },
+          tle: data.tle,
+          start: now,
+          durationHours: 24,
+          minElevationDeg: 0,
+        });
+        setBar({ nowMs: now, windows: visibilityWindows(passes, now) });
+      } catch {
+        setBar({ nowMs: now, windows: [] });
+      }
+    };
+    compute();
+    const id = window.setInterval(compute, 60_000);
+    return () => window.clearInterval(id);
+  }, [status, selectedId, observerStamp]);
 
   useEffect(() => {
     const el = rootRef.current;
@@ -276,6 +315,17 @@ export function ArTab() {
     };
   }
 
+  const nightness = cameraState === 'on' ? 1 - cameraLevel / 100 : 1;
+  if (model !== null && basis !== null && nightness > 0.01) {
+    model = { ...model, nightness, stars: projectStars(stars, offsetDeg, basis, aspect, fovDeg) };
+  }
+  const nextWindow = bar.windows[0];
+  const summary =
+    nextWindow === undefined
+      ? 'No pass in 24 h'
+      : nextWindow.running
+        ? 'In view now, max ' + Math.round(nextWindow.maxElevationDeg) + '°'
+        : 'Next ' + formatUtc(nextWindow.riseMs).slice(11, 16) + 'Z, max ' + Math.round(nextWindow.maxElevationDeg) + '°';
   const dragLayer = snap?.dragActive === true;
   const needsSensors = snap !== null && (snap.permission === 'unknown' || snap.permission === 'denied');
   const pointer = (e: PointerEvent<HTMLDivElement>) => ({ pointerId: e.pointerId, clientX: e.clientX, clientY: e.clientY });
@@ -311,6 +361,7 @@ export function ArTab() {
           height: '100%',
           objectFit: 'cover',
           display: cameraState === 'on' ? 'block' : 'none',
+          opacity: cameraLevel / 100,
         }}
       />
       {model !== null ? <ArScene model={model} /> : null}
@@ -362,6 +413,21 @@ export function ArTab() {
         <p>{pointing === null ? ' ' : `${formatUtc(Date.now()).slice(11, 19)}Z`}</p>
       </div>
 
+      <label className="ar-sky">
+        <span>Cam</span>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={cameraLevel}
+          onChange={(e) => setCameraLevel(Number(e.target.value))}
+          aria-label="Camera picture to night sky"
+        />
+        <span>Sky</span>
+      </label>
+
+      <div className="ar-tab-bottom">
+      <VisibilityBar windows={bar.windows} ticks={bar.nowMs === 0 ? [] : hourTicks(bar.nowMs)} summary={summary} />
       <div className="ar-tab-controls">
         {needsSensors ? (
           <button type="button" onClick={() => pointing?.requestPermission()} disabled={pointing === null}>
@@ -382,6 +448,7 @@ export function ArTab() {
         </button>
         <span>{Math.round(fovDeg)}°</span>
         {cameraState === 'off' ? <span>No camera</span> : null}
+      </div>
       </div>
     </div>
   );
