@@ -1469,3 +1469,13 @@ table.tuning td:first-of-type {
 .meter-readout { fill: var(--bone); font-family: ui-monospace, monospace; font-size: 16px; }
 .meter-band { margin: 0; font-weight: 600; }
 .meter-caption { margin: 0; font-size: 0.8rem; color: var(--dim); }
+.radar { touch-action: none; width: 100%; height: auto; }
+.radar-sweep { animation: radar-turn 8s linear infinite; transform-origin: 0 0; transform-box: view-box; }
+.radar-wedge { fill: var(--phosphor); opacity: 0.12; }
+.radar-line { stroke: var(--phosphor); stroke-width: 0.8; opacity: 0.5; }
+.radar-empty { fill: var(--dim); font-size: 9px; }
+.radar-sunlit-only .track-shadow { display: none; }
+[data-ar-open] .radar-sweep { animation-play-state: paused; }
+@keyframes radar-turn {
+  to { transform: rotate(360deg); }
+}

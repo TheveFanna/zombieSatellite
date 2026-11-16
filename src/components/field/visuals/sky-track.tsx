@@ -11,6 +11,32 @@ function pointOf(s: { azimuthDeg: number; elevationDeg: number }) {
   return domePoint(s.azimuthDeg, Math.max(s.elevationDeg, 0), R);
 }
 
+/** The path and shadow segments as a layer inside an existing `<svg>` on the dome. */
+export function SkyTrackLayer({ track, profile }: { track: SkyTrack; profile: IlluminationProfile | null }) {
+  const segments =
+    profile === null
+      ? [{ inShadow: false, samples: track.samples.filter((s): s is Extract<SkySample, { ok: true }> => s.ok) }]
+      : trackSegments(track, profile);
+  return (
+    <>
+      {segments.map((seg, i) =>
+        seg.samples.length < 2 ? null : (
+          <polyline
+            key={i}
+            className={seg.inShadow ? 'track-shadow' : 'track-sun'}
+            points={seg.samples
+              .flatMap((s) => {
+                const q = pointOf(s);
+                return q === null ? [] : [`${q.x.toFixed(2)},${q.y.toFixed(2)}`];
+              })
+              .join(' ')}
+          />
+        ),
+      )}
+    </>
+  );
+}
+
 export function SkyTrackView({
   track,
   profile,
@@ -26,10 +52,6 @@ export function SkyTrackView({
   truncatedStart: boolean;
   truncatedEnd: boolean;
 }) {
-  const segments =
-    profile === null
-      ? [{ inShadow: false, samples: track.samples.filter((s): s is Extract<SkySample, { ok: true }> => s.ok) }]
-      : trackSegments(track, profile);
   const aos = track.aos.ok ? track.aos : null;
   const los = track.los.ok ? track.los : null;
   const tca = track.tca.ok ? track.tca : null;
@@ -41,20 +63,7 @@ export function SkyTrackView({
     <svg className="dome dome-pass dome-track" viewBox={DOME_VIEWBOX} role="img" aria-label={FIELD_COPY.skyTrackLabel}>
       <circle className="dome-floor" r={R} />
       <DomeFrame />
-      {segments.map((seg, i) =>
-        seg.samples.length < 2 ? null : (
-          <polyline
-            key={i}
-            className={seg.inShadow ? 'track-shadow' : 'track-sun'}
-            points={seg.samples
-              .flatMap((s) => {
-                const q = pointOf(s);
-                return q === null ? [] : [`${q.x.toFixed(2)},${q.y.toFixed(2)}`];
-              })
-              .join(' ')}
-          />
-        ),
-      )}
+      <SkyTrackLayer track={track} profile={profile} />
       {track.tickMs.map((t) => {
         const s = track.samples.find((x) => x.tMs === t);
         if (s === undefined || !s.ok) return null;

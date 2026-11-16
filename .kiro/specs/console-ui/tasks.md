@@ -37,7 +37,7 @@ Ground rules for the implementer:
     - _Requirements: 2.5, 3.3, 14.5_
   - [x] 1.3 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. The scaffold test needs no change in this task (no `.tsx`, route or copy module is added).
     - _Requirements: 14.6_
-  - [ ] 1.4 Main agent: commit staging `.kiro/specs/console-ui/.config.kiro`, `requirements.md`, `design.md`, `tasks.md`, `src/lib/console/meter.ts`, `src/lib/console/index.ts`, `tests/helpers/console-source-scan.ts`, `tests/console/source-boundary.test.ts` and `tests/console/meter.test.ts` by name, then push.
+  - [x] 1.4 Main agent: commit staging `.kiro/specs/console-ui/.config.kiro`, `requirements.md`, `design.md`, `tasks.md`, `src/lib/console/meter.ts`, `src/lib/console/index.ts`, `tests/helpers/console-source-scan.ts`, `tests/console/source-boundary.test.ts` and `tests/console/meter.test.ts` by name, then push.
 
 - [ ] 2. Console copy, frame throttle and Alignment_Meter component
   - Depends on: task 1.
@@ -51,20 +51,20 @@ Ground rules for the implementer:
   - [x] 2.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/console/alignment-meter.tsx` (test title names the console components); checks 1.24 and 1.25 `checkedTexts()` gains `['console copy strings', propertyStrings('src/components/console/copy.ts')]` and the rendered-JSX group gains a `CONSOLE_COMPONENTS` constant holding that file by name. Directory listing and `.ts` list unchanged. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 14.1–14.3, 14.6_
-  - [ ] 2.4 Main agent: commit staging `src/components/console/copy.ts`, `src/components/console/frame-throttle.ts`, `src/components/console/alignment-meter.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 2.4 Main agent: commit staging `src/components/console/copy.ts`, `src/components/console/frame-throttle.ts`, `src/components/console/alignment-meter.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 3. Radar_Panel
   - Depends on: task 2.
-  - [ ] 3.1 Export `SkyTrackLayer` from `src/components/field/visuals/sky-track.tsx`
+  - [x] 3.1 Export `SkyTrackLayer` from `src/components/field/visuals/sky-track.tsx`
     - Per design "Landed files changed": export the path and shadow drawing as `SkyTrackLayer`, a layer inside an existing `<svg>`; `SkyTrackView` renders it and its markup stays unchanged.
     - _Requirements: 5.1, 5.3, 13.1_
-  - [ ] 3.2 Create `src/components/console/radar-panel.tsx`
+  - [x] 3.2 Create `src/components/console/radar-panel.tsx`
     - Props as design "Radar panel": `DomeFrame`, `DOME_RADIUS`, `DOME_VIEWBOX`, `domePoint`, `domeRadius`; `SkyTrackLayer` for the path and shadow segments; satellite dot, AOS/peak/LOS marks, pointing reticle, Lock_Ring of radius `domeRadius(LOCK_TOLERANCE_DEG)`, `<g className="radar-sweep">` rotated by a CSS `@keyframes` of 8 s per turn, the `emptyText` empty state (nothing invented). Optional pointer handlers on the element for the drag surface with `touch-action: none`. Append `.radar*` classes to the "Console" block of `src/app/globals.css`, including `[data-ar-open] .radar-sweep { animation-play-state: paused }`.
     - _Requirements: 5.1–5.4, 5.6, 11.2, 11.3_
-  - [ ] 3.3 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 3.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/console/radar-panel.tsx`; the `CONSOLE_COMPONENTS` group of checks 1.24 and 1.25 gains it by name. `sky-track.tsx` is already covered by `FIELD_COMPONENTS`. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 14.1–14.3, 14.6_
-  - [ ] 3.4 Main agent: commit staging `src/components/field/visuals/sky-track.tsx`, `src/components/console/radar-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 3.4 Main agent: commit staging `src/components/field/visuals/sky-track.tsx`, `src/components/console/radar-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 4. Session_Console main area (in place)
   - Depends on: task 3.
