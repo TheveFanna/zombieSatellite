@@ -22,12 +22,12 @@ Ground rules: one commit per task after its tests pass, then push at once; never
   - [x] 3.2 Run `pnpm test`, `pnpm run build`.
   - [x] 3.3 Main agent: commit by name, then push.
 
-- [ ] 4. Archive page and home split
+- [x] 4. Archive page and home split
   - Depends on: task 3.
-  - [ ] 4.1 Move the catalog list to `src/components/catalog/catalog-list.tsx`, add `src/app/catalog/page.tsx`, remove the list from `LandedHome`, add the Archive link. Add `/catalog` to the service worker and bump the cache name. Update the scaffold lists.
+  - [x] 4.1 Move the catalog list to `src/components/catalog/catalog-list.tsx`, add `src/app/catalog/page.tsx`, remove the list from `LandedHome`, add the Archive link. Add `/catalog` to the service worker and bump the cache name. Update the scaffold lists.
     - _Requirements: 5.1, 5.2, 5.6_
-  - [ ] 4.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
-  - [ ] 4.3 Main agent: commit by name, then push.
+  - [x] 4.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
+  - [x] 4.3 Main agent: commit by name, then push.
 
 - [ ] 5. Passes page
   - Depends on: task 4.
