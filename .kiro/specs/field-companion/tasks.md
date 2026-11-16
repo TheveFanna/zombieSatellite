@@ -142,7 +142,7 @@ Ground rules for the implementer:
     - _Requirements: 12.6, 12.7_
   - [x] 8.4 Main agent: commit staging `scripts/build-coastline.mjs`, `src/lib/field/data/coastline.ts`, `src/lib/field/geodetic.ts`, `src/lib/field/ground-track.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/ground.test.ts` by name, then push.
 
-- [ ] 9. Ground_Track_Map component
+- [x] 9. Ground_Track_Map component
   - Depends on: task 8.
   - [x] 9.1 Create `src/components/field/ground-track-map.tsx` and wire it
     - Per design "Ground_Track_Map component": static graticule and coastline path, dynamic night polygon, past and future track, footprint at −360°, 0° and +360°, satellite dot, Observer_Pin, the recompute rules (track on leaving one grid step, terminator per UTC minute), the no-orbit state, the Simple_View map with an Instrument_Detail of latitude, longitude, altitude, footprint radius and track span. Add block 5 to `session-panel.tsx` (map at `snapshot.sessionInstantMs`, demo instant included). Append `.map*` classes to the "Field companion" block of `src/app/globals.css`.
@@ -151,20 +151,20 @@ Ground rules for the implementer:
   - [x] 9.2 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/ground-track-map.tsx`; the `FIELD_COMPONENTS` group of checks 1.24 and 1.25 gains it by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [-] 9.3 Main agent: commit staging `src/components/field/ground-track-map.tsx`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 9.3 Main agent: commit staging `src/components/field/ground-track-map.tsx`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 10. Pass_Planner page
   - Depends on: task 9.
-  - [~] 10.1 Create `src/lib/field/planner.ts` and `src/components/field/planner-controller.ts`
+  - [x] 10.1 Create `src/lib/field/planner.ts` and `src/components/field/planner-controller.ts`
     - `planner.ts` constants and `filterPassesByElevation` per design "Pass planner core". The controller per design "Planner": states `loading`, `searching`, `badging`, `ready`, `tle-unavailable`; `predictPasses` over 168 h at 0° in a `setTimeout(…, 0)` task; illumination profiles in chunks of 6 passes per task; a generation counter dropping stale work; no Web Worker. Extend `index.ts` and `copy.ts` (planner texts, empty-state texts).
     - _Requirements: 10.1–10.3, 10.8_
-  - [~] 10.2 Create `src/app/planner/[noradId]/page.tsx` and link it
+  - [x] 10.2 Create `src/app/planner/[noradId]/page.tsx` and link it
     - Client page on the `session/[noradId]` pattern (`resolvePlayableEntry`, a not-found branch, observer from the observer store, `createPickerBrowserDeps()` fetcher): filter control 0°, 10°, 20°, 30° (default 10°), rows with AOS and LOS UTC through `formatUtc`, azimuths, maximum elevation, badge and the secondary `formatLocalTimeNote` line; a selected-row detail with the Sky_Track, Tuning_Table or No_Frequency_Note, an Instrument_Detail (Minute_Table, copy, CSV, illumination instants) and the Ground_Track_Map at the clock instant; the header link "Open session (it targets the next pass)" with the first pass marked. Add the "Plan passes" link to each row of `src/app/session/page.tsx`, to `session-panel.tsx` (block 6) and to the Home_Page entry cards in `src/app/page.tsx`. Append planner classes to `src/app/globals.css`.
     - _Requirements: 10.4–10.7, 18.1–18.4, 22.2_
-  - [~] 10.3 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 10.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 directory listing gains `planner`; the `.tsx` inventory gains `app/planner/[noradId]/page.tsx`; the `.ts` list under `src/app` is unchanged; the rendered-JSX group of checks 1.24 and 1.25 gains `FIELD_PAGES` with that page by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [~] 10.4 Main agent: commit staging `src/lib/field/planner.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/field/planner-controller.ts`, `src/app/planner/[noradId]/page.tsx`, `src/app/session/page.tsx`, `src/components/field/session-panel.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [-] 10.4 Main agent: commit staging `src/lib/field/planner.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/field/planner-controller.ts`, `src/app/planner/[noradId]/page.tsx`, `src/app/session/page.tsx`, `src/components/field/session-panel.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 11. Calendar export
   - Depends on: task 10.

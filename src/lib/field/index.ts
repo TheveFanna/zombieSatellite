@@ -46,4 +46,11 @@ export {
 } from './geodetic';
 export type { MapLine, MapPoint, MapRing } from './geodetic';
 export { groundTrack, orbitalPeriodMin } from './ground-track';
+export {
+  DEFAULT_PLANNER_MIN_ELEVATION_DEG,
+  PLANNER_MIN_ELEVATIONS,
+  PLANNER_SEARCH_MIN_ELEVATION_DEG,
+  PLANNER_WINDOW_HOURS,
+  filterPassesByElevation,
+} from './planner';
 export { FIELD_COPY } from './copy';

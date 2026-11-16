@@ -12,6 +12,7 @@ import { SHELL_COPY } from '../../components/shell/copy';
 import { createLocator } from '../../components/shell/geolocation';
 import type { LocateOutcome } from '../../components/shell/geolocation';
 import type { PickerController, PickerRow, PickerSnapshot } from '../../components/session/picker-controller';
+import { FIELD_COPY } from '../../lib/field/index';
 import { formatDurationMin, formatUtc, parseCoordinateInput } from '../../lib/session/index';
 import { formatLocalTimeNote } from '../../lib/shell/index';
 import { PassProfile } from '../../components/shell/visuals/pass-profile';
@@ -175,7 +176,8 @@ export default function SessionPickerPage() {
                 {row.entry.beacon.sunlitOnly ? ' · Sunlit only' : ''}
               </p>
               <PassInfo row={row} onRetry={() => controller?.retry()} />
-              <Link className="button primary" href={`/session/${row.entry.noradId}`}>Open session</Link>
+              <Link className="button primary" href={`/session/${row.entry.noradId}`}>Open session</Link>{' '}
+              <Link className="button" href={`/planner/${row.entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>
             </li>
           ))}
         </ul>

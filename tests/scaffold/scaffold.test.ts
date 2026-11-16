@@ -70,6 +70,8 @@ function parseAppPath(relativePath: string): ts.SourceFile {
 }
 
 const SESSION_PAGES = ['session/page.tsx', 'session/[noradId]/page.tsx'];
+/** The field companion pages, listed by name. */
+const FIELD_PAGES = ['planner/[noradId]/page.tsx'];
 const CARDS_PAGES = ['cards/page.tsx', 'cards/[noradId]/[aosMs]/[n]/page.tsx'];
 const SHELL_REGISTRAR = 'src/components/shell/service-worker-registrar.tsx';
 /** The presentational SVG components of task 7C, listed by name. */
@@ -160,6 +162,7 @@ function checkedTexts(): Array<[string, string[]]> {
         ...APP_FILES.flatMap((file) => jsxTexts(parseApp(file))),
         ...SESSION_PAGES.flatMap((file) => jsxTexts(parseAppPath(file))),
         ...CARDS_PAGES.flatMap((file) => jsxTexts(parseAppPath(file))),
+        ...FIELD_PAGES.flatMap((file) => jsxTexts(parseAppPath(file))),
         ...jsxTexts(parseTsx(SHELL_REGISTRAR)),
         ...SHELL_VISUALS.flatMap((file) => jsxTexts(parseTsx(file))),
         ...FIELD_COMPONENTS.flatMap((file) => jsxTexts(parseTsx(file))),
@@ -244,6 +247,7 @@ describe('Requirement 1: project scaffold', () => {
       'layout.tsx',
       'manifest.ts',
       'page.tsx',
+      'planner',
       'pointing',
       'session',
     ]);
@@ -259,6 +263,7 @@ describe('Requirement 1: project scaffold', () => {
       'app/cards/page.tsx',
       'app/layout.tsx',
       'app/page.tsx',
+      'app/planner/[noradId]/page.tsx',
       'app/pointing/page.tsx',
       'app/session/[noradId]/page.tsx',
       'app/session/page.tsx',

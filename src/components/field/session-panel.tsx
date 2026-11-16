@@ -8,6 +8,7 @@ import { formatDopplerReadout, formatUtc } from '../../lib/session/index';
 import type { SessionSnapshot } from '../session/session-controller';
 import type { PassFieldSnapshot } from './pass-field-controller';
 import { GroundTrackMap } from './ground-track-map';
+import Link from 'next/link';
 import { IlluminationBadge, InstrumentDetail } from './visuals/field-bits';
 import { SkyTrackView } from './visuals/sky-track';
 
@@ -180,6 +181,9 @@ export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCs
         meanMotion={field.tle === null ? null : field.tle.MEAN_MOTION}
         entryName={entry.name}
       />
+      <p>
+        <Link href={`/planner/${entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>
+      </p>
     </section>
   );
 }

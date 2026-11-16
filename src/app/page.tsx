@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { listCatalogEntries } from '../lib/catalog/index';
 import type { CatalogEntry } from '../lib/catalog/index';
+import { FIELD_COPY } from '../lib/field/index';
 import { SESSION_COPY } from '../components/session/copy';
 import { SHELL_COPY } from '../components/shell/copy';
 import { GhostSky } from '../components/shell/visuals/sky-dome';
@@ -34,7 +35,8 @@ function EntryArticle({ entry }: { entry: CatalogEntry }) {
       </details>
       {entry.playable ? (
         <p>
-          <Link className="button" href={`/session/${entry.noradId}`}>{SHELL_COPY.openSession}</Link>
+          <Link className="button" href={`/session/${entry.noradId}`}>{SHELL_COPY.openSession}</Link>{' '}
+          <Link className="button" href={`/planner/${entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>
         </p>
       ) : (
         <p>{SHELL_COPY.unplayableReasons[entry.unplayableReason]}</p>
