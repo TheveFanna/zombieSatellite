@@ -48,7 +48,7 @@ Ground rules: one commit per task after its tests pass, then push at once. Guard
     - _Requirements: 11.1, 11.2_
   - [x] 6.2 Run the checks; main agent commits by name, then pushes.
 
-- [ ] 7. QSL card artwork
-  - [ ] 7.1 Rewrite `buildCardSvg` visuals in `src/lib/qsl/card-svg.ts`: seeded background artwork, frame, typography. Keep all texts and marks.
+- [x] 7. QSL card artwork
+  - [x] 7.1 Rewrite `buildCardSvg` visuals in `src/lib/qsl/card-svg.ts`: seeded background artwork, frame, typography. Keep all texts and marks.
     - _Requirements: 12.1 to 12.3_
-  - [ ] 7.2 Run the checks; main agent commits by name, then pushes.
+  - [x] 7.2 Run the checks; main agent commits by name, then pushes.
