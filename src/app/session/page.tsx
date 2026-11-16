@@ -195,6 +195,9 @@ export default function SessionPickerPage() {
               <Link className="button" href={`/planner/${row.entry.noradId}`}>
                 {FIELD_COPY.plannerLink}
               </Link>
+              <Link className="button" href={`/catalog#${row.entry.slug}`}>
+                {SHELL_COPY.storyLink}
+              </Link>
             </div>
           </li>
         ))}

@@ -2369,3 +2369,8 @@ table.tuning td:first-of-type {
 .plan-scroll {
   overflow-x: auto;
 }
+
+/* Archive anchors (S11): land below the sticky header */
+.plain article[id] {
+  scroll-margin-top: 1rem;
+}

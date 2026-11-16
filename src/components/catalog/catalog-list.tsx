@@ -13,7 +13,7 @@ import { ModelViewer } from '../field/model-viewer';
 function EntryArticle({ entry }: { entry: CatalogEntry }) {
   const line = lifelineFor(entry.noradId);
   return (
-    <article className="card">
+    <article className="card" id={entry.slug}>
       <h3>{entry.name}</h3>
       <p>
         {entry.playable ? SHELL_COPY.playableLabel : SHELL_COPY.storyOnlyLabel} ·{' '}

@@ -19,12 +19,12 @@ Ground rules: one commit per task after its tests pass, then push at once. Guard
   - [x] 2.3 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
   - [x] 2.4 Main agent: commit by name, then push.
 
-- [ ] 3. Story links
+- [x] 3. Story links
   - Depends on: task 2.
-  - [ ] 3.1 Give each archive article an id equal to its slug; add a story link to each Pass_List row on the Passes page.
+  - [x] 3.1 Give each archive article an id equal to its slug; add a story link to each Pass_List row on the Passes page.
     - _Requirements: 7.2_
-  - [ ] 3.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
-  - [ ] 3.3 Main agent: commit by name, then push.
+  - [x] 3.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
+  - [x] 3.3 Main agent: commit by name, then push.
 
 - [ ] 4. Owner review on a real phone (executed by the owner)
   - Depends on: task 3, with its push deployed.
