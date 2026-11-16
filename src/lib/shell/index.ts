@@ -11,3 +11,5 @@ export { toProxyUrl } from './proxy-url';
 export { SKY_VIEW_ASPECT, markerPlacement } from './marker';
 export type { MarkerPlacement } from './marker';
 export { formatLocalTimeNote } from './local-time';
+export { domePoint, domeRadius, passProfilePath } from './sky';
+export type { DomePoint } from './sky';

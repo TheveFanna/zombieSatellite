@@ -72,6 +72,8 @@ function parseAppPath(relativePath: string): ts.SourceFile {
 const SESSION_PAGES = ['session/page.tsx', 'session/[noradId]/page.tsx'];
 const CARDS_PAGES = ['cards/page.tsx', 'cards/[noradId]/[aosMs]/[n]/page.tsx'];
 const SHELL_REGISTRAR = 'src/components/shell/service-worker-registrar.tsx';
+/** The presentational SVG components of task 7C, listed by name. */
+const SHELL_VISUALS = ['src/components/shell/visuals/sky-dome.tsx'];
 
 /** Parses a TSX file by its path relative to the repository root. */
 function parseTsx(path: string): ts.SourceFile {
@@ -145,6 +147,7 @@ function checkedTexts(): Array<[string, string[]]> {
         ...SESSION_PAGES.flatMap((file) => jsxTexts(parseAppPath(file))),
         ...CARDS_PAGES.flatMap((file) => jsxTexts(parseAppPath(file))),
         ...jsxTexts(parseTsx(SHELL_REGISTRAR)),
+        ...SHELL_VISUALS.flatMap((file) => jsxTexts(parseTsx(file))),
       ],
     ],
     ['session copy strings', propertyStrings('src/components/session/copy.ts')],
@@ -217,7 +220,7 @@ describe('Requirement 1: project scaffold', () => {
     expect(Object.entries(pkg.scripts ?? {}).filter(([, command]) => OS_SPECIFIC_SYNTAX.test(command))).toEqual([]);
   });
 
-  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes, globals.css and the named .ts files, and no .tsx file other than these pages and the shell service-worker registrar exists under src', () => {
+  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes, globals.css and the named .ts files, and no .tsx file other than these pages, the shell service-worker registrar and the named shell visuals exists under src', () => {
     expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual([
       'api',
       'cards',
@@ -244,6 +247,7 @@ describe('Requirement 1: project scaffold', () => {
       'app/session/[noradId]/page.tsx',
       'app/session/page.tsx',
       'components/shell/service-worker-registrar.tsx',
+      'components/shell/visuals/sky-dome.tsx',
     ]);
   });
 

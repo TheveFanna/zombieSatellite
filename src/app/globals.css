@@ -333,45 +333,6 @@ main > footer p {
   margin: 0 auto;
 }
 
-.orbit {
-  position: relative;
-  width: 7rem;
-  height: 7rem;
-  margin: 0 auto 1rem;
-  border: 1px solid var(--faint);
-  border-radius: 50%;
-  animation: orbit-spin 40s linear infinite;
-}
-
-.orbit::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  width: 1.6rem;
-  height: 1.6rem;
-  margin: auto;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, var(--bone), rgba(233, 228, 216, 0.55));
-}
-
-.orbit::after {
-  content: '';
-  position: absolute;
-  top: -0.3rem;
-  left: calc(50% - 0.3rem);
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  background: var(--phosphor);
-  box-shadow: 0 0 12px var(--phosphor);
-}
-
-@keyframes orbit-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* Buttons: engraved plates, monospace small caps */
 button,
 .button {
@@ -782,6 +743,175 @@ main > img {
 .card:has(> a > img) img,
 main > img {
   display: block;
+}
+
+/* Sky dome (src/components/shell/visuals/sky-dome.tsx) */
+.dome {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--mono);
+}
+
+.dome-horizon {
+  fill: none;
+  stroke: var(--bone-2);
+  stroke-width: 0.6;
+}
+
+.dome-ring {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 0.4;
+  stroke-dasharray: 1 2.2;
+}
+
+.dome-cross {
+  stroke: var(--hair);
+  stroke-width: 0.35;
+}
+
+.dome-tick {
+  stroke: var(--faint);
+  stroke-width: 0.4;
+}
+
+.dome-tick-long {
+  stroke: var(--bone-2);
+  stroke-width: 0.6;
+}
+
+.dome-cardinal {
+  fill: var(--bone-2);
+  font-size: 6.5px;
+  letter-spacing: 0.1em;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.dome-label {
+  fill: var(--dim);
+  font-size: 4.2px;
+  letter-spacing: 0.08em;
+}
+
+.dome-hero {
+  max-width: 22rem;
+  margin: 0 auto 0.5rem;
+}
+
+.ghost-orbit {
+  fill: none;
+  stroke: rgba(168, 240, 207, 0.16);
+  stroke-width: 0.35;
+  stroke-dasharray: 0.8 1.8;
+}
+
+.ghost-orbit-story {
+  stroke: rgba(201, 166, 107, 0.22);
+}
+
+.ghost-halo {
+  fill: var(--phosphor);
+  opacity: 0.14;
+}
+
+.ghost-breathing {
+  animation: ghost-breathe 4s ease-in-out infinite;
+}
+
+.ghost-core {
+  fill: var(--phosphor);
+  filter: drop-shadow(0 0 2px rgba(168, 240, 207, 0.9));
+}
+
+.ghost-story .ghost-halo,
+.ghost-story .ghost-core {
+  fill: var(--brass);
+}
+
+.ghost-name {
+  fill: var(--dim);
+  font-size: 4.2px;
+  letter-spacing: 0.08em;
+}
+
+@keyframes ghost-breathe {
+  0%,
+  100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.42;
+  }
+}
+
+.kicker {
+  margin: 0.25rem 0 0;
+  color: var(--phosphor) !important;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px var(--phosphor-glow);
+}
+
+.hero h1 {
+  font-style: italic;
+}
+
+.hero h1 span {
+  display: block;
+}
+
+.hero h1 span + span {
+  color: var(--phosphor);
+  font-style: normal;
+  text-shadow: 0 0 22px rgba(168, 240, 207, 0.25);
+}
+
+.dome-pass {
+  max-width: 21rem;
+  margin: 0.4rem auto 1rem;
+}
+
+.dome-floor {
+  fill: rgba(17, 26, 46, 0.45);
+}
+
+.pass-ring {
+  fill: none;
+  stroke: var(--phosphor-2);
+  stroke-width: 0.5;
+  stroke-dasharray: 1.4 1.8;
+}
+
+.pass-halo {
+  fill: var(--phosphor);
+  opacity: 0.16;
+  animation: ghost-breathe 2.6s ease-in-out infinite;
+}
+
+.pass-sat {
+  fill: var(--phosphor);
+  filter: drop-shadow(0 0 3px var(--phosphor));
+}
+
+.pass-reticle {
+  fill: none;
+  stroke: var(--bone);
+  stroke-width: 0.7;
+}
+
+.dome-locked .pass-reticle {
+  stroke: var(--phosphor);
+  filter: drop-shadow(0 0 2px var(--phosphor));
+}
+
+.dome-locked .pass-ring {
+  stroke: var(--phosphor);
+  stroke-dasharray: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

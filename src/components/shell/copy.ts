@@ -36,4 +36,7 @@ export const SHELL_COPY = Object.freeze({
   markerOutOfView: 'Target outside the view. Follow the azimuth and elevation figures.',
   noPointingYet: 'Enable motion sensors or the drag compass to see the marker.',
   localTimeLabel: 'Local start:',
+  heroLine1: 'They died decades ago.',
+  heroLine2: 'A few are still talking.',
+  domeHeading: 'Sky dome',
 });

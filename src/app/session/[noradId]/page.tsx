@@ -33,6 +33,7 @@ import {
 } from '../../../lib/session/index';
 import type { SessionResult } from '../../../lib/session/index';
 import { markerPlacement } from '../../../lib/shell/index';
+import { PassDome } from '../../../components/shell/visuals/sky-dome';
 
 // Neutral pointing view used on the server and until the session exists in the browser.
 const INITIAL_POINTING_SNAPSHOT: PointingSnapshot = Object.freeze({
@@ -414,6 +415,13 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
                 </button>
               </p>
               <p>{SESSION_COPY.autoPointNote}</p>
+              <h3>{SHELL_COPY.domeHeading}</h3>
+              <PassDome
+                target={snapshot.orbitDataMissing ? null : snapshot.target}
+                aim={null}
+                locked={lock?.locked ?? false}
+                offsetDeg={0}
+              />
               {snapshot.pointingSource === 'manual' ? dragArea('Drag here to turn the view') : null}
             </div>
           ) : (
@@ -479,6 +487,13 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
                   </p>
                 )}
               </div>
+              <h3>{SHELL_COPY.domeHeading}</h3>
+              <PassDome
+                target={snapshot.orbitDataMissing ? null : snapshot.target}
+                aim={pointingSnapshot.lock?.deviceHeadingDeg == null ? null : { headingDeg: pointingSnapshot.lock.deviceHeadingDeg, pitchDeg: pointingSnapshot.lock.devicePitchDeg }}
+                locked={lock?.locked ?? false}
+                offsetDeg={pointingSnapshot.calibrationOffsetDeg}
+              />
               <label>
                 <input
                   type="checkbox"

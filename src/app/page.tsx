@@ -3,6 +3,7 @@ import { listCatalogEntries } from '../lib/catalog/index';
 import type { CatalogEntry } from '../lib/catalog/index';
 import { SESSION_COPY } from '../components/session/copy';
 import { SHELL_COPY } from '../components/shell/copy';
+import { GhostSky } from '../components/shell/visuals/sky-dome';
 
 
 function EntryArticle({ entry }: { entry: CatalogEntry }) {
@@ -42,8 +43,11 @@ export default function HomePage() {
   return (
     <main data-tab="home" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
       <div className="hero">
-        <div className="orbit" aria-hidden="true" />
-        <h1>zombieSatellite</h1>
+        <GhostSky entries={listCatalogEntries()} />
+        <p className="kicker">zombieSatellite</p>
+        <h1>
+          <span>{SHELL_COPY.heroLine1}</span> <span>{SHELL_COPY.heroLine2}</span>
+        </h1>
         <p>{SHELL_COPY.appStatement}</p>
       </div>
       <section className="plain">
