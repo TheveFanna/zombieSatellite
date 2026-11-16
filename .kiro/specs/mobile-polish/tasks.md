@@ -31,3 +31,24 @@ Ground rules: one commit per task after its tests pass, then push at once. Guard
   - [ ] 4.1 Present the checklist: the AR camera picture; one tap for both permissions; the rulers; the wheel rise animation; the settings sheet; the story card; the Passes and Planner layouts on a small phone. Record only the owner's words.
     - _Requirements: 1.1 to 7.2_
     - Not yet reported: every item.
+
+## Round 2 tasks
+
+- [x] 5. Wheel, permission and story
+  - [x] 5.1 Fix the drag direction and remove the vertical keyframes in `satellite-wheel.tsx`; delete `.ar-card-enter`, `.ar-card-leave` and their keyframes in `globals.css`.
+    - _Requirements: 8.1, 8.2_
+  - [x] 5.2 Late grant in `permission-flow.ts` (one example case in `tests/pointing/permission-flow.test.ts`); camera restart only when the camera is off; header wait text in `ar-tab.tsx`.
+    - _Requirements: 9.1 to 9.3_
+  - [x] 5.3 Structured `story-card.tsx` and its CSS.
+    - _Requirements: 10.1_
+  - [x] 5.4 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`; main agent commits by name, then pushes.
+
+- [ ] 6. Passes layout
+  - [ ] 6.1 Grouped observer block and three-column pass facts in `src/app/session/page.tsx`, with CSS.
+    - _Requirements: 11.1, 11.2_
+  - [ ] 6.2 Run the checks; main agent commits by name, then pushes.
+
+- [ ] 7. QSL card artwork
+  - [ ] 7.1 Rewrite `buildCardSvg` visuals in `src/lib/qsl/card-svg.ts`: seeded background artwork, frame, typography. Keep all texts and marks.
+    - _Requirements: 12.1 to 12.3_
+  - [ ] 7.2 Run the checks; main agent commits by name, then pushes.

@@ -55,3 +55,31 @@ On a small phone the AR tab's layout breaks and the Passes and Planner pages sta
 
 1. WHEN the user taps the satellite in the sky or the selected card, THE AR tab SHALL open a Story_Card with the satellite's name, its hook and its story.
 2. THE Story_Card SHALL have a close control, and THE Passes page and the Archive SHALL link to the story of each satellite.
+
+## Round 2
+
+### Requirement 8: Wheel motion
+
+1. THE Satellite_Wheel SHALL move horizontally: dragging the finger to the right SHALL bring the previous card to the centre, and dragging to the left SHALL bring the next card.
+2. WHEN the selection changes, THE cards SHALL slide sideways with one transition; THE Satellite_Wheel SHALL NOT use vertical keyframe animations.
+
+### Requirement 9: Motion permission
+
+1. IF the browser answers the motion prompt after the pointing session has stopped waiting, THEN THE pointing session SHALL still accept a granted answer and start the orientation stream.
+2. THE AR tab SHALL ask for the motion sensors before it restarts the camera from the same tap.
+3. WHILE the motion sensors are granted but no orientation sample has arrived, THE AR tab header SHALL say that it is waiting for sensor data.
+
+### Requirement 10: Story format
+
+1. THE Story_Card SHALL show the hook as a quotation, a row of four facts (launch date, operator, difficulty, status) and the story as separate short paragraphs.
+
+### Requirement 11: Passes layout
+
+1. THE Passes observer block SHALL be a grouped list in the style of iOS settings: rows with the label on the left and the value on the right, and a row button for the current location.
+2. THE pass facts (rise, maximum elevation, length) SHALL be three equal columns, each with a small label above a value.
+
+### Requirement 12: QSL card
+
+1. THE QSL card SHALL draw a background artwork generated from the NORAD id: engraved curves, an orbit arc and a fixed star field, the same output for the same card.
+2. THE QSL card SHALL keep every text, mark and escape rule of the current card (checked by `tests/qsl/card-svg.test.ts`).
+3. THE project SHALL NOT use a generated photograph or an AI image; the artwork is drawn in SVG by code.

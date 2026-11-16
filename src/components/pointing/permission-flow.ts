@@ -54,10 +54,21 @@ export function createPermissionFlow(options: PermissionFlowOptions): Permission
     onFirstValidSample: () => dispatch('valid-sample-arrived'),
   });
 
+  // The request whose timeout fired last. The browser can still answer it after the user takes longer
+  // than the timeout; that answer is accepted, so the orientation stream starts (S11 round 2, Requirement 9.1).
+  let lateGen = 0;
+
   function settle(id: number, event: PermissionEvent): void {
-    if (id !== gen || state !== 'requesting') return;
+    if (id !== gen) return;
+    const late =
+      id === lateGen && state === 'unknown' && (event === 'permission-granted' || event === 'permission-denied');
+    if (!late && state !== 'requesting') return;
     if (timeout !== null) timers.clearTimeout(timeout);
     timeout = null;
+    if (late) {
+      lateGen = 0;
+      dispatch('request-started');
+    }
     dispatch(event);
     if (getState() === 'granted') stream.start();
   }
@@ -74,7 +85,10 @@ export function createPermissionFlow(options: PermissionFlowOptions): Permission
     dispatch('request-started');
     gen += 1;
     const my = gen;
-    timeout = timers.setTimeout(() => settle(my, 'permission-error'), PERMISSION_TIMEOUT_MS);
+    timeout = timers.setTimeout(() => {
+      lateGen = my;
+      settle(my, 'permission-error');
+    }, PERMISSION_TIMEOUT_MS);
     let promise: Promise<unknown>;
     try {
       promise = requestPermission();

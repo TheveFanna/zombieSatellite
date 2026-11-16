@@ -383,8 +383,10 @@ export function ArTab() {
       ? 'Loading orbit data…'
       : status === 'error'
         ? 'Orbit data unavailable'
-        : !oriented
-          ? 'Not oriented yet'
+        : !oriented && permission === 'granted'
+          ? 'Waiting for sensor data…'
+          : !oriented
+          ? 'Tap Allow to turn the view with the phone'
           : live !== null && live.elevationDeg < 0
             ? 'Below horizon'
             : lockedNow
@@ -403,7 +405,7 @@ export function ArTab() {
   const enableSensors = () => {
     // Called inside the tap: iOS only shows the motion prompt for a user gesture.
     pointing?.requestPermission();
-    if (cameraState !== 'on') startCameraRef.current();
+    if (cameraState === 'off') startCameraRef.current();
   };
 
   const onWheelSelect = (index: number) => {

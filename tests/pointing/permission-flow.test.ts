@@ -52,6 +52,20 @@ describe('permission flow', () => {
     expect(flow.getState()).toBe('unknown');
   });
 
+  it('accepts a grant that arrives after the timeout and starts the stream', async () => {
+    let answer: (value: unknown) => void = () => undefined;
+    const requester = () => new Promise<unknown>((resolve) => {
+      answer = resolve;
+    });
+    const { flow } = setup(requester);
+    flow.requestFromGesture();
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(flow.getState()).toBe('unknown');
+    answer('granted');
+    await vi.advanceTimersByTimeAsync(0);
+    expect(flow.getState()).toBe('granted');
+  });
+
   it('becomes unavailable at 3000 ms for a silent subscription without a requester', () => {
     const { flow } = setup(undefined);
     flow.start();
