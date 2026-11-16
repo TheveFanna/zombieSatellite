@@ -389,10 +389,12 @@ function PlannerView({ entry }: { entry: PlayableEntry }) {
                     {FIELD_COPY.plannerLosAzimuthLabel} {azimuthText(az?.los ?? null)}
                   </p>
                   <IlluminationBadge profile={row.profile} sunlitOnly={entry.beacon.sunlitOnly === true} />
-                  <p>
-                    {SHELL_COPY.localTimeLabel}{' '}
-                    {formatLocalTimeNote(pass.riseMs, -new Date(pass.riseMs).getTimezoneOffset())}
-                  </p>
+                  <InstrumentDetail>
+                    <p>
+                      {SHELL_COPY.localTimeLabel}{' '}
+                      {formatLocalTimeNote(pass.riseMs, -new Date(pass.riseMs).getTimezoneOffset())}
+                    </p>
+                  </InstrumentDetail>
                   {isFirst ? <p>{FIELD_COPY.plannerNextPassMark}</p> : null}
                 </li>
               );

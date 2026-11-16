@@ -1447,3 +1447,6 @@ table.tuning td:first-of-type {
   border: 1px dashed var(--ember);
 }
 .log-note { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.first-run { border-left: 3px solid currentColor; margin: 1rem 0; }
+.first-run h2 { margin-top: 0; }

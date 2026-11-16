@@ -84,6 +84,7 @@ const SHELL_VISUALS = [
 /** The field companion components, listed by name. */
 const FIELD_COMPONENTS = [
   'src/components/field/ar-view.tsx',
+  'src/components/field/first-run-guide.tsx',
   'src/components/field/ground-track-map.tsx',
   'src/components/field/model-viewer.tsx',
   'src/components/field/session-panel.tsx',
@@ -275,6 +276,7 @@ describe('Requirement 1: project scaffold', () => {
       'app/session/[noradId]/page.tsx',
       'app/session/page.tsx',
       'components/field/ar-view.tsx',
+      'components/field/first-run-guide.tsx',
       'components/field/ground-track-map.tsx',
       'components/field/model-viewer.tsx',
       'components/field/session-panel.tsx',

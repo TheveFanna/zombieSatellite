@@ -212,7 +212,7 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.6, 23.4_
   - [x] 14.3 Main agent: commit staging `src/components/field/model-viewer.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 15. Listening_Log
+- [x] 15. Listening_Log
   - Depends on: task 14.
   - [x] 15.1 Create `src/lib/field/log.ts` and `src/components/field/log-store.ts`
     - `parseLogDraft` (per-field errors), `appendEntry` (oldest dropped at 200), `parseStoredLog` (drops invalid elements, never throws), `serializeLog` per design "Listening log core"; the store over `KeyValueStorage` with key `zombieSatellite.field.listeningLog` and `{ "v": 1, "entries": [...] }`. Extend `index.ts` and `copy.ts` (log labels, `selfReportedMark`, errors). No Log_Card (F18).
@@ -223,20 +223,20 @@ Ground rules for the implementer:
   - [x] 15.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 directory listing gains `log`; the `.tsx` inventory gains `app/log/page.tsx`; the `FIELD_PAGES` group of checks 1.24 and 1.25 gains the log page by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [-] 15.4 Main agent: commit staging `src/lib/field/log.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/field/log-store.ts`, `src/components/field/visuals/field-bits.tsx`, `src/app/log/page.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 15.4 Main agent: commit staging `src/lib/field/log.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/field/log-store.ts`, `src/components/field/visuals/field-bits.tsx`, `src/app/log/page.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 16. First_Run_Guide and the Instrument_Detail pass
   - Depends on: task 15.
-  - [~] 16.1 Create `src/components/field/first-run-guide.tsx` and `first-run-store.ts`; mount on the Home_Page
+  - [x] 16.1 Create `src/components/field/first-run-guide.tsx` and `first-run-store.ts`; mount on the Home_Page
     - Four steps, Skip on every step, Done on the last, flag `zombieSatellite.field.firstRunDone` read in an effect so the server render and the first client render match, nothing rendered afterwards, no session started, per design "Two depths of use". Extend `FIELD_COPY` with the first-run steps. Add the card to `src/app/page.tsx` (checks 1.20 and 1.21 stay true). Append `.first-run` to `src/app/globals.css`.
     - _Requirements: 19.1–19.5_
-  - [~] 16.2 Check the Simple_View and Instrument_Detail of every S7 screen against design "Simple_View numbers per screen"
+  - [x] 16.2 Check the Simple_View and Instrument_Detail of every S7 screen against design "Simple_View numbers per screen"
     - Review the planner row, the planner detail, the AR_View, the ground map and the Session_Page panel against the table; move any professional number out of the Simple_View into its Instrument_Detail. Presentational changes only, in files this spec already owns.
     - _Requirements: 18.1–18.4, 20.3_
-  - [~] 16.3 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 16.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/first-run-guide.tsx`; the `FIELD_COMPONENTS` group of checks 1.24 and 1.25 gains it by name. The `.tsx` inventory now holds the twelve landed entries plus the eleven field entries of design "Scaffold check changes". Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.6, 23.4_
-  - [~] 16.4 Main agent: commit staging `src/components/field/first-run-guide.tsx`, `src/components/field/first-run-store.ts`, `src/lib/field/copy.ts`, `src/app/page.tsx`, `src/app/globals.css`, `tests/scaffold/scaffold.test.ts` and any other file changed by 16.2, each by name, then push. The Could tier is complete here.
+  - [-] 16.4 Main agent: commit staging `src/components/field/first-run-guide.tsx`, `src/components/field/first-run-store.ts`, `src/lib/field/copy.ts`, `src/app/page.tsx`, `src/app/globals.css`, `tests/scaffold/scaffold.test.ts` and any other file changed by 16.2, each by name, then push. The Could tier is complete here.
 
 - [ ] 17. Submission materials update
   - Depends on: task 16.

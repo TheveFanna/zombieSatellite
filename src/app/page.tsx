@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { listCatalogEntries } from '../lib/catalog/index';
 import type { CatalogEntry } from '../lib/catalog/index';
 import { FIELD_COPY } from '../lib/field/index';
+import { FirstRunGuide } from '../components/field/first-run-guide';
 import { ModelViewer } from '../components/field/model-viewer';
 import { SESSION_COPY } from '../components/session/copy';
 import { SHELL_COPY } from '../components/shell/copy';
@@ -66,7 +67,8 @@ export default function HomePage() {
         </p>
         <p>{SHELL_COPY.demoHint}</p>
       </section>
-      <section className="plain">
+      <FirstRunGuide />
+      <section className="plain" id="catalog">
         <h2>{SHELL_COPY.catalogHeading}</h2>
         {listCatalogEntries().map((entry) => (
           <EntryArticle key={entry.noradId} entry={entry} />
