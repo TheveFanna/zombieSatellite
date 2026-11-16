@@ -1479,3 +1479,12 @@ table.tuning td:first-of-type {
 @keyframes radar-turn {
   to { transform: rotate(360deg); }
 }
+.console-main { display: block; }
+.console-radar { position: relative; width: min(100%, 52vh); margin: 0 auto; }
+.console-meter { position: absolute; left: 0; right: 0; bottom: 0; display: grid; justify-items: center; }
+.console-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+.console-badge { padding: 0.15rem 0.6rem; border: 1px solid currentColor; border-radius: 999px; font-weight: 600; }
+.console-chip { font-family: ui-monospace, monospace; }
+.console-countdown { font-family: ui-monospace, monospace; font-size: 1.6rem; text-align: center; }
+.console-btn { min-width: 44px; min-height: 44px; }
+.console-ar { flex: 1 1 100%; min-height: 56px; }

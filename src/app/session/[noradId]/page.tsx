@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { PointerEvent } from 'react';
 import type { PlayableEntry } from '../../../lib/catalog/index';
-import { FIELD_COPY, tuningFileName } from '../../../lib/field/index';
+import { tuningFileName } from '../../../lib/field/index';
 import { createFieldBrowserDeps } from '../../../components/field/browser-deps';
 import type { FieldBrowserDeps } from '../../../components/field/browser-deps';
 import { createFieldDownloader } from '../../../components/field/field-downloader';
@@ -33,17 +33,14 @@ import { createLocator } from '../../../components/shell/geolocation';
 import type { LocateOutcome } from '../../../components/shell/geolocation';
 import type { SessionController, SessionSnapshot } from '../../../components/session/session-controller';
 import {
-  formatCountdown,
-  formatDopplerReadout,
   formatDurationMin,
   formatUtc,
   parseCoordinateInput,
   resolvePlayableEntry,
 } from '../../../lib/session/index';
-import type { SessionResult } from '../../../lib/session/index';
 import { markerPlacement } from '../../../lib/shell/index';
-import { PassDome } from '../../../components/shell/visuals/sky-dome';
-import { DopplerDial } from '../../../components/shell/visuals/doppler-dial';
+import { SessionConsole } from '../../../components/console/session-console';
+import { throttleSubscribe } from '../../../components/console/frame-throttle';
 
 // Neutral pointing view used on the server and until the session exists in the browser.
 const INITIAL_POINTING_SNAPSHOT: PointingSnapshot = Object.freeze({
@@ -108,23 +105,6 @@ const sectionStyle = { marginTop: '1.25rem' } as const;
 
 function fmt(value: number | null | undefined): string {
   return value === null || value === undefined ? '—' : value.toFixed(1);
-}
-
-function ResultView({ result }: { result: SessionResult }) {
-  return (
-    <dl>
-      <dt>Locked time</dt>
-      <dd>{Math.round(result.lockedSeconds)} s</dd>
-      <dt>Locked ratio</dt>
-      <dd>{(result.lockedRatio * 100).toFixed(1)} %</dd>
-      <dt>Best pointing error</dt>
-      <dd>{result.bestPointingErrorDeg === null ? '—' : `${result.bestPointingErrorDeg.toFixed(1)}°`}</dd>
-      <dt>Outcome</dt>
-      <dd>{result.completed ? 'Completed' : 'Aborted'}</dd>
-      <dt>Mode</dt>
-      <dd>{result.mode === 'demo' ? 'Demo (60×)' : 'Real time'}</dd>
-    </dl>
-  );
 }
 
 function SessionView({ entry }: { entry: PlayableEntry }) {
@@ -207,8 +187,13 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     controller ? controller.getSnapshot : getServerSnapshot,
     getServerSnapshot,
   );
+  const pointingSubscribe = useMemo(() => {
+    if (pointing === null) return noopSubscribe;
+    if (fieldDeps === null) return pointing.subscribe;
+    return throttleSubscribe(pointing.subscribe, { frames: fieldDeps.frames, clock: fieldDeps.clock }, 33);
+  }, [pointing, fieldDeps]);
   const pointingSnapshot = useSyncExternalStore(
-    pointing ? pointing.subscribe : noopSubscribe,
+    pointingSubscribe,
     pointing ? pointing.getSnapshot : getServerPointingSnapshot,
     getServerPointingSnapshot,
   );
@@ -373,24 +358,19 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
   );
 
   return (
-    <main data-tab="session" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+    <main data-tab="session" data-ar-open={arOpen && arPhase ? '' : undefined} style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
       <title>{`${entry.name} · zombieSatellite`}</title>
 
-      <header>
-        <h1>{entry.name}</h1>
-        <p>
-          Difficulty: {entry.difficulty} · {SESSION_COPY.statusLabels[entry.status]}
-        </p>
-        <p>Downlink frequency: {beacon.displayFrequency ?? SESSION_COPY.noFrequency}</p>
-        {beacon.sunlitOnly ? <p>{SESSION_COPY.sunlitNote}</p> : null}
-        {snapshot.shadowSilent ? <p>{FIELD_COPY.shadowSilenceNote}</p> : null}
-        {beacon.downlinkMhz === null ? <p>{SESSION_COPY.imageNote}</p> : null}
-        <p>{SESSION_COPY.utcNote}</p>
-        <p>
-          <Link href="/session">All satellites</Link>
-        </p>
-      </header>
-
+      <SessionConsole
+        entry={entry}
+        snapshot={snapshot}
+        pointingSnapshot={pointingSnapshot}
+        field={fieldSnapshot}
+        pointing={pointing}
+        controller={controller}
+        onOpenAr={openAr}
+        onStartDemo={startDemo}
+      />
       {snapshot.lastRejection !== null ? (
         <p role="alert">
           That action is not available now (action {snapshot.lastRejection.event}, state{' '}
@@ -442,55 +422,8 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
         </section>
       ) : null}
 
-      {phase === 'awaiting-pass' ? (
-        <section style={sectionStyle}>
-          <h2>Waiting for the pass</h2>
-          {targetPass !== null ? (
-            <p>
-              Target pass: {formatUtc(targetPass.riseMs)} to {formatUtc(targetPass.setMs)}
-            </p>
-          ) : null}
-          <p>{snapshot.countdownMs === null ? '—' : formatCountdown(snapshot.countdownMs)}</p>
-          <p>
-            <button type="button" onClick={startDemo} disabled={controller === null}>
-              Start demo instead
-            </button>{' '}
-            <button type="button" onClick={() => controller?.abort()} disabled={controller === null}>
-              Abort
-            </button>{' '}
-            <button type="button" onClick={openAr}>
-              {FIELD_COPY.arOpen}
-            </button>
-          </p>
-        </section>
-      ) : null}
-
       {phase === 'in-pass' ? (
         <section style={sectionStyle}>
-          <h2>Pass in progress</h2>
-          {snapshot.joined ? <p>{SESSION_COPY.joinNote}</p> : null}
-          {targetPass !== null ? (
-            <p>
-              Target pass: {formatUtc(targetPass.riseMs)} to {formatUtc(targetPass.setMs)}
-            </p>
-          ) : null}
-          <dl>
-            <dt>Session time</dt>
-            <dd>{snapshot.sessionInstantMs === null ? '—' : formatUtc(snapshot.sessionInstantMs)}</dd>
-            <dt>Azimuth</dt>
-            <dd>{snapshot.orbitDataMissing || snapshot.target === null ? SESSION_COPY.noOrbitData : `${snapshot.target.azimuthDeg.toFixed(1)}°`}</dd>
-            <dt>Elevation</dt>
-            <dd>{snapshot.orbitDataMissing || snapshot.target === null ? SESSION_COPY.noOrbitData : `${snapshot.target.elevationDeg.toFixed(1)}°`}</dd>
-            <dt>Doppler shift</dt>
-            <dd>{snapshot.doppler === null ? '—' : formatDopplerReadout(snapshot.doppler)}</dd>
-            <dt>Pointing error</dt>
-            <dd>{lock === null ? '—' : `${fmt(lock.pointingErrorDeg)}°`}</dd>
-            <dt>Locked</dt>
-            <dd>{lock === null ? '—' : lock.locked ? 'yes' : 'no'}</dd>
-          </dl>
-          <DopplerDial readout={snapshot.doppler} caption={SHELL_COPY.dialCaption} />
-          <p>{SESSION_COPY.glideNote}</p>
-
           {isDemo ? (
             <div>
               <h3>Pointing</h3>
@@ -511,26 +444,12 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
                 </button>
               </p>
               <p>{SESSION_COPY.autoPointNote}</p>
-              <h3>{SHELL_COPY.domeHeading}</h3>
-              <PassDome
-                target={snapshot.orbitDataMissing ? null : snapshot.target}
-                aim={null}
-                locked={lock?.locked ?? false}
-                offsetDeg={0}
-              />
               {snapshot.pointingSource === 'manual' ? dragArea('Drag here to turn the view') : null}
             </div>
           ) : (
             <div>
               <h3>Motion sensors</h3>
-              {pointingSnapshot.permission === 'unknown' || pointingSnapshot.permission === 'denied' ? (
-                <div>
-                  {pointingSnapshot.permission === 'denied' ? <p role="alert">Motion sensor access was denied.</p> : null}
-                  <button type="button" onClick={() => pointing?.requestPermission()} disabled={pointing === null}>
-                    {pointingSnapshot.permission === 'denied' ? 'Try again' : 'Enable motion sensors'}
-                  </button>
-                </div>
-              ) : null}
+              {pointingSnapshot.permission === 'denied' ? <p role="alert">Motion sensor access was denied.</p> : null}
               {pointingSnapshot.permission === 'requesting' ? <p>Waiting for the browser permission prompt…</p> : null}
               {pointingSnapshot.permission === 'unavailable' ? (
                 <p>No orientation data arrived. The drag compass is active.</p>
@@ -583,13 +502,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
                   </p>
                 )}
               </div>
-              <h3>{SHELL_COPY.domeHeading}</h3>
-              <PassDome
-                target={snapshot.orbitDataMissing ? null : snapshot.target}
-                aim={pointingSnapshot.lock?.deviceHeadingDeg == null ? null : { headingDeg: pointingSnapshot.lock.deviceHeadingDeg, pitchDeg: pointingSnapshot.lock.devicePitchDeg }}
-                locked={lock?.locked ?? false}
-                offsetDeg={pointingSnapshot.calibrationOffsetDeg}
-              />
               <label>
                 <input
                   type="checkbox"
@@ -610,15 +522,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
               </p>
             </div>
           )}
-
-          <p>
-            <button type="button" onClick={openAr}>
-              {FIELD_COPY.arOpen}
-            </button>{' '}
-            <button type="button" onClick={() => controller?.abort()} disabled={controller === null}>
-              Abort
-            </button>
-          </p>
         </section>
       ) : null}
 
@@ -632,19 +535,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
           camera={!isDemo}
           onClose={() => setArOpen(false)}
         />
-      ) : null}
-
-      {phase === 'completed' ? (
-        <section style={sectionStyle}>
-          <h2>Session result</h2>
-          {snapshot.result !== null ? <ResultView result={snapshot.result} /> : null}
-          <button type="button" onClick={() => controller?.newSession()} disabled={controller === null}>
-            New session
-          </button>
-          <p>
-            <Link href="/cards">View your QSL cards</Link>
-          </p>
-        </section>
       ) : null}
 
       <section style={sectionStyle}>
@@ -678,9 +568,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
         </label>
       </section>
 
-      <footer style={sectionStyle}>
-        <p>{SESSION_COPY.simulationNotice}</p>
-      </footer>
     </main>
   );
 }

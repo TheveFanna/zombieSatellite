@@ -66,16 +66,16 @@ Ground rules for the implementer:
     - _Requirements: 14.1–14.3, 14.6_
   - [x] 3.4 Main agent: commit staging `src/components/field/visuals/sky-track.tsx`, `src/components/console/radar-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 4. Session_Console main area (in place)
+- [x] 4. Session_Console main area (in place)
   - Depends on: task 3.
-  - [ ] 4.1 Create `src/components/console/session-console.tsx` and wire it into the session page
+  - [x] 4.1 Create `src/components/console/session-console.tsx` and wire it into the session page
     - Layout of design "Session console layout" for the `awaiting-pass`, `in-pass` and `completed` phases: header, radar with the meter overlaid in `in-pass`, Lock badge, Doppler figure through `formatDopplerReadout` (or the landed No_Frequency_Note), the S6 `DopplerDial` with `SHELL_COPY.dialCaption`, AR_Entry as a large button calling the page's `openAr()`, the simulated-beacon label and the landed shadow-silence note. The lock source is chosen as in design "Pointing_Error source": the pointing snapshot lock for real time with the sensor source, the session snapshot lock otherwise, `null` in `awaiting-pass` or when orbit data is missing. The "Enable motion sensors" button keeps the landed synchronous `pointing.requestPermission()` call. Meter and radar subscribe to the pointing session through `throttleSubscribe`. In `awaiting-pass` the countdown is the `formatCountdown` text for now (the ring comes in task 5). The `completed` phase keeps the landed result view and QSL entry in the same layout classes.
     - `src/app/session/[noradId]/page.tsx`: controller creation and effects stay; the rendered body of the three phases is replaced by `SessionConsole`; `data-ar-open` is set on the console root while the AR_View is open; the `selecting` block stays. The S7 panels, the Controls content (observer fields, sound, abort, drag compass, calibration, Sky_View) and the dock stay as landed below the new main area until task 7. Append the session-console layout classes to the "Console" block of `src/app/globals.css` (First_Screen budget of design: header 44 px, radar 250 px, ring row 56 px, AR_Entry 56 px).
     - _Requirements: 2.1, 2.3, 2.4, 4.1–4.7, 5.2, 11.1, 12.1, 13.2_
-  - [ ] 4.2 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 4.2 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/console/session-console.tsx`; the `CONSOLE_COMPONENTS` group of checks 1.24 and 1.25 gains it by name. The changed session page is already covered by `SESSION_PAGES`. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 14.1–14.3, 14.6_
-  - [ ] 4.3 Main agent: commit staging `src/components/console/session-console.tsx`, `src/app/session/[noradId]/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push. The Must tier is complete here.
+  - [x] 4.3 Main agent: commit staging `src/components/console/session-console.tsx`, `src/app/session/[noradId]/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push. The Must tier is complete here.
 
 - [ ] 5. Countdown_Ring and pass timeline
   - Depends on: task 4.
