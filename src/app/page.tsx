@@ -4,9 +4,12 @@ import type { CatalogEntry } from '../lib/catalog/index';
 import { SESSION_COPY } from '../components/session/copy';
 import { SHELL_COPY } from '../components/shell/copy';
 import { GhostSky } from '../components/shell/visuals/sky-dome';
+import { LifelineView } from '../components/shell/visuals/lifeline';
+import { lifelineFor } from '../components/shell/history';
 
 
 function EntryArticle({ entry }: { entry: CatalogEntry }) {
+  const line = lifelineFor(entry.noradId);
   return (
     <article className="card">
       <h3>{entry.name}</h3>
@@ -14,6 +17,7 @@ function EntryArticle({ entry }: { entry: CatalogEntry }) {
         {entry.playable ? SHELL_COPY.playableLabel : SHELL_COPY.storyOnlyLabel} ·{' '}
         {SESSION_COPY.statusLabels[entry.status]}
       </p>
+      {line === null ? null : <LifelineView data={line} storyOnly={!entry.playable} />}
       <p>{entry.hook}</p>
       <details>
         <summary>{SHELL_COPY.historyLabel}</summary>

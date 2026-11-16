@@ -14,6 +14,7 @@ import type { LocateOutcome } from '../../components/shell/geolocation';
 import type { PickerController, PickerRow, PickerSnapshot } from '../../components/session/picker-controller';
 import { formatDurationMin, formatUtc, parseCoordinateInput } from '../../lib/session/index';
 import { formatLocalTimeNote } from '../../lib/shell/index';
+import { PassProfile } from '../../components/shell/visuals/pass-profile';
 
 // Neutral view used on the server and until the controller exists in the browser.
 const INITIAL_SNAPSHOT: PickerSnapshot = Object.freeze({
@@ -39,6 +40,8 @@ function PassInfo({ row, onRetry }: { row: PickerRow; onRetry: () => void }) {
   if (row.status === 'ready' && row.pass !== null) {
     const { pass } = row;
     return (
+      <div className="pass-info">
+      <PassProfile pass={pass} />
       <p>
         Next pass: {formatUtc(pass.riseMs)} to {formatUtc(pass.setMs)}, max elevation{' '}
         {pass.maxElevationDeg.toFixed(1)}°, {formatDurationMin(pass.durationMin)}
@@ -46,6 +49,7 @@ function PassInfo({ row, onRetry }: { row: PickerRow; onRetry: () => void }) {
         <br />
         {SHELL_COPY.localTimeLabel} {formatLocalTimeNote(pass.riseMs, -new Date(pass.riseMs).getTimezoneOffset())}
       </p>
+      </div>
     );
   }
   if (row.status === 'tle-unavailable') {
