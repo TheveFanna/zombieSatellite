@@ -104,15 +104,15 @@ Ground rules for the implementer:
     - _Requirements: 14.1–14.3, 14.6_
   - [x] 6.4 Main agent: commit staging `src/components/console/console-sheet.tsx`, `src/components/console/console-tabs.tsx`, `src/components/console/story-panel.tsx`, `src/components/console/copy.ts`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 7. Session dock: S7 panels behind sheets and tabs
+- [x] 7. Session dock: S7 panels behind sheets and tabs
   - Depends on: task 6.
-  - [ ] 7.1 Add the dock and sheets to `session-console.tsx` and remove the landed panels from the page
+  - [x] 7.1 Add the dock and sheets to `session-console.tsx` and remove the landed panels from the page
     - Dock of design "Session console layout": Tuning, Passes, Guide, Map, Story and Controls, each 44 px or larger and one tap from the First_Screen. Tuning sheet: `ConsoleTabs` "Tuning" and "Minutes" hosting `FieldSessionPanel` with `sections` (overview and tuning; minutes), mounted only while open. Map sheet: `GroundTrackMap` unchanged. Passes and Guide sheets: the links to `/planner/[noradId]` and `/guide/[noradId]` only. Story sheet: `story-panel.tsx`. Controls sheet: observer fields and location, mute, volume and "Enable sound", abort, in demo the Auto-point/Manual switch, in real mode the drag-compass switch and the calibration offset buttons, and the S6 Sky_View with its camera toggle (the camera stops when the sheet closes, S6 DD-2 unchanged). In demo-manual mode the radar takes the landed drag pointer handlers. A mute button (44 px) stays on the First_Screen next to the Doppler figure; "Start demo instead" and "Abort" go to the Controls sheet plus a 44 px "Demo" button in the awaiting row; the Doppler dial opens in a Doppler sheet from the figure.
     - `src/app/session/[noradId]/page.tsx`: the S7 panels and landed controls below the main area are removed from the page body because their content now lives in the sheets; the `selecting` block stays, with its buttons restyled to the Touch_Minimum by CSS only. Every content stays reachable without the AR_View, the camera or the sensors. Append `.dock*` classes to the "Console" block of `src/app/globals.css`.
     - _Requirements: 4.5, 10.1, 10.5, 10.6, 11.1_
-  - [ ] 7.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. No scaffold enumeration changes in this task (no new file); the JSX-text scan already covers the changed files by name.
+  - [x] 7.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. No scaffold enumeration changes in this task (no new file); the JSX-text scan already covers the changed files by name.
     - _Requirements: 14.6_
-  - [ ] 7.3 Main agent: commit staging `src/components/console/session-console.tsx`, `src/app/session/[noradId]/page.tsx` and `src/app/globals.css` by name, then push.
+  - [x] 7.3 Main agent: commit staging `src/components/console/session-console.tsx`, `src/app/session/[noradId]/page.tsx` and `src/app/globals.css` by name, then push.
 
 - [ ] 8. Satellite_Dial and home controller
   - Depends on: task 7.

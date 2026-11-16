@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-import type { PointerEvent } from 'react';
 import type { PlayableEntry } from '../../../lib/catalog/index';
 import { tuningFileName } from '../../../lib/field/index';
 import { createFieldBrowserDeps } from '../../../components/field/browser-deps';
@@ -12,9 +11,7 @@ import { createFieldDownloader } from '../../../components/field/field-downloade
 import { createPassFieldController } from '../../../components/field/pass-field-controller';
 import type { PassFieldController, PassFieldSnapshot } from '../../../components/field/pass-field-controller';
 import { ArView } from '../../../components/field/ar-view';
-import { FieldSessionPanel } from '../../../components/field/session-panel';
 import { createTleSource } from '../../../components/field/tle-source';
-import { CALIBRATION_STEP_DEG } from '../../../lib/pointing/index';
 import { createBrowserDeps } from '../../../components/pointing/browser-deps';
 import {
   createPointingSession,
@@ -102,10 +99,6 @@ type LocateStatus = 'idle' | 'locating' | 'failed';
 type CameraController = ReturnType<typeof createCameraController>;
 
 const sectionStyle = { marginTop: '1.25rem' } as const;
-
-function fmt(value: number | null | undefined): string {
-  return value === null || value === undefined ? '—' : value.toFixed(1);
-}
 
 function SessionView({ entry }: { entry: PlayableEntry }) {
   const [controller, setController] = useState<SessionController | null>(null);
@@ -261,10 +254,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     );
   }
 
-  function pointer(e: PointerEvent<HTMLDivElement>) {
-    return { pointerId: e.pointerId, clientX: e.clientX, clientY: e.clientY };
-  }
-
   // The enableAudio call stays first and synchronous: it is the user-gesture entry for audio.
   function startRealTime() {
     if (controller === null) return;
@@ -278,39 +267,8 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     void controller.startDemo();
   }
 
-  function dragArea(label: string) {
-    return (
-      <div className="drag-area"
-        style={{
-          touchAction: 'none',
-          marginTop: '0.5rem',
-          height: '10rem',
-          border: '1px dashed currentColor',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          userSelect: 'none',
-        }}
-        onPointerDown={(e) => {
-          e.currentTarget.setPointerCapture(e.pointerId);
-          controller?.pointerDown(pointer(e));
-        }}
-        onPointerMove={(e) => controller?.pointerMove(pointer(e))}
-        onPointerUp={(e) => {
-          controller?.pointerUp(pointer(e));
-          if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
-        }}
-        onPointerCancel={(e) => controller?.pointerUp(pointer(e))}
-      >
-        {label}
-      </div>
-    );
-  }
-
-  const { phase, lock, targetPass } = snapshot;
-  const { beacon } = entry;
+  const { phase } = snapshot;
   const isDemo = snapshot.clockMode === 'demo';
-  const audioStatus = snapshot.audio.status;
   const previewFailure = snapshot.failure ?? (snapshot.tleStatus === 'failed' ? 'tle-unavailable' : null);
   const skyViewActive = phase === 'in-pass' && snapshot.clockMode === 'real';
 
@@ -357,6 +315,19 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     pointingSnapshot.basis,
   );
 
+  const observerControls = (
+    <>
+      {field('lat', 'Observer latitude (°)', 'a number from −90 to 90', snapshot.observer.latitudeDeg)}
+      {field('lon', 'Observer longitude (°)', 'a number from −180 to 180', snapshot.observer.longitudeDeg)}
+      <p>
+        <button type="button" onClick={locateNow} disabled={locator === null || locateStatus === 'locating'}>
+          {locateStatus === 'locating' ? SHELL_COPY.locating : SHELL_COPY.useMyLocation}
+        </button>
+      </p>
+      {locateStatus === 'failed' ? <p>{SHELL_COPY.locationFailed}</p> : null}
+    </>
+  );
+
   return (
     <main data-tab="session" data-ar-open={arOpen && arPhase ? '' : undefined} style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
       <title>{`${entry.name} · zombieSatellite`}</title>
@@ -370,6 +341,14 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
         controller={controller}
         onOpenAr={openAr}
         onStartDemo={startDemo}
+        onCopy={copyTable}
+        onDownloadCsv={downloadCsv}
+        observerControls={observerControls}
+        placement={placement}
+        cameraOn={cameraOn}
+        cameraDisabled={camera === null}
+        onToggleCamera={toggleCamera}
+        videoRef={videoRef}
       />
       {snapshot.lastRejection !== null ? (
         <p role="alert">
@@ -377,14 +356,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
           {snapshot.lastRejection.state}).
         </p>
       ) : null}
-
-      <FieldSessionPanel
-        entry={entry}
-        snapshot={snapshot}
-        field={fieldSnapshot}
-        onCopy={copyTable}
-        onDownloadCsv={downloadCsv}
-      />
 
       {phase === 'selecting' ? (
         <section style={sectionStyle}>
@@ -422,109 +393,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
         </section>
       ) : null}
 
-      {phase === 'in-pass' ? (
-        <section style={sectionStyle}>
-          {isDemo ? (
-            <div>
-              <h3>Pointing</h3>
-              <p>
-                <button
-                  type="button"
-                  aria-pressed={snapshot.pointingSource === 'auto'}
-                  onClick={() => controller?.setDemoPointing('auto')}
-                >
-                  Auto-point
-                </button>{' '}
-                <button
-                  type="button"
-                  aria-pressed={snapshot.pointingSource === 'manual'}
-                  onClick={() => controller?.setDemoPointing('manual')}
-                >
-                  Manual
-                </button>
-              </p>
-              <p>{SESSION_COPY.autoPointNote}</p>
-              {snapshot.pointingSource === 'manual' ? dragArea('Drag here to turn the view') : null}
-            </div>
-          ) : (
-            <div>
-              <h3>Motion sensors</h3>
-              {pointingSnapshot.permission === 'denied' ? <p role="alert">Motion sensor access was denied.</p> : null}
-              {pointingSnapshot.permission === 'requesting' ? <p>Waiting for the browser permission prompt…</p> : null}
-              {pointingSnapshot.permission === 'unavailable' ? (
-                <p>No orientation data arrived. The drag compass is active.</p>
-              ) : null}
-              {pointingSnapshot.permission === 'granted' ? (
-                <p>Motion sensors enabled. Heading source: {pointingSnapshot.source ?? '—'}</p>
-              ) : null}
-              <h3>{SHELL_COPY.skyViewHeading}</h3>
-              <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-                <input type="checkbox" checked={cameraOn} onChange={toggleCamera} disabled={camera === null} />{' '}
-                {SHELL_COPY.cameraToggle}
-              </label>
-              <div className="sky-view"
-                style={{
-                  position: 'relative',
-                  width: '100%',
-                  aspectRatio: '3 / 4',
-                  overflow: 'hidden',
-                  border: '1px solid currentColor',
-                }}
-              >
-                {cameraOn ? (
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    playsInline
-                    muted
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : null}
-                {placement.kind === 'on-screen' ? (
-                  <div
-                    aria-hidden="true"
-                    style={{
-                      position: 'absolute',
-                      left: `${placement.leftPct}%`,
-                      top: `${placement.topPct}%`,
-                      width: '1.5rem',
-                      height: '1.5rem',
-                      marginLeft: '-0.75rem',
-                      marginTop: '-0.75rem',
-                      borderRadius: '50%',
-                      border: `3px solid ${lock?.locked ? '#2ea043' : '#f0f6fc'}`,
-                      boxShadow: '0 0 0 1px #0d1117',
-                    }}
-                  />
-                ) : (
-                  <p style={{ position: 'absolute', left: 0, right: 0, bottom: 0, margin: 0, padding: '0.5rem' }}>
-                    {placement.kind === 'out-of-view' ? SHELL_COPY.markerOutOfView : SHELL_COPY.noPointingYet}
-                  </p>
-                )}
-              </div>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={pointingSnapshot.dragActive}
-                  onChange={() => pointing?.setDragEnabled(!pointingSnapshot.dragActive)}
-                />{' '}
-                Drag compass
-              </label>
-              {dragArea('Drag here to turn the compass')}
-              <p>
-                <button type="button" onClick={() => pointing?.stepCalibration(-CALIBRATION_STEP_DEG)}>
-                  −{CALIBRATION_STEP_DEG}°
-                </button>{' '}
-                <button type="button" onClick={() => pointing?.stepCalibration(CALIBRATION_STEP_DEG)}>
-                  +{CALIBRATION_STEP_DEG}°
-                </button>{' '}
-                Offset: {fmt(pointingSnapshot.calibrationOffsetDeg)}°
-              </p>
-            </div>
-          )}
-        </section>
-      ) : null}
-
       {arOpen && arPhase ? (
         <ArView
           snapshot={snapshot}
@@ -536,37 +404,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
           onClose={() => setArOpen(false)}
         />
       ) : null}
-
-      <section style={sectionStyle}>
-        <h2>Sound</h2>
-        {audioStatus === 'off' || audioStatus === 'suspended' ? (
-          <p>
-            <button type="button" onClick={() => controller?.enableAudio()} disabled={controller === null}>
-              {SESSION_COPY.enableSound}
-            </button>
-          </p>
-        ) : null}
-        {audioStatus === 'unavailable' ? <p>{SESSION_COPY.audioUnavailable}</p> : null}
-        <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-          <input
-            type="checkbox"
-            checked={snapshot.audio.muted}
-            onChange={(e) => controller?.setMuted(e.target.checked)}
-          />{' '}
-          Mute
-        </label>
-        <label style={{ display: 'block' }}>
-          Volume{' '}
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={0.01}
-            value={snapshot.audio.volume}
-            onChange={(e) => controller?.setVolume(Number(e.target.value))}
-          />
-        </label>
-      </section>
 
     </main>
   );
