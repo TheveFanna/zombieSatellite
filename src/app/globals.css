@@ -1164,3 +1164,74 @@ main > img {
     transition: none !important;
   }
 }
+/* Field companion */
+.badge {
+  display: inline-block;
+  margin: 0.4rem 0 0.6rem;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--hair);
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bone-2);
+}
+
+.badge-sunlit {
+  border-color: var(--phosphor-2);
+  color: var(--phosphor);
+}
+
+.badge-shadowed,
+.badge-partly {
+  border-color: var(--brass-2);
+  color: var(--brass);
+}
+
+.instrument > summary {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+table.tuning {
+  width: 100%;
+  margin: 0.6rem 0;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+table.tuning th,
+table.tuning td {
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid var(--hair);
+  text-align: right;
+  color: var(--bone);
+}
+
+table.tuning thead th {
+  color: var(--dim);
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+table.tuning tbody th {
+  text-align: left;
+  color: var(--brass);
+  font-weight: 400;
+}
+
+table.tuning td:first-of-type {
+  color: var(--phosphor);
+}
+
+.minute-table {
+  font-size: 0.78rem;
+}

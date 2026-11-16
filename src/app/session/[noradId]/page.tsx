@@ -5,7 +5,14 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { PointerEvent } from 'react';
 import type { PlayableEntry } from '../../../lib/catalog/index';
-import { FIELD_COPY } from '../../../lib/field/index';
+import { FIELD_COPY, tuningFileName } from '../../../lib/field/index';
+import { createFieldBrowserDeps } from '../../../components/field/browser-deps';
+import type { FieldBrowserDeps } from '../../../components/field/browser-deps';
+import { createFieldDownloader } from '../../../components/field/field-downloader';
+import { createPassFieldController } from '../../../components/field/pass-field-controller';
+import type { PassFieldController, PassFieldSnapshot } from '../../../components/field/pass-field-controller';
+import { FieldSessionPanel } from '../../../components/field/session-panel';
+import { createTleSource } from '../../../components/field/tle-source';
 import { CALIBRATION_STEP_DEG } from '../../../lib/pointing/index';
 import { createBrowserDeps } from '../../../components/pointing/browser-deps';
 import {
@@ -53,6 +60,17 @@ const INITIAL_POINTING_SNAPSHOT: PointingSnapshot = Object.freeze({
 
 const getServerPointingSnapshot = (): PointingSnapshot => INITIAL_POINTING_SNAPSHOT;
 const noopSubscribe = (): (() => void) => () => {};
+
+const INITIAL_FIELD_SNAPSHOT: PassFieldSnapshot = Object.freeze({
+  status: 'loading',
+  satrec: null,
+  tle: null,
+  pass: null,
+  track: null,
+  profile: null,
+  tuning: null,
+});
+const getServerFieldSnapshot = (): PassFieldSnapshot => INITIAL_FIELD_SNAPSHOT;
 
 function initialSnapshot(entry: PlayableEntry): SessionSnapshot {
   return Object.freeze({
@@ -118,6 +136,8 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
   const [camera, setCamera] = useState<CameraController | null>(null);
   const [cameraOn, setCameraOn] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [fieldController, setFieldController] = useState<PassFieldController | null>(null);
+  const [fieldDeps, setFieldDeps] = useState<FieldBrowserDeps | null>(null);
 
   const serverSnapshot = useMemo(() => initialSnapshot(entry), [entry]);
   const getServerSnapshot = (): SessionSnapshot => serverSnapshot;
@@ -128,7 +148,14 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     const createdController = createSessionController(sessionDeps, entry);
     const createdLocator = createLocator({ geolocation: browserGeolocation(), storage: sessionDeps.storage });
     const createdCamera = createCameraController({ mediaDevices: browserMediaDevices() });
+    const createdFieldDeps = createFieldBrowserDeps();
+    const createdField = createPassFieldController(
+      { tleSource: createTleSource(sessionDeps.tleFetcher, entry.noradId) },
+      entry,
+    );
     let active = true;
+    setFieldDeps(createdFieldDeps);
+    setFieldController(createdField);
     setPointing(createdPointing);
     setController(createdController);
     setLocator(createdLocator);
@@ -143,7 +170,10 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
       active = false;
       createdCamera.stop();
       createdController.dispose();
+      createdField.dispose();
       createdPointing.dispose();
+      setFieldController(null);
+      setFieldDeps(null);
       setController(null);
       setPointing(null);
       setLocator(null);
@@ -179,6 +209,41 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     pointing ? pointing.getSnapshot : getServerPointingSnapshot,
     getServerPointingSnapshot,
   );
+
+  const fieldSnapshot = useSyncExternalStore(
+    fieldController ? fieldController.subscribe : noopSubscribe,
+    fieldController ? fieldController.getSnapshot : getServerFieldSnapshot,
+    getServerFieldSnapshot,
+  );
+  const fieldPass = snapshot.targetPass ?? snapshot.previewPass;
+  const observerLat = snapshot.observer.latitudeDeg;
+  const observerLon = snapshot.observer.longitudeDeg;
+
+  // Observer first, then pass: the controller recomputes on each call.
+  useEffect(() => {
+    fieldController?.setObserver({ latitudeDeg: observerLat, longitudeDeg: observerLon });
+  }, [fieldController, observerLat, observerLon]);
+  useEffect(() => {
+    fieldController?.setPass(fieldPass);
+  }, [fieldController, fieldPass]);
+
+  function copyTable(text: string): Promise<boolean> {
+    const clipboard = fieldDeps?.clipboard ?? null;
+    if (clipboard === null) return Promise.resolve(false);
+    return clipboard.writeText(text).then(
+      () => true,
+      () => false,
+    );
+  }
+
+  function downloadCsv(csv: string, aosMs: number) {
+    if (fieldDeps === null) return;
+    createFieldDownloader(fieldDeps.download).downloadText(
+      csv,
+      'text/csv;charset=utf-8',
+      tuningFileName(entry.slug, aosMs),
+    );
+  }
 
   function onField(name: FieldName, text: string) {
     setRaw((prev) => ({ ...prev, [name]: text }));
@@ -317,6 +382,14 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
           {snapshot.lastRejection.state}).
         </p>
       ) : null}
+
+      <FieldSessionPanel
+        entry={entry}
+        snapshot={snapshot}
+        field={fieldSnapshot}
+        onCopy={copyTable}
+        onDownloadCsv={downloadCsv}
+      />
 
       {phase === 'selecting' ? (
         <section style={sectionStyle}>

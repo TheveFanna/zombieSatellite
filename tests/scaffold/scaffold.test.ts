@@ -79,6 +79,11 @@ const SHELL_VISUALS = [
   'src/components/shell/visuals/pass-profile.tsx',
   'src/components/shell/visuals/sky-dome.tsx',
 ];
+/** The field companion components, listed by name. */
+const FIELD_COMPONENTS = [
+  'src/components/field/session-panel.tsx',
+  'src/components/field/visuals/field-bits.tsx',
+];
 
 /** Parses a TSX file by its path relative to the repository root. */
 function parseTsx(path: string): ts.SourceFile {
@@ -153,6 +158,7 @@ function checkedTexts(): Array<[string, string[]]> {
         ...CARDS_PAGES.flatMap((file) => jsxTexts(parseAppPath(file))),
         ...jsxTexts(parseTsx(SHELL_REGISTRAR)),
         ...SHELL_VISUALS.flatMap((file) => jsxTexts(parseTsx(file))),
+        ...FIELD_COMPONENTS.flatMap((file) => jsxTexts(parseTsx(file))),
       ],
     ],
     ['session copy strings', propertyStrings('src/components/session/copy.ts')],
@@ -226,7 +232,7 @@ describe('Requirement 1: project scaffold', () => {
     expect(Object.entries(pkg.scripts ?? {}).filter(([, command]) => OS_SPECIFIC_SYNTAX.test(command))).toEqual([]);
   });
 
-  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes, globals.css and the named .ts files, and no .tsx file other than these pages, the shell service-worker registrar and the named shell visuals exists under src', () => {
+  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes, globals.css and the named .ts files, and no .tsx file other than these pages, the shell service-worker registrar and the named shell visuals and the named field components exists under src', () => {
     expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual([
       'api',
       'cards',
@@ -252,6 +258,8 @@ describe('Requirement 1: project scaffold', () => {
       'app/pointing/page.tsx',
       'app/session/[noradId]/page.tsx',
       'app/session/page.tsx',
+      'components/field/session-panel.tsx',
+      'components/field/visuals/field-bits.tsx',
       'components/shell/service-worker-registrar.tsx',
       'components/shell/visuals/doppler-dial.tsx',
       'components/shell/visuals/lifeline.tsx',

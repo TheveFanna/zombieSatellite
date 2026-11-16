@@ -54,7 +54,7 @@ Ground rules for the implementer:
     - _Requirements: 4.5, 23.4_
   - [x] 2.3 Main agent: commit staging `src/lib/session/beacon.ts`, `src/components/session/session-controller.ts`, `src/components/session/copy.ts`, `src/app/session/[noradId]/page.tsx` and, only if it was adjusted, `tests/session/session-controller.test.ts` by name, then push.
 
-- [ ] 3. Tuning table core
+- [x] 3. Tuning table core
   - Depends on: task 2.
   - [x] 3.1 Create `src/lib/field/tuning.ts` and extend `index.ts` and `copy.ts`
     - `tuningTable`, `minuteTable`, `tuningCsv`, `roundMhz`, the file-name builder and the formatting per design "Tuning table": `physicalDopplerShiftKhz` from the session barrel (Doppler is not reimplemented), 4-decimal MHz rounding, whole-UTC-minute rows plus AOS and LOS, "Now" and "Window end" labels for truncated passes, `{ kind: 'no-frequency' }` for IMAGE before any engine call, the five-column CSV with CRLF line ends. `FIELD_COPY` gains the tuning labels, `nominalNote`, `les1Note`, `prosperoNote`, `noFrequencyNote` and the CSV header.
@@ -64,23 +64,23 @@ Ground rules for the implementer:
     - One case as design "Tuning table": the ISS fixture pass, TCA 145.9785 MHz from the baseline range rate −2.1094 km/s, AOS and LOS literals computed once with `rangeRateOracle` and `Δf = −f0 · ṙ / c`, with a comment naming the method.
     - Run it, `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 5.9_
-  - [-] 3.3 Main agent: commit staging `src/lib/field/tuning.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/tuning.test.ts` by name, then push.
+  - [x] 3.3 Main agent: commit staging `src/lib/field/tuning.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/tuning.test.ts` by name, then push.
 
 - [ ] 4. Session_Page field panel: badge, Tuning_Table, Instrument_Detail, copy and CSV
   - Depends on: task 3.
-  - [~] 4.1 Create the component-layer base
+  - [x] 4.1 Create the component-layer base
     - `src/components/field/deps.ts`, `browser-deps.ts` (clipboard, downloads, clock, timers, storage; real objects only here), `tle-source.ts`, `pass-field-controller.ts` and `field-downloader.ts` per design "Pass field controller and TLE source" and "Downloads and clipboard". The controller computes `track` as `null` until task 5.
     - `src/components/field/visuals/field-bits.tsx`: `IlluminationBadge` and `InstrumentDetail` (a `details` element, summary `FIELD_COPY.instrumentLabel`).
     - _Requirements: 3.4–3.6, 5.5, 18.1, 18.2, 23.1–23.3_
-  - [~] 4.2 Create `src/components/field/session-panel.tsx` and wire it into the Session_Page
+  - [x] 4.2 Create `src/components/field/session-panel.tsx` and wire it into the Session_Page
     - `FieldSessionPanel` renders, for now, blocks 1, 3, 4 and 6 of design "Session_Page block" (badge, Tuning_Table with notes, Instrument_Detail with shadow instants, Minute_Table, copy and CSV buttons, links to the planner and the guide are shown from tasks 10 and 12, so omit them now). One insertion in `src/app/session/[noradId]/page.tsx` after the header, shadow note and effects, with the pass-field controller created next to the session controller from `sessionDeps.tleFetcher`. The Simple_View shows the badge, three tuning rows and the Maximum_Elevation; everything else sits in the Instrument_Detail.
     - Append the "Field companion" block to `src/app/globals.css` with the classes this task uses (`.badge-*`, `.instrument`, tuning table styles); later tasks append their own classes to the same block.
     - _Requirements: 3.4–3.6, 5.1–5.8, 18.1–18.4, 20.1–20.3_
-  - [~] 4.3 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 4.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/session-panel.tsx` and `components/field/visuals/field-bits.tsx` (test title names the field components); checks 1.24 and 1.25 rendered-JSX group gains `FIELD_COMPONENTS` with those two files by name. Directory listing and `.ts` list unchanged.
     - Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [~] 4.4 Main agent: commit staging the files of `src/components/field` created so far (`deps.ts`, `browser-deps.ts`, `tle-source.ts`, `pass-field-controller.ts`, `field-downloader.ts`, `session-panel.tsx`, `visuals/field-bits.tsx`), `src/app/session/[noradId]/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [-] 4.4 Main agent: commit staging the files of `src/components/field` created so far (`deps.ts`, `browser-deps.ts`, `tle-source.ts`, `pass-field-controller.ts`, `field-downloader.ts`, `session-panel.tsx`, `visuals/field-bits.tsx`), `src/app/session/[noradId]/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 5. Sky_Track
   - Depends on: task 4.
