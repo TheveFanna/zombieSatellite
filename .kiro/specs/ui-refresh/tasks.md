@@ -29,12 +29,12 @@ Ground rules: one commit per task after its tests pass, then push at once; never
   - [x] 4.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
   - [x] 4.3 Main agent: commit by name, then push.
 
-- [ ] 5. Passes page
+- [x] 5. Passes page
   - Depends on: task 4.
-  - [ ] 5.1 Rewrite `src/app/session/page.tsx` as the observer block and one compact row per satellite, with open session and plan actions. Drop the pass profile and the guide link from this page.
+  - [x] 5.1 Rewrite `src/app/session/page.tsx` as the observer block and one compact row per satellite, with open session and plan actions. Drop the pass profile and the guide link from this page.
     - _Requirements: 5.3, 5.4_
-  - [ ] 5.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
-  - [ ] 5.3 Main agent: commit by name, then push.
+  - [x] 5.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
+  - [x] 5.3 Main agent: commit by name, then push.
 
 - [ ] 6. Owner review on a real phone (executed by the owner)
   - Depends on: task 5, with its push deployed.

@@ -1,8 +1,7 @@
 'use client';
-
+// Passes page (S10 design "Page responsibilities"): the observer and one compact row per satellite.
 import Link from 'next/link';
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { listPlayableEntries } from '../../lib/catalog/index';
 import { DEFAULT_OBSERVER } from '../../components/pointing/pointing-session';
 import { createPickerBrowserDeps } from '../../components/session/browser-deps';
 import { SESSION_COPY } from '../../components/session/copy';
@@ -12,18 +11,16 @@ import { SHELL_COPY } from '../../components/shell/copy';
 import { createLocator } from '../../components/shell/geolocation';
 import type { LocateOutcome } from '../../components/shell/geolocation';
 import type { PickerController, PickerRow, PickerSnapshot } from '../../components/session/picker-controller';
+import { listPlayableEntries } from '../../lib/catalog/index';
 import { FIELD_COPY } from '../../lib/field/index';
 import { formatDurationMin, formatUtc, parseCoordinateInput } from '../../lib/session/index';
-import { formatLocalTimeNote } from '../../lib/shell/index';
-import { PassProfile } from '../../components/shell/visuals/pass-profile';
 
 // Neutral view used on the server and until the controller exists in the browser.
 const INITIAL_SNAPSHOT: PickerSnapshot = Object.freeze({
   observer: DEFAULT_OBSERVER,
   rows: Object.freeze(
     listPlayableEntries().map(
-      (entry): PickerRow =>
-        Object.freeze({ entry, status: 'loading', pass: null, inProgress: false }),
+      (entry): PickerRow => Object.freeze({ entry, status: 'loading', pass: null, inProgress: false }),
     ),
   ),
 });
@@ -35,27 +32,34 @@ type FieldName = 'lat' | 'lon';
 type Locator = ReturnType<typeof createLocator>;
 type LocateStatus = 'idle' | 'locating' | 'failed';
 
-const sectionStyle = { marginTop: '1.25rem' } as const;
+/** "MM-DD HH:MMZ" from the UTC instant. */
+function shortUtc(ms: number): string {
+  return `${formatUtc(ms).slice(5, 16)}Z`;
+}
 
-function PassInfo({ row, onRetry }: { row: PickerRow; onRetry: () => void }) {
+function PassFacts({ row, onRetry }: { row: PickerRow; onRetry: () => void }) {
   if (row.status === 'ready' && row.pass !== null) {
     const { pass } = row;
     return (
-      <div className="pass-info">
-      <PassProfile pass={pass} />
-      <p>
-        Next pass: {formatUtc(pass.riseMs)} to {formatUtc(pass.setMs)}, max elevation{' '}
-        {pass.maxElevationDeg.toFixed(1)}°, {formatDurationMin(pass.durationMin)}
-        {row.inProgress ? ' (in progress)' : ''}
-        <br />
-        {SHELL_COPY.localTimeLabel} {formatLocalTimeNote(pass.riseMs, -new Date(pass.riseMs).getTimezoneOffset())}
-      </p>
-      </div>
+      <dl className="pass-facts">
+        <div>
+          <dt>Rise</dt>
+          <dd>{shortUtc(pass.riseMs)}</dd>
+        </div>
+        <div>
+          <dt>Max</dt>
+          <dd>{pass.maxElevationDeg.toFixed(0)}°</dd>
+        </div>
+        <div>
+          <dt>Length</dt>
+          <dd>{formatDurationMin(pass.durationMin)}</dd>
+        </div>
+      </dl>
     );
   }
   if (row.status === 'tle-unavailable') {
     return (
-      <p>
+      <p className="pass-note">
         Orbit data unavailable.{' '}
         <button type="button" onClick={onRetry}>
           Retry
@@ -63,8 +67,8 @@ function PassInfo({ row, onRetry }: { row: PickerRow; onRetry: () => void }) {
       </p>
     );
   }
-  if (row.status === 'no-pass-found') return <p>No pass found in the next 7 days.</p>;
-  return <p>Loading orbit data…</p>;
+  if (row.status === 'no-pass-found') return <p className="pass-note">No pass in the next 7 days.</p>;
+  return <p className="pass-note">Loading orbit data…</p>;
 }
 
 export default function SessionPickerPage() {
@@ -133,56 +137,68 @@ export default function SessionPickerPage() {
 
   function field(name: FieldName, label: string, hint: string, current: number) {
     return (
-      <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-        {label}{' '}
+      <label className="pass-field">
+        <span>{label}</span>
         <input
           type="number"
           step="any"
+          inputMode="decimal"
           value={raw[name] ?? String(current)}
           aria-invalid={invalid[name]}
           onChange={(e) => onField(name, e.target.value)}
         />
-        {invalid[name] ? <span role="alert"> Invalid value, expected {hint}. Previous value kept.</span> : null}
+        {invalid[name] ? <span role="alert" className="pass-error">Expected {hint}.</span> : null}
       </label>
     );
   }
 
   return (
-    <main data-tab="session" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
-      <title>Satellite picker · zombieSatellite</title>
-      <h1>Pick a satellite</h1>
-      <p>{SESSION_COPY.utcNote}</p>
+    <main data-tab="session" className="pass-page">
+      <title>Passes · zombieSatellite</title>
+      <header>
+        <h1>Passes</h1>
+        <p className="pass-note">{SESSION_COPY.utcNote}</p>
+      </header>
 
-      <section style={sectionStyle}>
-        <h2>Observer</h2>
-        {field('lat', 'Observer latitude (°)', 'a number from −90 to 90', snapshot.observer.latitudeDeg)}
-        {field('lon', 'Observer longitude (°)', 'a number from −180 to 180', snapshot.observer.longitudeDeg)}
-        <p>
+      <div className="pass-observer">
+        <div className="pass-observer-head">
+          <h2>Observer</h2>
           <button type="button" onClick={locateNow} disabled={locator === null || locateStatus === 'locating'}>
             {locateStatus === 'locating' ? SHELL_COPY.locating : SHELL_COPY.useMyLocation}
           </button>
-        </p>
-        {locateStatus === 'failed' ? <p>{SHELL_COPY.locationFailed}</p> : null}
-      </section>
+        </div>
+        <div className="pass-fields">
+          {field('lat', 'Latitude (°)', 'a number from −90 to 90', snapshot.observer.latitudeDeg)}
+          {field('lon', 'Longitude (°)', 'a number from −180 to 180', snapshot.observer.longitudeDeg)}
+        </div>
+        {locateStatus === 'failed' ? <p className="pass-note">{SHELL_COPY.locationFailed}</p> : null}
+      </div>
 
-      <section className="plain">
-        <h2>Satellites</h2>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {snapshot.rows.map((row) => (
-            <li key={row.entry.noradId} className="card">
-              <h3>{row.entry.name}</h3>
-              <p>
-                Difficulty: {row.entry.difficulty} · {SESSION_COPY.statusLabels[row.entry.status]}
-                {row.entry.beacon.sunlitOnly ? ' · Sunlit only' : ''}
-              </p>
-              <PassInfo row={row} onRetry={() => controller?.retry()} />
-              <Link className="button primary" href={`/session/${row.entry.noradId}`}>Open session</Link>{' '}
-              <Link className="button" href={`/planner/${row.entry.noradId}`}>{FIELD_COPY.plannerLink}</Link>{' '}
-              <Link className="button" href={`/guide/${row.entry.noradId}`}>{FIELD_COPY.guideLink}</Link>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <ul className="pass-list">
+        {snapshot.rows.map((row) => (
+          <li key={row.entry.noradId} className="pass-row">
+            <div className="pass-head">
+              <div>
+                <h3>{row.entry.name}</h3>
+                <p className="pass-meta">
+                  {row.entry.difficulty} · {SESSION_COPY.statusLabels[row.entry.status]}
+                  {row.entry.beacon.sunlitOnly ? ' · Sunlit only' : ''}
+                </p>
+              </div>
+              {row.inProgress ? <span className="pass-live">In view now</span> : null}
+            </div>
+            <PassFacts row={row} onRetry={() => controller?.retry()} />
+            <div className="pass-actions">
+              <Link className="button primary" href={`/session/${row.entry.noradId}`}>
+                {SHELL_COPY.openSession}
+              </Link>
+              <Link className="button" href={`/planner/${row.entry.noradId}`}>
+                {FIELD_COPY.plannerLink}
+              </Link>
+            </div>
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }
