@@ -15,6 +15,7 @@ export const SHELL_COPY = Object.freeze({
   navHome: 'Home',
   navSession: 'Passes',
   navCards: 'QSL cards',
+  navAr: 'AR',
   startSession: 'Find a pass',
   openCards: 'Your QSL cards',
   openSession: 'Open session',

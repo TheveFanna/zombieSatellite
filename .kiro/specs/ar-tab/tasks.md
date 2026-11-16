@@ -9,12 +9,12 @@ Ground rules: one commit per task after its tests pass, then push at once; never
     - _Requirements: 10.2_
   - [x] 1.3 Main agent: commit by name, then push.
 
-- [ ] 2. AR_Tab page: route, Tab_Bar entry, scene, switcher, guide, readouts
+- [x] 2. AR_Tab page: route, Tab_Bar entry, scene, switcher, guide, readouts
   - Depends on: task 1.
-  - [ ] 2.1 Add `src/app/ar/page.tsx`, `src/components/ar/ar-tab.tsx`, `src/components/ar/ar-scene.tsx`; add `navAr` to `SHELL_COPY`, the `Link` to `layout.tsx`, the `.tab-ar` icon and active selectors to `globals.css`, `'/ar'` to `SHELL_DOCUMENTS` in `public/sw.js` with `CACHE` bumped to `v2`. Update the lists of check 1.19 in `tests/scaffold/scaffold.test.ts`. Behaviour per Requirements 1, 2, 3, 4, 5, 6 and 9.
+  - [x] 2.1 Add `src/app/ar/page.tsx`, `src/components/ar/ar-tab.tsx`, `src/components/ar/ar-scene.tsx`; add `navAr` to `SHELL_COPY`, the `Link` to `layout.tsx`, the `.tab-ar` icon and active selectors to `globals.css`, `'/ar'` to `SHELL_DOCUMENTS` in `public/sw.js` with `CACHE` bumped to `v2`. Update the lists of check 1.19 in `tests/scaffold/scaffold.test.ts`. Behaviour per Requirements 1, 2, 3, 4, 5, 6 and 9.
     - _Requirements: 1.1 to 1.5, 2.1 to 2.4, 3.1 to 3.4, 4.3, 5.1 to 5.4, 6.1 to 6.4, 9.1 to 9.3_
-  - [ ] 2.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
-  - [ ] 2.3 Main agent: commit by name, then push.
+  - [x] 2.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
+  - [x] 2.3 Main agent: commit by name, then push.
 
 - [ ] 3. Visibility bar and Sky_Slider
   - Depends on: task 2.

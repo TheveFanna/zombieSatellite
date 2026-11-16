@@ -250,6 +250,7 @@ describe('Requirement 1: project scaffold', () => {
   it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes, globals.css and the named .ts files, and no .tsx file other than these pages, the shell service-worker registrar and the named shell visuals and the named field components and the named console components exists under src', () => {
     expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual([
       'api',
+      'ar',
       'cards',
       'globals.css',
       'guide',
@@ -269,6 +270,7 @@ describe('Requirement 1: project scaffold', () => {
       .filter((file) => file.endsWith('.tsx'))
       .map((file) => file.split(sep).join('/'));
     expect(tsxFiles.sort()).toEqual([
+      'app/ar/page.tsx',
       'app/cards/[noradId]/[aosMs]/[n]/page.tsx',
       'app/cards/page.tsx',
       'app/guide/[noradId]/page.tsx',
@@ -279,6 +281,8 @@ describe('Requirement 1: project scaffold', () => {
       'app/pointing/page.tsx',
       'app/session/[noradId]/page.tsx',
       'app/session/page.tsx',
+      'components/ar/ar-scene.tsx',
+      'components/ar/ar-tab.tsx',
       'components/console/alignment-meter.tsx',
       'components/console/console-home.tsx',
       'components/console/console-preview.tsx',

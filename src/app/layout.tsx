@@ -27,6 +27,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <Link className="tab-session" href="/session">
               {SHELL_COPY.navSession}
             </Link>
+            <Link className="tab-ar" href="/ar">
+              {SHELL_COPY.navAr}
+            </Link>
             <Link className="tab-cards" href="/cards">
               {SHELL_COPY.navCards}
             </Link>
