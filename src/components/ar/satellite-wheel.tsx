@@ -1,6 +1,7 @@
 'use client';
-// Satellite_Wheel of the AR tab (S10 design "Satellite_Wheel"): cards on a half-wheel arc at the top.
-import { useRef, useState } from 'react';
+// Satellite_Wheel of the AR tab (S11 design): tall certificate cards stacked in a row.
+// The selected card is in front and a little larger. A change lifts the old card up and drops the new one from above.
+import { useEffect, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 
 export interface WheelItem {
@@ -15,18 +16,49 @@ export interface SatelliteWheelProps {
   readonly onSelect: (index: number) => void;
 }
 
-const RADIUS_PX = 260;
-const STEP_DEG = 20;
+const SPACING_PX = 58;
 const PX_PER_STEP = 70;
 const TAP_SLOP_PX = 6;
-const FADE_DEG = 62;
+const ANIM_MS = 420;
+const HIDE_AT = 2.6;
+
+function Certificate({ item }: { item: WheelItem }) {
+  return (
+    <>
+      <span className="cert-no">NORAD {item.id}</span>
+      <svg className="cert-emblem" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="17" />
+        <ellipse cx="20" cy="20" rx="15" ry="6" transform="rotate(-28 20 20)" />
+        <circle cx="20" cy="20" r="2.4" className="cert-core" />
+        <circle cx="32.6" cy="11.3" r="1.6" className="cert-sat" />
+      </svg>
+      <strong>{item.name}</strong>
+      <em>{item.sub}</em>
+    </>
+  );
+}
 
 export function SatelliteWheel({ items, selectedIndex, onSelect }: SatelliteWheelProps) {
   const [dragPx, setDragPx] = useState(0);
+  const [entering, setEntering] = useState<number | null>(null);
+  const [leaving, setLeaving] = useState<number | null>(null);
+  const prevRef = useRef(selectedIndex);
   const startRef = useRef<{ x: number } | null>(null);
   const lastDxRef = useRef(0);
   const movedRef = useRef(false);
-  const dragging = dragPx !== 0;
+
+  useEffect(() => {
+    const prev = prevRef.current;
+    prevRef.current = selectedIndex;
+    if (prev === selectedIndex) return;
+    setEntering(selectedIndex);
+    setLeaving(prev);
+    const id = window.setTimeout(() => {
+      setEntering(null);
+      setLeaving(null);
+    }, ANIM_MS);
+    return () => window.clearTimeout(id);
+  }, [selectedIndex]);
 
   const onDown = (e: PointerEvent<HTMLDivElement>) => {
     startRef.current = { x: e.clientX };
@@ -55,6 +87,16 @@ export function SatelliteWheel({ items, selectedIndex, onSelect }: SatelliteWhee
     setDragPx(0);
   };
 
+  const place = (offset: number) => {
+    const abs = Math.abs(offset);
+    return {
+      transform: `translate(calc(-50% + ${(offset * SPACING_PX).toFixed(1)}px), ${(abs * 6).toFixed(1)}px) scale(${Math.max(0.8, 1.08 - 0.2 * abs).toFixed(3)})`,
+      opacity: Math.max(0, 1 - abs * 0.4),
+      zIndex: 10 - Math.round(abs * 3),
+      pointerEvents: abs < HIDE_AT ? ('auto' as const) : ('none' as const),
+    };
+  };
+
   return (
     <div
       className="ar-wheel"
@@ -65,33 +107,30 @@ export function SatelliteWheel({ items, selectedIndex, onSelect }: SatelliteWhee
       onPointerUp={onUp}
       onPointerCancel={onUp}
     >
+      {leaving !== null && leaving !== selectedIndex && items[leaving] !== undefined ? (
+        <div className="ar-card ar-card-leave" aria-hidden="true" style={{ ...place(0), transition: 'none' }}>
+          <Certificate item={items[leaving]} />
+        </div>
+      ) : null}
       {items.map((item, i) => {
-        const theta = (i - selectedIndex - dragPx / PX_PER_STEP) * STEP_DEG;
-        const abs = Math.abs(theta);
-        const rad = (theta * Math.PI) / 180;
-        const x = RADIUS_PX * Math.sin(rad);
-        const y = RADIUS_PX * (1 - Math.cos(rad));
-        const visible = abs < FADE_DEG;
+        const offset = i - selectedIndex - dragPx / PX_PER_STEP;
+        const selected = i === selectedIndex;
+        const classes = ['ar-card'];
+        if (selected) classes.push('is-selected');
+        if (entering === i) classes.push('ar-card-enter');
         return (
           <button
             key={item.id}
             type="button"
             role="tab"
-            aria-selected={i === selectedIndex}
-            className="ar-card"
-            style={{
-              transform: `translate(calc(-50% + ${x.toFixed(1)}px), ${y.toFixed(1)}px) rotate(${theta.toFixed(1)}deg)`,
-              opacity: Math.max(0, 1 - abs / FADE_DEG),
-              pointerEvents: visible ? 'auto' : 'none',
-              transition: dragging ? 'none' : undefined,
-              zIndex: 10 - Math.round(abs / 10),
-            }}
+            aria-selected={selected}
+            className={classes.join(' ')}
+            style={{ ...place(offset), transition: dragPx !== 0 ? 'none' : undefined }}
             onClick={() => {
               if (!movedRef.current) onSelect(i);
             }}
           >
-            <strong>{item.name}</strong>
-            <span>{item.sub}</span>
+            <Certificate item={item} />
           </button>
         );
       })}

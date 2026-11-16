@@ -1,13 +1,12 @@
 'use client';
-// AR tab (S9): standalone AR with its own pointing session, camera, TLE source and observer.
+// AR tab (S9, S11): standalone AR with its own pointing session, camera, TLE source and observer.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 import { listPlayableEntries } from '../../lib/catalog/index';
+import type { PlayableEntry } from '../../lib/catalog/index';
 import {
   AR_MAX_FPS,
   FOV_DEFAULT_DEG,
-  VISIBILITY_SPAN_MS,
-  hourTicks,
   FOV_MAX_DEG,
   FOV_MIN_DEG,
   FOV_STEP_DEG,
@@ -15,12 +14,14 @@ import {
   RING_REFRESH_MS,
   STAR_COUNT,
   STAR_SEED,
+  VISIBILITY_SPAN_MS,
   arMarker,
   blendDirection,
   blendRings,
   buildOrbitRing,
   cardinalMarks,
   guideAngleRad,
+  hourTicks,
   horizonLine,
   lockRing,
   projectStars,
@@ -33,7 +34,8 @@ import {
 import type { ArPiece, Direction, OrbitRing, VisibilityWindow } from '../../lib/field/index';
 import { observeAt, predictPasses } from '../../lib/orbit/index';
 import type { Observer, Satrec, TleRecord } from '../../lib/orbit/index';
-import { CALIBRATION_STEP_DEG, evaluateLock } from '../../lib/pointing/index';
+import { cameraBasisFromDrag, evaluateLock } from '../../lib/pointing/index';
+import type { PermissionState } from '../../lib/pointing/index';
 import { formatUtc } from '../../lib/session/index';
 import type { ObserverPosition } from '../../lib/session/index';
 import { readFov, writeFov } from '../field/fov-store';
@@ -47,13 +49,26 @@ import { browserGeolocation, browserMediaDevices } from '../shell/browser-deps';
 import { createCameraController } from '../shell/camera';
 import { createLocator } from '../shell/geolocation';
 import { ArScene } from './ar-scene';
-import { SatelliteWheel } from './satellite-wheel';
-import { VisibilityBar } from './visibility-bar';
 import type { ArSceneModel } from './ar-scene';
+import { ArSettings } from './ar-settings';
+import { Ruler } from './ruler';
+import { SatelliteWheel } from './satellite-wheel';
+import { StoryCard } from './story-card';
+import { VisibilityBar } from './visibility-bar';
 
 const ENTRIES = listPlayableEntries();
 const FRAME_INTERVAL_MS = 1000 / AR_MAX_FPS;
 const NO_PIECES: readonly ArPiece[] = [];
+/** Used only to draw the horizon and the cardinal marks when the phone has no orientation yet. */
+const FALLBACK_BASIS = cameraBasisFromDrag({ headingDeg: 0, pitchDeg: 0 });
+
+const PERMISSION_TEXT: Record<PermissionState, string> = {
+  unknown: 'Motion sensors: not allowed yet',
+  requesting: 'Motion sensors: waiting for the prompt',
+  granted: 'Motion sensors: on',
+  denied: 'Motion sensors: blocked by the browser',
+  unavailable: 'Motion sensors: not on this device',
+};
 
 interface Loaded {
   readonly tle: TleRecord;
@@ -79,12 +94,18 @@ function reducedMotion(): boolean {
   return typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
 }
 
+function clampPct(frac: number): number {
+  return Math.min(1, Math.max(0, frac));
+}
+
 export function ArTab() {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const depsRef = useRef<ReturnType<typeof createPickerBrowserDeps> | null>(null);
   const loadedRef = useRef(new Map<number, Loaded>());
   const observerRef = useRef<ObserverPosition>(DEFAULT_OBSERVER);
+  const activeRef = useRef(false);
+  const startCameraRef = useRef<() => void>(() => undefined);
   const simRef = useRef<Sim>({
     shownId: null,
     ring: null,
@@ -106,9 +127,13 @@ export function ArTab() {
   const [cameraLevel, setCameraLevel] = useState(100);
   const [observerStamp, setObserverStamp] = useState(0);
   const [bar, setBar] = useState<{ nowMs: number; windows: readonly VisibilityWindow[] }>({ nowMs: 0, windows: [] });
+  const [storyOpen, setStoryOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [gateDismissed, setGateDismissed] = useState(false);
   const stars = useMemo(() => starField(STAR_COUNT, STAR_SEED), []);
 
-  // Mount: shared deps, observer, pointing session, camera. Cleanup releases every resource.
+  // Mount: shared deps, observer, pointing session and camera. The camera starts at once; the motion
+  // sensors need one tap on iOS, so the Permission_Gate asks for them. Cleanup releases every resource.
   useEffect(() => {
     const picker = createPickerBrowserDeps();
     depsRef.current = picker;
@@ -119,6 +144,7 @@ export function ArTab() {
     session.setObserver(observerRef.current);
     setPointing(session);
     let active = true;
+    activeRef.current = true;
     const locator = createLocator({ geolocation: browserGeolocation(), storage: picker.storage });
     void locator.autoLocate((position) => {
       if (!active) return false;
@@ -132,14 +158,22 @@ export function ArTab() {
       return applied;
     });
     const camera = createCameraController({ mediaDevices: browserMediaDevices() });
-    void camera.start().then((outcome) => {
-      if (!active) return;
-      setCameraState(outcome === 'on' ? 'on' : 'off');
-      const video = videoRef.current;
-      if (outcome === 'on' && video !== null) video.srcObject = camera.getStream() as MediaStream | null;
-    });
+    startCameraRef.current = () => {
+      if (!activeRef.current) return;
+      void camera.start().then((outcome) => {
+        if (!activeRef.current) return;
+        setCameraState(outcome === 'on' ? 'on' : 'off');
+        const video = videoRef.current;
+        if (outcome === 'on' && video !== null) {
+          video.srcObject = camera.getStream() as MediaStream | null;
+          void video.play().catch(() => undefined);
+        }
+      });
+    };
+    startCameraRef.current();
     return () => {
       active = false;
+      activeRef.current = false;
       camera.stop();
       session.dispose();
       setPointing(null);
@@ -213,13 +247,6 @@ export function ArTab() {
   useEffect(() => {
     let handle = 0;
     let last = 0;
-    const loop = (frameTime: number) => {
-      handle = window.requestAnimationFrame(loop);
-      if (document.hidden || frameTime - last < FRAME_INTERVAL_MS) return;
-      last = frameTime;
-      step(Date.now());
-      setFrame((n) => n + 1);
-    };
     const step = (now: number) => {
       const sim = simRef.current;
       const data = loadedRef.current.get(selectedRef.current);
@@ -262,28 +289,43 @@ export function ArTab() {
       sim.displayRing = ring;
       sim.displayLive = live;
     };
+    const loop = (frameTime: number) => {
+      handle = window.requestAnimationFrame(loop);
+      if (document.hidden || frameTime - last < FRAME_INTERVAL_MS) return;
+      last = frameTime;
+      step(Date.now());
+      setFrame((n) => n + 1);
+    };
     handle = window.requestAnimationFrame(loop);
     return () => window.cancelAnimationFrame(handle);
   }, []);
 
   const snap = pointing === null ? null : pointing.getSnapshot();
-  const basis = snap?.basis ?? null;
+  const oriented = snap !== null && snap.basis !== null;
+  const basis = snap?.basis ?? FALLBACK_BASIS;
   const offsetDeg = snap?.calibrationOffsetDeg ?? 0;
+  const permission: PermissionState = snap?.permission ?? 'unknown';
   const sim = simRef.current;
   const { width, height } = size;
   const aspect = height > 0 ? width / height : 1;
   const live = sim.live;
   const shown = sim.displayLive;
+  const selectedIndex = Math.max(0, ENTRIES.findIndex((e) => e.noradId === selectedId));
+  const selected: PlayableEntry = ENTRIES[selectedIndex];
 
   let model: ArSceneModel | null = null;
   let lockedNow = false;
-  if (basis !== null && width > 0 && height > 0) {
+  let markerPx: { x: number; y: number } | null = null;
+  if (width > 0 && height > 0) {
     let marker: ArSceneModel['marker'] = null;
     let halo: readonly ArPiece[] = NO_PIECES;
     let guide: ArSceneModel['guide'] = null;
-    if (shown !== null) {
+    if (shown !== null && oriented) {
       const m = arMarker(shown.azimuthDeg, shown.elevationDeg, offsetDeg, basis, aspect, fovDeg);
-      if (m.inFront) marker = { ndcX: m.ndcX, ndcY: m.ndcY, below: shown.elevationDeg < 0 };
+      if (m.inFront) {
+        marker = { ndcX: m.ndcX, ndcY: m.ndcY, below: shown.elevationDeg < 0 };
+        markerPx = { x: ((m.ndcX + 1) / 2) * width, y: ((1 - m.ndcY) / 2) * height };
+      }
       const lock = evaluateLock(basis.forward, { azimuthDeg: shown.azimuthDeg, elevationDeg: shown.elevationDeg }, offsetDeg);
       lockedNow = lock.locked;
       if (lock.locked) {
@@ -302,6 +344,7 @@ export function ArTab() {
               ? [{ label: t.label, ndcX: m.ndcX, ndcY: m.ndcY }]
               : [];
           });
+    const nightness = cameraState === 'on' ? 1 - cameraLevel / 100 : 1;
     model = {
       width,
       height,
@@ -309,21 +352,18 @@ export function ArTab() {
       ticks,
       horizon: horizonLine(offsetDeg, basis, aspect, fovDeg),
       cardinals: cardinalMarks(offsetDeg, basis, aspect, fovDeg),
-      stars: [],
-      nightness: 0,
+      stars: nightness > 0.01 ? projectStars(stars, offsetDeg, basis, aspect, fovDeg) : [],
+      nightness,
       marker,
       halo,
       guide,
     };
   }
 
-  const nightness = cameraState === 'on' ? 1 - cameraLevel / 100 : 1;
-  if (model !== null && basis !== null && nightness > 0.01) {
-    model = { ...model, nightness, stars: projectStars(stars, offsetDeg, basis, aspect, fovDeg) };
-  }
+  // The 24-hour bar: NOW moves with the clock; SAT sits on NOW while the satellite is in view, otherwise at its next AOS.
   const nowMsLive = Date.now();
   const barOrigin = bar.nowMs;
-  const nowFrac = barOrigin === 0 ? 0 : Math.min(1, Math.max(0, (nowMsLive - barOrigin) / VISIBILITY_SPAN_MS));
+  const nowFrac = barOrigin === 0 ? 0 : clampPct((nowMsLive - barOrigin) / VISIBILITY_SPAN_MS);
   const hhmm = (ms: number) => formatUtc(ms).slice(11, 16) + 'Z';
   const inView = live !== null && live.elevationDeg >= 0;
   const losWindow = bar.windows.find((w) => w.riseMs <= nowMsLive && w.setMs > nowMsLive);
@@ -337,26 +377,56 @@ export function ArTab() {
     sat = { frac: nextAos.startFrac, inView: false };
     satLabel = 'AOS ' + hhmm(nextAos.riseMs) + ', max ' + Math.round(nextAos.maxElevationDeg) + '°';
   }
-  const selectedIndex = Math.max(0, ENTRIES.findIndex((e) => e.noradId === selectedId));
+
   const statusText =
     status === 'loading'
       ? 'Loading orbit data…'
       : status === 'error'
         ? 'Orbit data unavailable'
-        : live !== null && live.elevationDeg < 0
-          ? 'Below horizon'
-          : lockedNow
-            ? 'Locked on the satellite'
-            : 'Follow the arrow';
-  const dragLayer = snap?.dragActive === true;
-  const needsSensors = snap !== null && (snap.permission === 'unknown' || snap.permission === 'denied');
-  const pointer = (e: PointerEvent<HTMLDivElement>) => ({ pointerId: e.pointerId, clientX: e.clientX, clientY: e.clientY });
+        : !oriented
+          ? 'Not oriented yet'
+          : live !== null && live.elevationDeg < 0
+            ? 'Below horizon'
+            : lockedNow
+              ? 'Locked on the satellite'
+              : 'Follow the arrow';
+
+  const cameraBlocked = cameraState === 'off';
+  const showGate = !gateDismissed && (permission === 'unknown' || permission === 'denied' || cameraBlocked);
+
   const changeFov = (value: number) => {
     const next = Math.min(FOV_MAX_DEG, Math.max(FOV_MIN_DEG, value));
     setFovDeg(next);
     if (depsRef.current !== null) writeFov(depsRef.current.storage, next);
   };
-  const selected = ENTRIES.find((e) => e.noradId === selectedId) ?? ENTRIES[0];
+
+  const enableSensors = () => {
+    // Called inside the tap: iOS only shows the motion prompt for a user gesture.
+    pointing?.requestPermission();
+    if (cameraState !== 'on') startCameraRef.current();
+  };
+
+  const onWheelSelect = (index: number) => {
+    if (index === selectedIndex) {
+      setStoryOpen(true);
+      return;
+    }
+    setStoryOpen(false);
+    setSelectedId(ENTRIES[index].noradId);
+  };
+
+  const pointer = (e: PointerEvent<HTMLDivElement>) => ({ pointerId: e.pointerId, clientX: e.clientX, clientY: e.clientY });
+  const dragLayer = snap?.dragActive === true;
+  const gateTitle = cameraBlocked
+    ? 'Camera is not available'
+    : permission === 'denied'
+      ? 'Motion sensors are blocked'
+      : 'Allow camera and motion';
+  const gateBody = cameraBlocked
+    ? 'The camera shows the sky behind the satellites. You can still read the orbit without it.'
+    : permission === 'denied'
+      ? 'Allow motion for this site in the browser settings, then tap again.'
+      : 'One tap asks for the camera and the motion sensors. The sky view then follows the phone.';
 
   return (
     <div
@@ -376,15 +446,8 @@ export function ArTab() {
         autoPlay
         playsInline
         muted
-        style={{
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          display: cameraState === 'on' ? 'block' : 'none',
-          opacity: cameraLevel / 100,
-        }}
+        className="ar-video"
+        style={{ opacity: cameraLevel / 100 }}
       />
       {model !== null ? <ArScene model={model} /> : null}
       {dragLayer ? (
@@ -403,54 +466,82 @@ export function ArTab() {
         />
       ) : null}
 
+      <header className="ar-head">
+        <div className="ar-head-text">
+          <strong>{selected.name}</strong>
+          <span>{statusText}</span>
+        </div>
+        <button type="button" className="ar-gear" aria-label="Settings" onClick={() => setSettingsOpen(true)}>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="1.8" />
+            <path
+              d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
+        </button>
+      </header>
+
       <SatelliteWheel
         items={ENTRIES.map((e) => ({ id: e.noradId, name: e.name, sub: e.orbitLabel ?? '' }))}
         selectedIndex={selectedIndex}
-        onSelect={(i) => setSelectedId(ENTRIES[i].noradId)}
+        onSelect={onWheelSelect}
       />
 
-      <div className="ar-hud-row">
-        <div className="ar-pill">
-          <span>AZ</span>
-          {live === null ? '—' : live.azimuthDeg.toFixed(1) + '°'}
-          <span>EL</span>
-          {live === null ? '—' : live.elevationDeg.toFixed(1) + '°'}
-        </div>
-        <div className="ar-pill">
-          <span>RNG</span>
-          {live === null ? '—' : Math.round(live.slantRangeKm) + ' km'}
-          <span>RATE</span>
-          {live === null ? '—' : live.rangeRateKmPerS.toFixed(2)}
-        </div>
-      </div>
-      <p className="ar-status">{statusText}</p>
-
-      <label className="ar-sky">
-        <span>Cam</span>
-        <input
-          type="range"
+      <div className="ar-mid">
+        <Ruler
+          side="left"
+          label="FOV"
+          value={fovDeg}
+          min={FOV_MIN_DEG}
+          max={FOV_MAX_DEG}
+          step={FOV_STEP_DEG}
+          format={(v) => `${Math.round(v)}°`}
+          onChange={changeFov}
+        />
+        <Ruler
+          side="right"
+          label="Sky"
+          value={cameraLevel}
           min={0}
           max={100}
-          value={cameraLevel}
-          onChange={(e) => setCameraLevel(Number(e.target.value))}
-          aria-label="Camera picture to night sky"
+          step={1}
+          format={(v) => (v >= 99 ? 'Cam' : v <= 1 ? 'Sky' : `${Math.round(v)}%`)}
+          onChange={setCameraLevel}
         />
-        <span>Sky</span>
-      </label>
+      </div>
+
+      {markerPx !== null ? (
+        <button
+          type="button"
+          className="ar-hit"
+          style={{ left: markerPx.x - 22, top: markerPx.y - 22 }}
+          aria-label={`Story of ${selected.name}`}
+          onClick={() => setStoryOpen(true)}
+        />
+      ) : null}
+
+      {storyOpen ? <StoryCard entry={selected} onClose={() => setStoryOpen(false)} /> : null}
+
+      {showGate ? (
+        <section className="ar-gate" role="dialog" aria-label="Permissions">
+          <h2>{gateTitle}</h2>
+          <p>{gateBody}</p>
+          <div className="ar-gate-actions">
+            <button type="button" className="primary" onClick={enableSensors}>
+              {permission === 'unknown' ? 'Allow' : 'Try again'}
+            </button>
+            <button type="button" onClick={() => setGateDismissed(true)}>
+              Continue without
+            </button>
+          </div>
+        </section>
+      ) : null}
 
       <div className="ar-bottom">
-        <label className="ar-fov">
-          <span>FOV {Math.round(fovDeg)}°</span>
-          <input
-            type="range"
-            min={FOV_MIN_DEG}
-            max={FOV_MAX_DEG}
-            step={FOV_STEP_DEG}
-            value={fovDeg}
-            onChange={(e) => changeFov(Number(e.target.value))}
-            aria-label="Field of view"
-          />
-        </label>
         <VisibilityBar
           nowFrac={nowFrac}
           nowLabel={'NOW ' + formatUtc(nowMsLive).slice(11, 19) + 'Z'}
@@ -459,21 +550,37 @@ export function ArTab() {
           sat={sat}
           satLabel={satLabel}
         />
-        <div className="ar-actions">
-          {needsSensors ? (
-            <button type="button" onClick={() => pointing?.requestPermission()} disabled={pointing === null}>
-              Enable motion sensors
-            </button>
-          ) : null}
-          <button type="button" onClick={() => pointing?.stepCalibration(-CALIBRATION_STEP_DEG)} aria-label="Calibrate counter-clockwise">
-            ↺ {CALIBRATION_STEP_DEG}°
-          </button>
-          <button type="button" onClick={() => pointing?.stepCalibration(CALIBRATION_STEP_DEG)} aria-label="Calibrate clockwise">
-            ↻ {CALIBRATION_STEP_DEG}°
-          </button>
-          {cameraState === 'off' ? <span className="ar-note">No camera</span> : null}
+        <div className="ar-readouts">
+          <div>
+            <span>AZ</span>
+            <b>{live === null ? '—' : live.azimuthDeg.toFixed(1) + '°'}</b>
+          </div>
+          <div>
+            <span>EL</span>
+            <b>{live === null ? '—' : live.elevationDeg.toFixed(1) + '°'}</b>
+          </div>
+          <div>
+            <span>RNG</span>
+            <b>{live === null ? '—' : Math.round(live.slantRangeKm) + ' km'}</b>
+          </div>
+          <div>
+            <span>RATE</span>
+            <b>{live === null ? '—' : live.rangeRateKmPerS.toFixed(2)}</b>
+          </div>
         </div>
       </div>
+
+      <ArSettings
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onCalibrate={(delta) => pointing?.stepCalibration(delta)}
+        sensorText={PERMISSION_TEXT[permission]}
+        cameraText={cameraState === 'on' ? 'Camera: on' : cameraState === 'off' ? 'Camera: not available' : 'Camera: starting'}
+        observerText={`${observerRef.current.latitudeDeg.toFixed(4)}°, ${observerRef.current.longitudeDeg.toFixed(4)}°`}
+        onRetryCamera={() => startCameraRef.current()}
+        onRetrySensors={enableSensors}
+        canRetrySensors={permission === 'unknown' || permission === 'denied'}
+      />
     </div>
   );
 }

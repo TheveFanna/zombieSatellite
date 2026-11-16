@@ -10,14 +10,14 @@ Ground rules: one commit per task after its tests pass, then push at once. Guard
   - [x] 1.3 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
   - [x] 1.4 Main agent: commit by name, then push.
 
-- [ ] 2. AR tab
+- [x] 2. AR tab
   - Depends on: task 1.
-  - [ ] 2.1 Rewrite `ar-tab.tsx` with the fixed layout, always-mounted video with explicit play, the Permission_Gate, the horizon fallback, the Settings_Sheet and the Story_Card.
+  - [x] 2.1 Rewrite `ar-tab.tsx` with the fixed layout, always-mounted video with explicit play, the Permission_Gate, the horizon fallback, the Settings_Sheet and the Story_Card.
     - _Requirements: 1.1, 1.2, 2.1 to 2.4, 3.1 to 3.3, 6.1, 6.2, 7.1, 7.2_
-  - [ ] 2.2 Add `ruler.tsx`, `ar-settings.tsx`, `story-card.tsx`; rewrite `satellite-wheel.tsx` (tall stacked cards, rise animation, certificate design); replace the AR CSS block.
+  - [x] 2.2 Add `ruler.tsx`, `ar-settings.tsx`, `story-card.tsx`; rewrite `satellite-wheel.tsx` (tall stacked cards, rise animation, certificate design); replace the AR CSS block.
     - _Requirements: 4.1 to 4.3, 5.1 to 5.3_
-  - [ ] 2.3 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
-  - [ ] 2.4 Main agent: commit by name, then push.
+  - [x] 2.3 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
+  - [x] 2.4 Main agent: commit by name, then push.
 
 - [ ] 3. Story links
   - Depends on: task 2.
