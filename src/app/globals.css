@@ -1272,3 +1272,51 @@ table.tuning td:first-of-type {
   fill: var(--phosphor);
   text-anchor: middle;
 }
+
+.ar-view {
+  color: var(--bone);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+
+.ar-view button {
+  background: rgba(5, 7, 13, 0.7);
+}
+
+.ar-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ar-horizon {
+  stroke: var(--bone-2);
+}
+
+.ar-arc {
+  stroke-linejoin: round;
+}
+
+.ar-ring {
+  filter: drop-shadow(0 0 4px var(--phosphor-glow));
+}
+
+.ar-edge {
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
+}
+
+.ar-strip {
+  border-top: 1px solid var(--hair);
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  cursor: pointer;
+}
+
+.ar-demo-mark {
+  display: inline-block;
+  margin: 0;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--brass-2);
+  color: var(--brass);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(5, 7, 13, 0.7);
+}

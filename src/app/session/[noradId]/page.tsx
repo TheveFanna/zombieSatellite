@@ -11,6 +11,7 @@ import type { FieldBrowserDeps } from '../../../components/field/browser-deps';
 import { createFieldDownloader } from '../../../components/field/field-downloader';
 import { createPassFieldController } from '../../../components/field/pass-field-controller';
 import type { PassFieldController, PassFieldSnapshot } from '../../../components/field/pass-field-controller';
+import { ArView } from '../../../components/field/ar-view';
 import { FieldSessionPanel } from '../../../components/field/session-panel';
 import { createTleSource } from '../../../components/field/tle-source';
 import { CALIBRATION_STEP_DEG } from '../../../lib/pointing/index';
@@ -94,6 +95,7 @@ function initialSnapshot(entry: PlayableEntry): SessionSnapshot {
     result: null,
     joined: false,
     shadowSilent: false,
+    demoBasis: null,
   });
 }
 
@@ -138,6 +140,7 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [fieldController, setFieldController] = useState<PassFieldController | null>(null);
   const [fieldDeps, setFieldDeps] = useState<FieldBrowserDeps | null>(null);
+  const [arOpen, setArOpen] = useState(false);
 
   const serverSnapshot = useMemo(() => initialSnapshot(entry), [entry]);
   const getServerSnapshot = (): SessionSnapshot => serverSnapshot;
@@ -340,6 +343,18 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     video.srcObject = camera.getStream() as MediaStream | null;
   }, [cameraOn, camera]);
 
+  const arPhase = phase === 'awaiting-pass' || phase === 'in-pass';
+  useEffect(() => {
+    if (!arPhase) setArOpen(false);
+  }, [arPhase]);
+
+  // S6 DD-2 extended: the AR_View owns its own camera, so the Sky_View stream stops first.
+  function openAr() {
+    camera?.stop();
+    setCameraOn(false);
+    setArOpen(true);
+  }
+
   function toggleCamera() {
     if (camera === null) return;
     if (cameraOn) {
@@ -442,6 +457,9 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
             </button>{' '}
             <button type="button" onClick={() => controller?.abort()} disabled={controller === null}>
               Abort
+            </button>{' '}
+            <button type="button" onClick={openAr}>
+              {FIELD_COPY.arOpen}
             </button>
           </p>
         </section>
@@ -594,11 +612,26 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
           )}
 
           <p>
+            <button type="button" onClick={openAr}>
+              {FIELD_COPY.arOpen}
+            </button>{' '}
             <button type="button" onClick={() => controller?.abort()} disabled={controller === null}>
               Abort
             </button>
           </p>
         </section>
+      ) : null}
+
+      {arOpen && arPhase ? (
+        <ArView
+          snapshot={snapshot}
+          field={fieldSnapshot}
+          pointing={pointing}
+          pointingSnapshot={pointingSnapshot}
+          controller={controller}
+          camera={!isDemo}
+          onClose={() => setArOpen(false)}
+        />
       ) : null}
 
       {phase === 'completed' ? (

@@ -98,7 +98,7 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.5, 23.4_
   - [x] 5.4 Main agent: commit staging `src/lib/field/sky-track.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/shell/visuals/sky-dome.tsx`, `src/components/field/visuals/sky-track.tsx`, `src/components/field/pass-field-controller.ts`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 6. AR math and FOV calibration core
+- [x] 6. AR math and FOV calibration core
   - Depends on: task 5.
   - [x] 6.1 Create `src/lib/field/ar.ts` and `fov.ts`; extend `index.ts` and `copy.ts`
     - Per design "AR math" and "FOV calibration": `projectAr` (wrapping the landed `projectMarker`, tangent ratio, equal to it at 75°), `arMarker`, `projectTrackArc`, `projectTicks`, `horizonLine`, cardinal marks, lock ring and `edgeArrow` as the design specifies, `AR_NDC_LIMIT`; `FOV_MIN_DEG`, `FOV_MAX_DEG`, `FOV_DEFAULT_DEG`, `FOV_STEP_DEG`, `normalizeFov`. `FIELD_COPY` gains the AR texts (`arOpen`, `arClose`, `arDemoMark`, `arFovLabel`, `arNoCamera`, `arEnableSensors`).
@@ -108,26 +108,26 @@ Ground rules for the implementer:
     - The six analytic cases of design "AR math", including the 75° agreement with `projectMarker` and the second Vertical_FOV case the design states.
     - Run it, `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 7.13, 9.6_
-  - [-] 6.3 Main agent: commit staging `src/lib/field/ar.ts`, `src/lib/field/fov.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/ar-projection.test.ts` by name, then push.
+  - [x] 6.3 Main agent: commit staging `src/lib/field/ar.ts`, `src/lib/field/fov.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/ar-projection.test.ts` by name, then push.
 
 - [ ] 7. AR_View with camera, overlay and FOV calibration
   - Depends on: task 6.
-  - [~] 7.1 Add `demoBasis` to the S4 snapshot
+  - [x] 7.1 Add `demoBasis` to the S4 snapshot
     - `src/components/session/session-controller.ts`: `demoBasis: CameraBasis | null` in `SessionSnapshot` per design "Camera basis" (auto-point from the aimed pose, manual from the drag compass pose, `null` for the sensor source, cleared with the other sample state). `src/app/session/[noradId]/page.tsx`: `initialSnapshot` gains `demoBasis: null`.
     - If the added field breaks an exact-equality assertion in `tests/session/session-controller.test.ts`, adjust that assertion only.
     - _Requirements: 8.5, 8.6, 22.1, 22.2_
-  - [~] 7.2 Create the AR components
+  - [x] 7.2 Create the AR components
     - `src/components/field/fov-store.ts` (key `zombieSatellite.field.verticalFovDeg`, `normalizeFov` on read).
     - `src/components/field/visuals/ar-overlay.tsx`: the SVG overlay (marker, lock ring, track arc with dashed shadow part, tick labels, horizon, cardinals, edge arrow).
     - `src/components/field/ar-view.tsx`: full-screen layer, its own `createCameraController` instance started on mount and stopped on cleanup, fallback to the dark sky background with a one-line note, sensor-enable button and drag layer per design "Sensors in the AR_View", `ResizeObserver` aspect, `requestAnimationFrame` loop gated to 30 fps and paused while hidden, Instrument_Strip (lock, Doppler, countdown) toggling the Instrument_Detail (azimuth, elevation, Doppler, illumination, FOV slider 45 to 100), close control, Demo_AR_View with `camera={false}` and the always-visible demo mark. No canvas, frame read, recorder, upload or storage.
     - _Requirements: 7.1–7.12, 7.14, 7.15, 8.1–8.5, 9.1–9.5, 18.1, 18.2_
-  - [~] 7.3 Mount it on the Session_Page
+  - [x] 7.3 Mount it on the Session_Page
     - `src/app/session/[noradId]/page.tsx`: `arOpen` state, the `FIELD_COPY.arOpen` button in `awaiting-pass` and `in-pass` (real time and demo), `<ArView … />` while open and in those phases, the Sky_View camera stop on open (`camera.stop()` and `setCameraOn(false)`), unmount when the phase leaves the two phases. S6 DD-2 is extended for the AR_View only. Append the AR classes of design "Visual language" to the "Field companion" block of `src/app/globals.css`.
     - _Requirements: 7.1, 7.12, 8.4, 8.6, 20.1–20.3, 22.2_
-  - [~] 7.4 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 7.4 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/ar-view.tsx` and `components/field/visuals/ar-overlay.tsx`; the `FIELD_COMPONENTS` group of checks 1.24 and 1.25 gains the same two files by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [~] 7.5 Main agent: commit staging `src/components/session/session-controller.ts`, `src/components/field/fov-store.ts`, `src/components/field/visuals/ar-overlay.tsx`, `src/components/field/ar-view.tsx`, `src/app/session/[noradId]/page.tsx`, `src/app/globals.css`, `tests/scaffold/scaffold.test.ts` and, only if it was adjusted, `tests/session/session-controller.test.ts` by name, then push. The Must tier is complete here.
+  - [-] 7.5 Main agent: commit staging `src/components/session/session-controller.ts`, `src/components/field/fov-store.ts`, `src/components/field/visuals/ar-overlay.tsx`, `src/components/field/ar-view.tsx`, `src/app/session/[noradId]/page.tsx`, `src/app/globals.css`, `tests/scaffold/scaffold.test.ts` and, only if it was adjusted, `tests/session/session-controller.test.ts` by name, then push. The Must tier is complete here.
 
 - [ ] 8. Ground-track core: geodetic point, footprint, terminator, coastline
   - Depends on: task 7.

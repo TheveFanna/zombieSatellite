@@ -5,7 +5,7 @@ import type { Pass, Satrec, TleFetcher, TleRecord } from '../../lib/orbit/index'
 import type { PlayableEntry } from '../../lib/catalog/index';
 import { isInShadow } from '../../lib/field/index';
 import { cameraBasisFromDrag, evaluateLock, sceneDirection } from '../../lib/pointing/index';
-import type { DragPose, LockResult, TargetDirection } from '../../lib/pointing/index';
+import type { CameraBasis, DragPose, LockResult, TargetDirection } from '../../lib/pointing/index';
 import {
   EMPTY_LOCK_STATS,
   SESSION_TICK_MS,
@@ -83,6 +83,7 @@ export interface SessionSnapshot {
   readonly result: SessionResult | null;
   readonly joined: boolean;
   readonly shadowSilent: boolean;
+  readonly demoBasis: CameraBasis | null;
 }
 
 export interface SessionController {
@@ -155,6 +156,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
   let orbitDataMissing = false;
   let doppler: DopplerReadout | null = null;
   let lock: LockResult | null = null;
+  let demoBasis: CameraBasis | null = null;
   let beaconLevels: BeaconLevels = NO_BEACON_LEVELS;
   let sampling = false;
 
@@ -207,6 +209,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
       result,
       joined,
       shadowSilent: beaconLevels.shadowSilent,
+      demoBasis,
     });
   }
 
@@ -317,7 +320,8 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
     if (disposed || phase !== 'in-pass' || pointingSource !== 'manual' || !compass.isActive() || target === null) {
       return;
     }
-    lock = evaluateLock(cameraBasisFromDrag(pose).forward, target, 0);
+    demoBasis = cameraBasisFromDrag(pose);
+    lock = evaluateLock(demoBasis.forward, target, 0);
     refreshPointingError(lock.pointingErrorDeg);
     publish();
   }
@@ -342,6 +346,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
       orbitDataMissing = true;
       lock = null;
       doppler = null;
+      demoBasis = null;
       stats = reduceLockStats(stats, { instantMs: t, lock: null }, maxHoldMsFor(mode));
       beaconLevels = NO_BEACON_LEVELS;
       return;
@@ -355,6 +360,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
     orbitDataMissing = false;
 
     let evaluated: LockResult | null = null;
+    demoBasis = null;
     if (pointingSource === 'sensor') {
       sampling = true;
       try {
@@ -368,9 +374,11 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
       const u2 = deps.noise.next();
       const u3 = deps.noise.next();
       const aimed = offsetDirection(direction, drawJitter(u1, u2, u3));
+      demoBasis = cameraBasisFromDrag({ headingDeg: aimed.azimuthDeg, pitchDeg: aimed.elevationDeg });
       evaluated = evaluateLock(sceneDirection(aimed.azimuthDeg, aimed.elevationDeg), direction, 0);
     } else if (pointingSource === 'manual' && compass.isActive()) {
-      evaluated = evaluateLock(cameraBasisFromDrag(compass.getPose()).forward, direction, 0);
+      demoBasis = cameraBasisFromDrag(compass.getPose());
+      evaluated = evaluateLock(demoBasis.forward, direction, 0);
     }
 
     lock = evaluated;
@@ -400,6 +408,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
     orbitDataMissing = false;
     doppler = null;
     lock = null;
+    demoBasis = null;
     beaconLevels = NO_BEACON_LEVELS;
   }
 
@@ -447,6 +456,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
     orbitDataMissing = false;
     doppler = null;
     lock = null;
+    demoBasis = null;
     beaconLevels = NO_BEACON_LEVELS;
     publish();
     return null;
