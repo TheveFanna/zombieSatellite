@@ -74,4 +74,15 @@ export {
   modelZipName,
 } from './models';
 export type { ModelRecord } from './models';
+export {
+  MAX_EQUIPMENT_CHARS,
+  MAX_LOG_ENTRIES,
+  MAX_NOTE_CHARS,
+  appendLogEntry,
+  parseLogDraft,
+  parseStoredLog,
+  serializeLog,
+  sortLogNewestFirst,
+} from './log';
+export type { LogDraftInput, LogDraftResult, LogEntry, LogField } from './log';
 export { FIELD_COPY } from './copy';

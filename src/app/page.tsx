@@ -61,7 +61,8 @@ export default function HomePage() {
       </div>
       <section className="plain">
         <p className="actions">
-          <Link className="button primary" href="/session">{SHELL_COPY.startSession}</Link>{' '}<Link className="button" href="/cards">{SHELL_COPY.openCards}</Link>
+          <Link className="button primary" href="/session">{SHELL_COPY.startSession}</Link>{' '}<Link className="button" href="/cards">{SHELL_COPY.openCards}</Link>{' '}
+          <Link className="button" href="/log">{FIELD_COPY.logLink}</Link>
         </p>
         <p>{SHELL_COPY.demoHint}</p>
       </section>

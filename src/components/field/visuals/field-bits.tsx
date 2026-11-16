@@ -21,6 +21,16 @@ export function IlluminationBadge({ profile, sunlitOnly }: { profile: Illuminati
   );
 }
 
+export function SelfReportedMark() {
+  return (
+    <p className="self-reported" role="note">
+      <strong>{FIELD_COPY.logSelfReportedMark}</strong>
+      {' · '}
+      {FIELD_COPY.selfReportedMark}
+    </p>
+  );
+}
+
 export function InstrumentDetail({ children }: { children: ReactNode }) {
   return (
     <details className="instrument">

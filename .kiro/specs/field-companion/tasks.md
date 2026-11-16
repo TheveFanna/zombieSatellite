@@ -202,7 +202,7 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.5, 23.4_
   - [x] 13.4 Main agent: commit staging `docs/reference/MODELS.md`, each adopted `public/models/<slug>.obj` by name, the seven new `src/lib/field` files, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 14. Model viewer and download on the Home_Page
+- [x] 14. Model viewer and download on the Home_Page
   - Depends on: task 13.
   - [x] 14.1 Create `src/components/field/model-viewer.tsx` and add it to the Home_Page
     - Canvas 2D viewer per design "Models": `requestAnimationFrame` at 30 fps at most, 18°/s, `IntersectionObserver` and `document.visibilityState` gating, never mounted while its `details` block is closed, the Illustrative label or the author and licence line, the same-origin `.obj` fetch on tap with the Illustrative_Model fallback; Model_Download as one stored ZIP (`<slug>.obj` and `<slug>-ATTRIBUTION.txt`) through `downloadBytes`. One `details` block per entry card in `src/app/page.tsx`; the home page stays free of `'use client'`, `fetch`, `async`, `next/font` and `next/image` (checks 1.20 and 1.21). Append `.model-canvas` to `src/app/globals.css`.
@@ -210,20 +210,20 @@ Ground rules for the implementer:
   - [x] 14.2 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/model-viewer.tsx`; the `FIELD_COMPONENTS` group of checks 1.24 and 1.25 gains it by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.6, 23.4_
-  - [-] 14.3 Main agent: commit staging `src/components/field/model-viewer.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 14.3 Main agent: commit staging `src/components/field/model-viewer.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 15. Listening_Log
   - Depends on: task 14.
-  - [~] 15.1 Create `src/lib/field/log.ts` and `src/components/field/log-store.ts`
+  - [x] 15.1 Create `src/lib/field/log.ts` and `src/components/field/log-store.ts`
     - `parseLogDraft` (per-field errors), `appendEntry` (oldest dropped at 200), `parseStoredLog` (drops invalid elements, never throws), `serializeLog` per design "Listening log core"; the store over `KeyValueStorage` with key `zombieSatellite.field.listeningLog` and `{ "v": 1, "entries": [...] }`. Extend `index.ts` and `copy.ts` (log labels, `selfReportedMark`, errors). No Log_Card (F18).
     - _Requirements: 17.1–17.4, 17.6, 17.7_
-  - [~] 15.2 Create `src/app/log/page.tsx` and link it
+  - [x] 15.2 Create `src/app/log/page.tsx` and link it
     - Form (satellite select, UTC text, frequency, equipment, note) with per-field errors, the entry list newest first, the Self_Reported_Mark at the top and inside every entry (`SelfReportedMark` added to `src/components/field/visuals/field-bits.tsx`), free text as React text children only, the 200-entry notice, nothing prefilled from a session and nothing leaving the device. Add the "Listening log" link to the action row of `src/app/page.tsx`. Append log classes (`.self-reported`) to `src/app/globals.css`. The S5 collection and the Session_Result store are not touched.
     - _Requirements: 17.1–17.9, 18.1_
-  - [~] 15.3 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 15.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 directory listing gains `log`; the `.tsx` inventory gains `app/log/page.tsx`; the `FIELD_PAGES` group of checks 1.24 and 1.25 gains the log page by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [~] 15.4 Main agent: commit staging `src/lib/field/log.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/field/log-store.ts`, `src/components/field/visuals/field-bits.tsx`, `src/app/log/page.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [-] 15.4 Main agent: commit staging `src/lib/field/log.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/field/log-store.ts`, `src/components/field/visuals/field-bits.tsx`, `src/app/log/page.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 16. First_Run_Guide and the Instrument_Detail pass
   - Depends on: task 15.

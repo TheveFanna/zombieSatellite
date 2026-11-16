@@ -71,7 +71,7 @@ function parseAppPath(relativePath: string): ts.SourceFile {
 
 const SESSION_PAGES = ['session/page.tsx', 'session/[noradId]/page.tsx'];
 /** The field companion pages, listed by name. */
-const FIELD_PAGES = ['planner/[noradId]/page.tsx', 'guide/[noradId]/page.tsx'];
+const FIELD_PAGES = ['planner/[noradId]/page.tsx', 'guide/[noradId]/page.tsx', 'log/page.tsx'];
 const CARDS_PAGES = ['cards/page.tsx', 'cards/[noradId]/[aosMs]/[n]/page.tsx'];
 const SHELL_REGISTRAR = 'src/components/shell/service-worker-registrar.tsx';
 /** The presentational SVG components of task 7C, listed by name. */
@@ -249,6 +249,7 @@ describe('Requirement 1: project scaffold', () => {
       'globals.css',
       'guide',
       'layout.tsx',
+      'log',
       'manifest.ts',
       'page.tsx',
       'planner',
@@ -267,6 +268,7 @@ describe('Requirement 1: project scaffold', () => {
       'app/cards/page.tsx',
       'app/guide/[noradId]/page.tsx',
       'app/layout.tsx',
+      'app/log/page.tsx',
       'app/page.tsx',
       'app/planner/[noradId]/page.tsx',
       'app/pointing/page.tsx',
