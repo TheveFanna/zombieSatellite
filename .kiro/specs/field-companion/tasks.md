@@ -66,7 +66,7 @@ Ground rules for the implementer:
     - _Requirements: 5.9_
   - [x] 3.3 Main agent: commit staging `src/lib/field/tuning.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/tuning.test.ts` by name, then push.
 
-- [ ] 4. Session_Page field panel: badge, Tuning_Table, Instrument_Detail, copy and CSV
+- [x] 4. Session_Page field panel: badge, Tuning_Table, Instrument_Detail, copy and CSV
   - Depends on: task 3.
   - [x] 4.1 Create the component-layer base
     - `src/components/field/deps.ts`, `browser-deps.ts` (clipboard, downloads, clock, timers, storage; real objects only here), `tle-source.ts`, `pass-field-controller.ts` and `field-downloader.ts` per design "Pass field controller and TLE source" and "Downloads and clipboard". The controller computes `track` as `null` until task 5.
@@ -80,23 +80,23 @@ Ground rules for the implementer:
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/session-panel.tsx` and `components/field/visuals/field-bits.tsx` (test title names the field components); checks 1.24 and 1.25 rendered-JSX group gains `FIELD_COMPONENTS` with those two files by name. Directory listing and `.ts` list unchanged.
     - Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [-] 4.4 Main agent: commit staging the files of `src/components/field` created so far (`deps.ts`, `browser-deps.ts`, `tle-source.ts`, `pass-field-controller.ts`, `field-downloader.ts`, `session-panel.tsx`, `visuals/field-bits.tsx`), `src/app/session/[noradId]/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 4.4 Main agent: commit staging the files of `src/components/field` created so far (`deps.ts`, `browser-deps.ts`, `tle-source.ts`, `pass-field-controller.ts`, `field-downloader.ts`, `session-panel.tsx`, `visuals/field-bits.tsx`), `src/app/session/[noradId]/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 5. Sky_Track
   - Depends on: task 4.
-  - [~] 5.1 Create `src/lib/field/sky-track.ts` and extend `index.ts` and `copy.ts`
+  - [x] 5.1 Create `src/lib/field/sky-track.ts` and extend `index.ts` and `copy.ts`
     - `buildSkyTrack`, `trackSegments`, `tickLabel` per design "Sky track": step `max(10 s, ceil(duration / 180))`, exact samples at AOS, TCA, LOS and every Time_Tick, failed samples split the polyline, shadow segments continuous. `FIELD_COPY` gains `aosLabel`, `nowLabel`, `losLabel`, `windowEndLabel`.
     - _Requirements: 6.1–6.6_
-  - [~] 5.2 Create the Sky_Track visual and wire it
+  - [x] 5.2 Create the Sky_Track visual and wire it
     - `src/components/shell/visuals/sky-dome.tsx`: only the three exports of design "Landed files changed" (`DomeFrame`, `DOME_RADIUS`, `DOME_VIEWBOX`); no behavior change.
     - `src/components/field/visuals/sky-track.tsx`: the track on the dome with dashed brass shadow segments, solid phosphor sunlit segments, AOS and LOS marks with azimuth labels, culmination mark with the Maximum_Elevation, tick labels, and the Current_Point from `snapshot.target`. Elevation clamped at 0 for drawing.
     - `pass-field-controller.ts`: compute `track` in `setPass`/`setObserver`. `session-panel.tsx`: add block 2 (Sky_Track). Append `.track-sun` and `.track-shadow` to the "Field companion" block of `src/app/globals.css`.
     - `PassProfile` stays on the picker rows (decision F7).
     - _Requirements: 6.1–6.6, 20.1–20.3_
-  - [~] 5.3 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 5.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/visuals/sky-track.tsx`; the `FIELD_COMPONENTS` group of checks 1.24 and 1.25 gains the same file by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [~] 5.4 Main agent: commit staging `src/lib/field/sky-track.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/shell/visuals/sky-dome.tsx`, `src/components/field/visuals/sky-track.tsx`, `src/components/field/pass-field-controller.ts`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [-] 5.4 Main agent: commit staging `src/lib/field/sky-track.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/shell/visuals/sky-dome.tsx`, `src/components/field/visuals/sky-track.tsx`, `src/components/field/pass-field-controller.ts`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 6. AR math and FOV calibration core
   - Depends on: task 5.

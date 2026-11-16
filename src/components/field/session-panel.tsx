@@ -8,6 +8,7 @@ import { formatDopplerReadout, formatUtc } from '../../lib/session/index';
 import type { SessionSnapshot } from '../session/session-controller';
 import type { PassFieldSnapshot } from './pass-field-controller';
 import { IlluminationBadge, InstrumentDetail } from './visuals/field-bits';
+import { SkyTrackView } from './visuals/sky-track';
 
 export interface FieldSessionPanelProps {
   readonly entry: PlayableEntry;
@@ -77,6 +78,16 @@ export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCs
     <section>
       <h2>{FIELD_COPY.panelHeading}</h2>
       <IlluminationBadge profile={profile} sunlitOnly={entry.beacon.sunlitOnly === true} />
+      {field.track !== null ? (
+        <SkyTrackView
+          track={field.track}
+          profile={profile}
+          pass={pass}
+          target={snapshot.orbitDataMissing ? null : snapshot.target}
+          truncatedStart={tuning !== null && tuning.kind === 'table' && tuning.points.some((p) => p.kind === 'aos' && p.truncated)}
+          truncatedEnd={tuning !== null && tuning.kind === 'table' && tuning.points.some((p) => p.kind === 'los' && p.truncated)}
+        />
+      ) : null}
       <p>
         {FIELD_COPY.maxElevationLabel}: {pass.maxElevationDeg.toFixed(1)}°
       </p>

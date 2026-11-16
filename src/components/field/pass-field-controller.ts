@@ -1,8 +1,8 @@
 // Per-pass field model for the Session_Page (design.md, "Pass field controller and TLE source").
 // Framework-free; the TLE source is injected. Recomputes synchronously on setPass / setObserver.
 import type { PlayableEntry } from '../../lib/catalog/index';
-import { illuminationProfile, tuningTable } from '../../lib/field/index';
-import type { IlluminationProfile, TuningResult } from '../../lib/field/index';
+import { buildSkyTrack, illuminationProfile, tuningTable } from '../../lib/field/index';
+import type { IlluminationProfile, SkyTrack, TuningResult } from '../../lib/field/index';
 import type { Observer, Pass, Satrec, TleRecord } from '../../lib/orbit/index';
 import type { ObserverPosition } from '../../lib/session/index';
 import type { TleSource } from './tle-source';
@@ -12,8 +12,8 @@ export interface PassFieldSnapshot {
   readonly satrec: Satrec | null;
   readonly tle: TleRecord | null;
   readonly pass: Pass | null;
-  /** Sky_Track; computed from task 5 on, `null` until then. */
-  readonly track: null;
+  /** Sky_Track of the pass for the observer; null while either is missing. */
+  readonly track: SkyTrack | null;
   readonly profile: IlluminationProfile | null;
   readonly tuning: TuningResult | null;
 }
@@ -36,10 +36,11 @@ export function createPassFieldController(deps: { tleSource: TleSource }, entry:
   let pass: Pass | null = null;
   let profile: IlluminationProfile | null = null;
   let tuning: TuningResult | null = null;
+  let track: SkyTrack | null = null;
   let snapshot: PassFieldSnapshot = build();
 
   function build(): PassFieldSnapshot {
-    return Object.freeze({ status, satrec, tle, pass, track: null, profile, tuning });
+    return Object.freeze({ status, satrec, tle, pass, track, profile, tuning });
   }
 
   function publish(): void {
@@ -51,9 +52,11 @@ export function createPassFieldController(deps: { tleSource: TleSource }, entry:
   function recompute(): void {
     profile = null;
     tuning = null;
+    track = null;
     if (satrec === null || pass === null) return;
     profile = illuminationProfile(satrec, pass);
     if (observer !== null) {
+      track = buildSkyTrack(satrec, observer, pass);
       tuning = tuningTable({ satrec, observer, downlinkMhz: entry.beacon.downlinkMhz, pass });
     }
   }

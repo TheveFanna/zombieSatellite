@@ -5,11 +5,13 @@ import type { CatalogEntry } from '../../../lib/catalog/index';
 import { effectiveAzimuthDeg, LOCK_TOLERANCE_DEG } from '../../../lib/pointing/index';
 import { domePoint, domeRadius } from '../../../lib/shell/index';
 
-const R = 100;
-const VIEW = '-118 -118 236 236';
+export const DOME_RADIUS = 100;
+export const DOME_VIEWBOX = '-118 -118 236 236';
+const R = DOME_RADIUS;
+const VIEW = DOME_VIEWBOX;
 
 /** Horizon, the 30° and 60° elevation rings, the cardinal ticks and letters. */
-function DomeFrame() {
+export function DomeFrame() {
   const ticks = Array.from({ length: 72 }, (_, i) => i * 5);
   return (
     <g className="dome-frame">

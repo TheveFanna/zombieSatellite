@@ -23,4 +23,6 @@ export { illuminationProfile, shadowIntervals, shadowedAt } from './illumination
 export type { IlluminationProfile, ShadowTransition } from './illumination';
 export { minuteTable, roundMhz, tuningCsv, tuningFileName, tuningTable } from './tuning';
 export type { MinuteTableResult, TuningPoint, TuningResult } from './tuning';
+export { buildSkyTrack, tickLabel, trackSegments } from './sky-track';
+export type { SkySample, SkySampleOk, SkyTrack } from './sky-track';
 export { FIELD_COPY } from './copy';

@@ -83,6 +83,7 @@ const SHELL_VISUALS = [
 const FIELD_COMPONENTS = [
   'src/components/field/session-panel.tsx',
   'src/components/field/visuals/field-bits.tsx',
+  'src/components/field/visuals/sky-track.tsx',
 ];
 
 /** Parses a TSX file by its path relative to the repository root. */
@@ -260,6 +261,7 @@ describe('Requirement 1: project scaffold', () => {
       'app/session/page.tsx',
       'components/field/session-panel.tsx',
       'components/field/visuals/field-bits.tsx',
+      'components/field/visuals/sky-track.tsx',
       'components/shell/service-worker-registrar.tsx',
       'components/shell/visuals/doppler-dial.tsx',
       'components/shell/visuals/lifeline.tsx',
