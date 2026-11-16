@@ -82,7 +82,7 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.5, 23.4_
   - [x] 4.4 Main agent: commit staging the files of `src/components/field` created so far (`deps.ts`, `browser-deps.ts`, `tle-source.ts`, `pass-field-controller.ts`, `field-downloader.ts`, `session-panel.tsx`, `visuals/field-bits.tsx`), `src/app/session/[noradId]/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 5. Sky_Track
+- [x] 5. Sky_Track
   - Depends on: task 4.
   - [x] 5.1 Create `src/lib/field/sky-track.ts` and extend `index.ts` and `copy.ts`
     - `buildSkyTrack`, `trackSegments`, `tickLabel` per design "Sky track": step `max(10 s, ceil(duration / 180))`, exact samples at AOS, TCA, LOS and every Time_Tick, failed samples split the polyline, shadow segments continuous. `FIELD_COPY` gains `aosLabel`, `nowLabel`, `losLabel`, `windowEndLabel`.
@@ -96,19 +96,19 @@ Ground rules for the implementer:
   - [x] 5.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/visuals/sky-track.tsx`; the `FIELD_COMPONENTS` group of checks 1.24 and 1.25 gains the same file by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [-] 5.4 Main agent: commit staging `src/lib/field/sky-track.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/shell/visuals/sky-dome.tsx`, `src/components/field/visuals/sky-track.tsx`, `src/components/field/pass-field-controller.ts`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 5.4 Main agent: commit staging `src/lib/field/sky-track.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/components/shell/visuals/sky-dome.tsx`, `src/components/field/visuals/sky-track.tsx`, `src/components/field/pass-field-controller.ts`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 6. AR math and FOV calibration core
   - Depends on: task 5.
-  - [~] 6.1 Create `src/lib/field/ar.ts` and `fov.ts`; extend `index.ts` and `copy.ts`
+  - [x] 6.1 Create `src/lib/field/ar.ts` and `fov.ts`; extend `index.ts` and `copy.ts`
     - Per design "AR math" and "FOV calibration": `projectAr` (wrapping the landed `projectMarker`, tangent ratio, equal to it at 75°), `arMarker`, `projectTrackArc`, `projectTicks`, `horizonLine`, cardinal marks, lock ring and `edgeArrow` as the design specifies, `AR_NDC_LIMIT`; `FOV_MIN_DEG`, `FOV_MAX_DEG`, `FOV_DEFAULT_DEG`, `FOV_STEP_DEG`, `normalizeFov`. `FIELD_COPY` gains the AR texts (`arOpen`, `arClose`, `arDemoMark`, `arFovLabel`, `arNoCamera`, `arEnableSensors`).
     - The functions are wired into the AR_View in task 7.
     - _Requirements: 7.2–7.8, 7.13, 9.1–9.6_
-  - [~] 6.2 Write `tests/field/ar-projection.test.ts`
+  - [x] 6.2 Write `tests/field/ar-projection.test.ts`
     - The six analytic cases of design "AR math", including the 75° agreement with `projectMarker` and the second Vertical_FOV case the design states.
     - Run it, `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 7.13, 9.6_
-  - [~] 6.3 Main agent: commit staging `src/lib/field/ar.ts`, `src/lib/field/fov.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/ar-projection.test.ts` by name, then push.
+  - [-] 6.3 Main agent: commit staging `src/lib/field/ar.ts`, `src/lib/field/fov.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/ar-projection.test.ts` by name, then push.
 
 - [ ] 7. AR_View with camera, overlay and FOV calibration
   - Depends on: task 6.

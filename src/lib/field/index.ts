@@ -25,4 +25,16 @@ export { minuteTable, roundMhz, tuningCsv, tuningFileName, tuningTable } from '.
 export type { MinuteTableResult, TuningPoint, TuningResult } from './tuning';
 export { buildSkyTrack, tickLabel, trackSegments } from './sky-track';
 export type { SkySample, SkySampleOk, SkyTrack } from './sky-track';
+export {
+  arMarker,
+  cardinalMarks,
+  edgeArrow,
+  horizonLine,
+  lockRing,
+  projectAr,
+  projectTicks,
+  projectTrackArc,
+} from './ar';
+export type { ArPiece, ArPoint } from './ar';
+export { FOV_DEFAULT_DEG, FOV_MAX_DEG, FOV_MIN_DEG, FOV_STEP_DEG, normalizeFov } from './fov';
 export { FIELD_COPY } from './copy';

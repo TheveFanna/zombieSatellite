@@ -40,4 +40,10 @@ export const FIELD_COPY = {
   downloadCsv: 'Download CSV',
   copied: 'Copied',
   copyFailed: 'Copy failed',
+  arOpen: 'Open AR view',
+  arClose: 'Close AR view',
+  arDemoMark: 'Demo view: the camera is not aligned with the sky',
+  arFovLabel: 'Vertical field of view',
+  arNoCamera: 'Camera unavailable. The overlay is drawn on a plain background.',
+  arEnableSensors: 'Enable motion sensors',
 } as const;
