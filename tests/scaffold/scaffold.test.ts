@@ -173,6 +173,7 @@ function checkedTexts(): Array<[string, string[]]> {
     ['shell copy strings', propertyStrings('src/components/shell/copy.ts')],
     ['field copy strings', propertyStrings('src/lib/field/copy.ts')],
     ['listening guide strings', propertyStrings('src/lib/field/guide.ts')],
+    ['model attribution strings', propertyStrings('src/lib/field/models.ts')],
     ['manifest strings', propertyStrings('src/app/manifest.ts')],
   ];
 }

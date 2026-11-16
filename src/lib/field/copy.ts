@@ -100,5 +100,10 @@ export const FIELD_COPY = {
   guideRecordingsLabel: 'Recordings (links only)',
   guideSourceLabel: 'Source',
   guideOwnEquipment: 'Only your own equipment can pick up the real downlink. zombieSatellite does not.',
+  modelIllustrative: 'Illustrative model, simplified from documented dimensions',
+  modelHeading: 'Model',
+  modelDownload: 'Download model',
+  modelAuthorLabel: 'Author',
+  modelLicenceLabel: 'Licence',
   mapNoOrbit: 'No orbit data for this instant, so the satellite is not drawn.',
 } as const;

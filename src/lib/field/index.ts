@@ -56,4 +56,22 @@ export {
 export { buildCalendarEvent, calendarFileName } from './ics';
 export { GUIDE_ENTRIES, GUIDE_NONE, getGuideEntry } from './guide';
 export type { GuideEntry, GuideFact, GuideFacts, GuideLink, GuideRecordings } from './guide';
+export { box, merge, panel, prism, rod, translate } from './model-build';
+export { ILLUSTRATIVE_MODELS } from './model-defs';
+export { parseObj, serializeObj } from './obj';
+export type { ModelGeometry } from './obj';
+export { buildStoredZip, crc32 } from './zip';
+export { modelEdges, projectModel } from './model-view';
+export type { ModelLine } from './model-view';
+export {
+  MODEL_RECORDS,
+  MODEL_TEXT,
+  buildAttributionText,
+  getModelRecord,
+  illustrativeObjHeader,
+  modelAttributionName,
+  modelObjName,
+  modelZipName,
+} from './models';
+export type { ModelRecord } from './models';
 export { FIELD_COPY } from './copy';

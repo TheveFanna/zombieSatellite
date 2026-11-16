@@ -175,7 +175,7 @@ Ground rules for the implementer:
     - _Requirements: 23.4_
   - [x] 11.3 Main agent: commit staging `src/lib/field/ics.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `src/app/planner/[noradId]/page.tsx` by name, then push.
 
-- [ ] 12. Listening_Guide
+- [x] 12. Listening_Guide
   - Depends on: task 11.
   - [x] 12.1 Confirm the new sources, then create `src/lib/field/guide.ts`
     - Open each of the sources N1 to N5 of design "Listening guide" once and confirm the fact it is meant to support. Drop any fact the page does not support and write "none documented" instead. Record the outcome per source in the commit message body. No setup is promised for AO-7, Prospero or IMAGE unless a source supports it.
@@ -187,20 +187,20 @@ Ground rules for the implementer:
   - [x] 12.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 directory listing gains `guide`; the `.tsx` inventory gains `app/guide/[noradId]/page.tsx`; checks 1.24 and 1.25 `checkedTexts()` gains `['listening guide strings', propertyStrings('src/lib/field/guide.ts')]`; the `FIELD_PAGES` group gains the guide page by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. Any guide string the scan rejects is reworded.
     - _Requirements: 21.3–21.5, 23.4_
-  - [-] 12.4 Main agent: commit staging `src/lib/field/guide.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/app/guide/[noradId]/page.tsx`, `src/app/session/page.tsx`, `src/components/field/session-panel.tsx`, `src/app/planner/[noradId]/page.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push. The Should tier is complete here.
+  - [x] 12.4 Main agent: commit staging `src/lib/field/guide.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts`, `src/app/guide/[noradId]/page.tsx`, `src/app/session/page.tsx`, `src/components/field/session-panel.tsx`, `src/app/planner/[noradId]/page.tsx`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push. The Should tier is complete here.
 
 - [ ] 13. Satellite models: research, register and model core
   - Depends on: task 12.
-  - [~] 13.1 Run the model research and write `docs/reference/MODELS.md` (parallel with 13.2; files `docs/reference/MODELS.md` and `public/models/*.obj` only)
+  - [x] 13.1 Run the model research and write `docs/reference/MODELS.md` (parallel with 13.2; files `docs/reference/MODELS.md` and `public/models/*.obj` only)
     - Follow the research plan of design "Models": the search order, one Model_Record per candidate, the adoption rule (redistribution allowed, `.obj`, at most 150 KB), the table layout, a dimension-source section per Illustrative_Model, the Coastline_Data section and the research date. Commit adopted originals as `public/models/<slug>.obj`. Record the decision per entry for 13.2 (the main agent hands the list to the code sub-task).
     - _Requirements: 15.1–15.7, 13.8_
-  - [~] 13.2 Create the model core (parallel with 13.1; files under `src/lib/field` only)
+  - [x] 13.2 Create the model core (parallel with 13.1; files under `src/lib/field` only)
     - `model-build.ts`, `model-defs.ts` (seven Illustrative_Model definitions from primitives), `obj.ts` (`parseObj`, `serializeObj`), `zip.ts` (`buildStoredZip`, CRC-32), `model-view.ts` (`projectModel`), `models.ts` (Model_Records of the register as plain property strings, Attribution_File text builders). The records of `models.ts` follow `MODELS.md` once 13.1 returns; the main agent reconciles the two before 13.3. Extend `index.ts` and `copy.ts` (`modelIllustrative`, model labels).
     - _Requirements: 15.2, 15.3, 15.5, 16.1–16.3_
-  - [~] 13.3 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 13.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: checks 1.24 and 1.25 `checkedTexts()` gains `['models register strings', propertyStrings('src/lib/field/models.ts')]`. Check 1.19 is unchanged in this task. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [~] 13.4 Main agent: commit staging `docs/reference/MODELS.md`, each adopted `public/models/<slug>.obj` by name, the seven new `src/lib/field` files, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [-] 13.4 Main agent: commit staging `docs/reference/MODELS.md`, each adopted `public/models/<slug>.obj` by name, the seven new `src/lib/field` files, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 14. Model viewer and download on the Home_Page
   - Depends on: task 13.
