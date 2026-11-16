@@ -79,4 +79,12 @@ export const CONSOLE_COPY = Object.freeze({
   offsetLabel: 'Offset',
   soundHeading: 'Sound',
   observerHeading: 'Observer',
+  dialGroupLabel: 'Choose a zombie satellite',
+  dialPrevious: 'Previous satellite',
+  dialNext: 'Next satellite',
+  dialViewStory: 'View story',
+  dialStartSession: 'Start session',
+  homeCalculating: 'Calculating passes…',
+  homeNoPass: 'No pass found in the next 48 hours',
+  homeLocationPrompt: 'Set your location to see passes',
 });

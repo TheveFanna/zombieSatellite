@@ -114,21 +114,21 @@ Ground rules for the implementer:
     - _Requirements: 14.6_
   - [x] 7.3 Main agent: commit staging `src/components/console/session-console.tsx`, `src/app/session/[noradId]/page.tsx` and `src/app/globals.css` by name, then push.
 
-- [ ] 8. Satellite_Dial and home controller
+- [x] 8. Satellite_Dial and home controller
   - Depends on: task 7.
-  - [ ] 8.1 Main agent: create `src/lib/console/dial.ts` and prepare the shared files
+  - [x] 8.1 Main agent: create `src/lib/console/dial.ts` and prepare the shared files
     - `dialRotationDeg` and `dialIndexFromRotation` per design "Satellite dial". Extend `src/lib/console/index.ts`. Append the dial and home string groups of design "Console copy" to `src/components/console/copy.ts` (group label, previous, next, view story, start session, calculating, no pass in 48 h, location prompt) so that the two sub-agents below do not touch it.
     - _Requirements: 3.1, 7.2_
-  - [ ] 8.2 Create `src/components/console/satellite-dial.tsx` (parallel with 8.3; disjoint files, no shared-file edit)
+  - [x] 8.2 Create `src/components/console/satellite-dial.tsx` (parallel with 8.3; disjoint files, no shared-file edit)
     - Per design "Satellite dial" (decided: the draggable circular dial): seven nodes in landed catalog order, selected node enlarged at the top centre with name and status label, Playable nodes as filled phosphor circles with the landed "Playable" text, Story_Only nodes as brass rings with the "Story only" text; pointer-angle drag with `touch-action: none`, snap by `dialIndexFromRotation` with a 200 ms transition, tap on a node selects it, always-available 44 × 44 previous and next buttons that wrap, `role="radiogroup"` with `role="radio"` nodes, `aria-checked` and arrow keys; primary action link to `/session/[noradId]` for a Playable_Entry, "View story" button with the landed unplayable reason for a Story_Only_Entry; no other action for story-only entries.
     - _Requirements: 7.1–7.6, 11.1, 11.2_
-  - [ ] 8.3 Create `src/components/console/home-controller.ts` (parallel with 8.2; disjoint files)
+  - [x] 8.3 Create `src/components/console/home-controller.ts` (parallel with 8.2; disjoint files)
     - `HomeController` per design "Home controller": `SELECTED_SLUG_KEY`, selection restored from the injected `KeyValueStorage` (missing or unknown value selects the first Playable_Entry, storage errors swallowed), `hasStoredObserver` check, a 250 ms delayed `createPlannerController` per playable selection with the previous one disposed, 1 Hz live position through the planner snapshot `satrec` and `observeAt`, `dispose`. All dependencies injected; the browser implementations are the landed `createBrowserDeps`, `createFieldBrowserDeps` and `createSessionBrowserDeps`.
     - _Requirements: 7.7, 8.1, 8.4–8.6, 3.4_
-  - [ ] 8.4 Main agent: extend `tests/scaffold/scaffold.test.ts`, then run the checks
+  - [x] 8.4 Main agent: extend `tests/scaffold/scaffold.test.ts`, then run the checks
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/console/satellite-dial.tsx`; the `CONSOLE_COMPONENTS` group of checks 1.24 and 1.25 gains it by name. Append `.dial*` classes to the "Console" block of `src/app/globals.css`. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. Both new files are not yet mounted; task 9 mounts them.
     - _Requirements: 14.1–14.3, 14.6_
-  - [ ] 8.5 Main agent: commit staging `src/lib/console/dial.ts`, `src/lib/console/index.ts`, `src/components/console/copy.ts`, `src/components/console/satellite-dial.tsx`, `src/components/console/home-controller.ts`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 8.5 Main agent: commit staging `src/lib/console/dial.ts`, `src/lib/console/index.ts`, `src/components/console/copy.ts`, `src/components/console/satellite-dial.tsx`, `src/components/console/home-controller.ts`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 9. Console_Home on the preview URL
   - Depends on: task 8.
