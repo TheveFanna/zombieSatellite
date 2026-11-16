@@ -43,10 +43,10 @@ Ground rules: one commit per task after its tests pass, then push at once. Guard
     - _Requirements: 10.1_
   - [x] 5.4 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`; main agent commits by name, then pushes.
 
-- [ ] 6. Passes layout
-  - [ ] 6.1 Grouped observer block and three-column pass facts in `src/app/session/page.tsx`, with CSS.
+- [x] 6. Passes layout
+  - [x] 6.1 Grouped observer block and three-column pass facts in `src/app/session/page.tsx`, with CSS.
     - _Requirements: 11.1, 11.2_
-  - [ ] 6.2 Run the checks; main agent commits by name, then pushes.
+  - [x] 6.2 Run the checks; main agent commits by name, then pushes.
 
 - [ ] 7. QSL card artwork
   - [ ] 7.1 Rewrite `buildCardSvg` visuals in `src/lib/qsl/card-svg.ts`: seeded background artwork, frame, typography. Keep all texts and marks.

@@ -1,5 +1,5 @@
 'use client';
-// Passes page (S10 design "Page responsibilities"): the observer and one compact row per satellite.
+// Passes page (S10, S11 round 2): the observer as a grouped list and one compact row per satellite.
 import Link from 'next/link';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { DEFAULT_OBSERVER } from '../../components/pointing/pointing-session';
@@ -32,7 +32,7 @@ type FieldName = 'lat' | 'lon';
 type Locator = ReturnType<typeof createLocator>;
 type LocateStatus = 'idle' | 'locating' | 'failed';
 
-/** "MM-DD HH:MMZ" from the UTC instant. */
+/** "MM-DD HH:MMZ" from a UTC instant. */
 function shortUtc(ms: number): string {
   return `${formatUtc(ms).slice(5, 16)}Z`;
 }
@@ -41,20 +41,20 @@ function PassFacts({ row, onRetry }: { row: PickerRow; onRetry: () => void }) {
   if (row.status === 'ready' && row.pass !== null) {
     const { pass } = row;
     return (
-      <dl className="pass-facts">
+      <div className="pass-facts">
         <div>
-          <dt>Rise</dt>
-          <dd>{shortUtc(pass.riseMs)}</dd>
+          <span>Rise</span>
+          <b>{shortUtc(pass.riseMs)}</b>
         </div>
         <div>
-          <dt>Max</dt>
-          <dd>{pass.maxElevationDeg.toFixed(0)}°</dd>
+          <span>Max</span>
+          <b>{pass.maxElevationDeg.toFixed(0)}°</b>
         </div>
         <div>
-          <dt>Length</dt>
-          <dd>{formatDurationMin(pass.durationMin)}</dd>
+          <span>Length</span>
+          <b>{formatDurationMin(pass.durationMin)}</b>
         </div>
-      </dl>
+      </div>
     );
   }
   if (row.status === 'tle-unavailable') {
@@ -135,11 +135,14 @@ export default function SessionPickerPage() {
     }
   }
 
-  function field(name: FieldName, label: string, hint: string, current: number) {
+  function field(name: FieldName, label: string, current: number) {
+    const id = `observer-${name}`;
     return (
-      <label className="pass-field">
-        <span>{label}</span>
+      <div className="ios-row">
+        <label htmlFor={id}>{label}</label>
         <input
+          id={id}
+          className="ios-input"
           type="number"
           step="any"
           inputMode="decimal"
@@ -147,8 +150,7 @@ export default function SessionPickerPage() {
           aria-invalid={invalid[name]}
           onChange={(e) => onField(name, e.target.value)}
         />
-        {invalid[name] ? <span role="alert" className="pass-error">Expected {hint}.</span> : null}
-      </label>
+      </div>
     );
   }
 
@@ -160,19 +162,21 @@ export default function SessionPickerPage() {
         <p className="pass-note">{SESSION_COPY.utcNote}</p>
       </header>
 
-      <div className="pass-observer">
-        <div className="pass-observer-head">
-          <h2>Observer</h2>
-          <button type="button" onClick={locateNow} disabled={locator === null || locateStatus === 'locating'}>
-            {locateStatus === 'locating' ? SHELL_COPY.locating : SHELL_COPY.useMyLocation}
-          </button>
-        </div>
-        <div className="pass-fields">
-          {field('lat', 'Latitude (°)', 'a number from −90 to 90', snapshot.observer.latitudeDeg)}
-          {field('lon', 'Longitude (°)', 'a number from −180 to 180', snapshot.observer.longitudeDeg)}
-        </div>
-        {locateStatus === 'failed' ? <p className="pass-note">{SHELL_COPY.locationFailed}</p> : null}
+      <p className="ios-caption">Observer</p>
+      <div className="ios-group">
+        {field('lat', 'Latitude °', snapshot.observer.latitudeDeg)}
+        {field('lon', 'Longitude °', snapshot.observer.longitudeDeg)}
+        <button
+          type="button"
+          className="ios-row ios-action"
+          onClick={locateNow}
+          disabled={locator === null || locateStatus === 'locating'}
+        >
+          {locateStatus === 'locating' ? SHELL_COPY.locating : SHELL_COPY.useMyLocation}
+        </button>
       </div>
+      {invalid.lat || invalid.lon ? <p className="pass-error">Enter a latitude from −90 to 90 and a longitude from −180 to 180.</p> : null}
+      {locateStatus === 'failed' ? <p className="pass-note">{SHELL_COPY.locationFailed}</p> : null}
 
       <ul className="pass-list">
         {snapshot.rows.map((row) => (
