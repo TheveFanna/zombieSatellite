@@ -15,6 +15,7 @@ export {
   SKY_STEP_MS,
   TERMINATOR_STEP_DEG,
 } from './constants';
+export { COASTLINE_PATH } from './data/coastline';
 export { gmstRad, julianDate } from './time';
 export { subsolarPoint, sunDirection } from './sun';
 export { illuminationState, isInShadow } from './shadow';

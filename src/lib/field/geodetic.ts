@@ -76,9 +76,9 @@ export function footprintRing(
     // The ring wraps around the pole; order by longitude and close it through the pole.
     const sorted = [...out].sort((a, b) => a.lonDeg - b.lonDeg);
     return [
-      { lonDeg: sorted[0].lonDeg, latDeg: pole },
+      { lonDeg: longitudeDeg - 180, latDeg: pole },
       ...sorted,
-      { lonDeg: sorted[sorted.length - 1].lonDeg, latDeg: pole },
+      { lonDeg: longitudeDeg + 180, latDeg: pole },
     ];
   }
   return out;

@@ -129,7 +129,7 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.5, 23.4_
   - [x] 7.5 Main agent: commit staging `src/components/session/session-controller.ts`, `src/components/field/fov-store.ts`, `src/components/field/visuals/ar-overlay.tsx`, `src/components/field/ar-view.tsx`, `src/app/session/[noradId]/page.tsx`, `src/app/globals.css`, `tests/scaffold/scaffold.test.ts` and, only if it was adjusted, `tests/session/session-controller.test.ts` by name, then push. The Must tier is complete here.
 
-- [ ] 8. Ground-track core: geodetic point, footprint, terminator, coastline
+- [x] 8. Ground-track core: geodetic point, footprint, terminator, coastline
   - Depends on: task 7.
   - [x] 8.1 Create `scripts/build-coastline.mjs` and `src/lib/field/data/coastline.ts` (parallel with 8.2; disjoint files, no barrel edit)
     - Per design "Coastline data": Node built-ins only, Ramer-Douglas-Peucker at 0.25° per line, 0.1° quantization, absolute `M` and relative `l` commands in map units, one exported string `COASTLINE_PATH`, at most 40 KB (raise the tolerance in 0.05° steps if needed). Download `ne_110m_coastline.geojson` once as the design says; commit the generated TypeScript file, not the GeoJSON. The main agent adds the `COASTLINE_PATH` export to `index.ts` after both sub-tasks return.
@@ -140,18 +140,18 @@ Ground rules for the implementer:
   - [x] 8.3 Write `tests/field/ground.test.ts`
     - The two cases of design "Testing Strategy": Sub_Satellite_Point at the Reference_ISS_Instant against literals from `satellite.js` `eciToGeodetic`, and the footprint radius at `h = 0, R, R(√2−1)`. Run it, `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 12.6, 12.7_
-  - [-] 8.4 Main agent: commit staging `scripts/build-coastline.mjs`, `src/lib/field/data/coastline.ts`, `src/lib/field/geodetic.ts`, `src/lib/field/ground-track.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/ground.test.ts` by name, then push.
+  - [x] 8.4 Main agent: commit staging `scripts/build-coastline.mjs`, `src/lib/field/data/coastline.ts`, `src/lib/field/geodetic.ts`, `src/lib/field/ground-track.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/ground.test.ts` by name, then push.
 
 - [ ] 9. Ground_Track_Map component
   - Depends on: task 8.
-  - [~] 9.1 Create `src/components/field/ground-track-map.tsx` and wire it
+  - [x] 9.1 Create `src/components/field/ground-track-map.tsx` and wire it
     - Per design "Ground_Track_Map component": static graticule and coastline path, dynamic night polygon, past and future track, footprint at −360°, 0° and +360°, satellite dot, Observer_Pin, the recompute rules (track on leaving one grid step, terminator per UTC minute), the no-orbit state, the Simple_View map with an Instrument_Detail of latitude, longitude, altitude, footprint radius and track span. Add block 5 to `session-panel.tsx` (map at `snapshot.sessionInstantMs`, demo instant included). Append `.map*` classes to the "Field companion" block of `src/app/globals.css`.
     - Credits for the coastline go into the README in task 17.
     - _Requirements: 12.1–12.5, 13.1–13.6, 18.1, 18.2_
-  - [~] 9.2 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 9.2 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/ground-track-map.tsx`; the `FIELD_COMPONENTS` group of checks 1.24 and 1.25 gains it by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [~] 9.3 Main agent: commit staging `src/components/field/ground-track-map.tsx`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [-] 9.3 Main agent: commit staging `src/components/field/ground-track-map.tsx`, `src/components/field/session-panel.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 10. Pass_Planner page
   - Depends on: task 9.

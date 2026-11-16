@@ -1,12 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { PlayableEntry } from '../../lib/catalog/index';
 import { FIELD_COPY, minuteTable, tuningCsv } from '../../lib/field/index';
 import type { IlluminationProfile, TuningPoint } from '../../lib/field/index';
 import { formatDopplerReadout, formatUtc } from '../../lib/session/index';
 import type { SessionSnapshot } from '../session/session-controller';
 import type { PassFieldSnapshot } from './pass-field-controller';
+import { GroundTrackMap } from './ground-track-map';
 import { IlluminationBadge, InstrumentDetail } from './visuals/field-bits';
 import { SkyTrackView } from './visuals/sky-track';
 
@@ -37,6 +38,12 @@ function signedKhz(value: number): string {
 
 export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCsv }: FieldSessionPanelProps) {
   const [notice, setNotice] = useState<string | null>(null);
+  // Fallback instant for phases without a Session_Instant (1 Hz).
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNowMs(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
   const { pass, tuning, profile } = field;
   const observer = snapshot.observer;
   const downlinkMhz = entry.beacon.downlinkMhz;
@@ -166,6 +173,13 @@ export function FieldSessionPanel({ entry, snapshot, field, onCopy, onDownloadCs
           </>
         ) : null}
       </InstrumentDetail>
+      <GroundTrackMap
+        satrec={field.satrec}
+        observer={observer}
+        instantMs={snapshot.sessionInstantMs ?? nowMs}
+        meanMotion={field.tle === null ? null : field.tle.MEAN_MOTION}
+        entryName={entry.name}
+      />
     </section>
   );
 }
