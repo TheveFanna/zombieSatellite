@@ -41,14 +41,14 @@ Ground rules for the implementer:
 
 - [ ] 2. Console copy, frame throttle and Alignment_Meter component
   - Depends on: task 1.
-  - [ ] 2.1 Create `src/components/console/copy.ts` and `src/components/console/frame-throttle.ts`
+  - [x] 2.1 Create `src/components/console/copy.ts` and `src/components/console/frame-throttle.ts`
     - `CONSOLE_COPY` as `Object.freeze({...})` with the header comment of S6 about checks 1.24 and 1.25 and the meter and radar groups of design "Console copy" (title `Aim`, caption, the four band labels, behind text, enable-sensors text, radar empty text). Later tasks append their own groups.
     - `throttleSubscribe` per design "Frame throttle" with the injected `FrameScheduler` and `Clock`, 33 ms minimum interval, pending frame cancelled on unsubscribe.
     - _Requirements: 5.5, 11.3, 12.2, 12.3_
-  - [ ] 2.2 Create `src/components/console/alignment-meter.tsx`
+  - [x] 2.2 Create `src/components/console/alignment-meter.tsx`
     - Props `{ errorDeg, locked, behind }` per design "Alignment meter": 240° arc gauge, fill by `meterLevel(errorDeg, LOCK_TOLERANCE_DEG).level`, error in degrees in monospace at the centre, band label and arc style (solid, dashed, dotted) so colour is never the only cue, locked band shown whenever `locked` is true, the 120 ms `stroke-dashoffset` transition. No timers, no state beyond props. Append the `.meter*` classes to a new "Console" block at the end of `src/app/globals.css`, with controls at least 44 × 44 CSS pixels where interactive.
     - _Requirements: 2.1, 2.3, 2.6–2.8, 11.1, 11.4, 12.2_
-  - [ ] 2.3 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 2.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/console/alignment-meter.tsx` (test title names the console components); checks 1.24 and 1.25 `checkedTexts()` gains `['console copy strings', propertyStrings('src/components/console/copy.ts')]` and the rendered-JSX group gains a `CONSOLE_COMPONENTS` constant holding that file by name. Directory listing and `.ts` list unchanged. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 14.1–14.3, 14.6_
   - [ ] 2.4 Main agent: commit staging `src/components/console/copy.ts`, `src/components/console/frame-throttle.ts`, `src/components/console/alignment-meter.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.

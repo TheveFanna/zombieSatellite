@@ -81,6 +81,8 @@ const SHELL_VISUALS = [
   'src/components/shell/visuals/pass-profile.tsx',
   'src/components/shell/visuals/sky-dome.tsx',
 ];
+/** The console components, listed by name. */
+const CONSOLE_COMPONENTS = ['src/components/console/alignment-meter.tsx'];
 /** The field companion components, listed by name. */
 const FIELD_COMPONENTS = [
   'src/components/field/ar-view.tsx',
@@ -168,12 +170,14 @@ function checkedTexts(): Array<[string, string[]]> {
         ...jsxTexts(parseTsx(SHELL_REGISTRAR)),
         ...SHELL_VISUALS.flatMap((file) => jsxTexts(parseTsx(file))),
         ...FIELD_COMPONENTS.flatMap((file) => jsxTexts(parseTsx(file))),
+        ...CONSOLE_COMPONENTS.flatMap((file) => jsxTexts(parseTsx(file))),
       ],
     ],
     ['session copy strings', propertyStrings('src/components/session/copy.ts')],
     ['qsl copy strings', propertyStrings('src/lib/qsl/copy.ts')],
     ['shell copy strings', propertyStrings('src/components/shell/copy.ts')],
     ['field copy strings', propertyStrings('src/lib/field/copy.ts')],
+    ['console copy strings', propertyStrings('src/components/console/copy.ts')],
     ['listening guide strings', propertyStrings('src/lib/field/guide.ts')],
     ['model attribution strings', propertyStrings('src/lib/field/models.ts')],
     ['manifest strings', propertyStrings('src/app/manifest.ts')],
@@ -243,7 +247,7 @@ describe('Requirement 1: project scaffold', () => {
     expect(Object.entries(pkg.scripts ?? {}).filter(([, command]) => OS_SPECIFIC_SYNTAX.test(command))).toEqual([]);
   });
 
-  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes, globals.css and the named .ts files, and no .tsx file other than these pages, the shell service-worker registrar and the named shell visuals and the named field components exists under src', () => {
+  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes, globals.css and the named .ts files, and no .tsx file other than these pages, the shell service-worker registrar and the named shell visuals and the named field components and the named console components exists under src', () => {
     expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual([
       'api',
       'cards',
@@ -275,6 +279,7 @@ describe('Requirement 1: project scaffold', () => {
       'app/pointing/page.tsx',
       'app/session/[noradId]/page.tsx',
       'app/session/page.tsx',
+      'components/console/alignment-meter.tsx',
       'components/field/ar-view.tsx',
       'components/field/first-run-guide.tsx',
       'components/field/ground-track-map.tsx',

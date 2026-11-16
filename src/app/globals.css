@@ -1450,3 +1450,22 @@ table.tuning td:first-of-type {
 
 .first-run { border-left: 3px solid currentColor; margin: 1rem 0; }
 .first-run h2 { margin-top: 0; }
+
+/* Console (S8) */
+.meter { display: grid; justify-items: center; gap: 0.1rem; }
+.meter-svg { width: 11rem; max-width: 100%; height: auto; }
+.meter-track { stroke: var(--dim); stroke-width: 6; stroke-linecap: round; opacity: 0.4; }
+.meter-fill {
+  stroke: var(--phosphor);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 120ms linear;
+}
+.meter-closing .meter-track { stroke-dasharray: 6 4; opacity: 0.8; }
+.meter-far .meter-track { stroke-dasharray: 1 5; opacity: 0.8; }
+.meter-far .meter-fill { stroke: var(--brass); }
+.meter-unavailable .meter-fill { stroke: var(--dim); }
+.meter-lock-tick { fill: var(--phosphor); }
+.meter-readout { fill: var(--bone); font-family: ui-monospace, monospace; font-size: 16px; }
+.meter-band { margin: 0; font-weight: 600; }
+.meter-caption { margin: 0; font-size: 0.8rem; color: var(--dim); }
