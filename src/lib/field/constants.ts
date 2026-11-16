@@ -8,6 +8,12 @@ export const SKY_MAX_STEPS = 180;
 export const SKY_PAD_MS = 600_000;
 export const SKY_PAD_STEP_MS = 30_000;
 export const MAX_TICKS = 12;
+/** AR tab (S9): Orbit_Ring steps per revolution, Ring_Refresh and Ring_Morph durations, star count. */
+export const RING_STEPS = 180;
+export const RING_REFRESH_MS = 5000;
+export const RING_MORPH_MS = 600;
+export const STAR_COUNT = 300;
+export const STAR_SEED = 20_260_101;
 export const GROUND_TRACK_STEPS = 180;
 export const TERMINATOR_STEP_DEG = 2;
 export const FOOTPRINT_EARTH_RADIUS_KM = 6371.0088;

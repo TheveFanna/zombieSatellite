@@ -9,6 +9,11 @@ export {
   ILLUMINATION_STEP_MS,
   MAX_ILLUMINATION_SAMPLES,
   MAX_TICKS,
+  RING_MORPH_MS,
+  RING_REFRESH_MS,
+  RING_STEPS,
+  STAR_COUNT,
+  STAR_SEED,
   MODEL_SPIN_DEG_PER_S,
   SHADOW_EARTH_RADIUS_KM,
   SKY_MAX_STEPS,
@@ -36,7 +41,12 @@ export {
   projectTicks,
   projectTrackArc,
 } from './ar';
-export type { ArPiece, ArPoint } from './ar';
+export type { ArPiece, ArPoint, Star } from './ar';
+export { guideAngleRad, projectStars, starField } from './ar';
+export { blendDirection, blendRings, buildOrbitRing, ringSegments, ringTicks } from './orbit-ring';
+export type { Direction, OrbitRing } from './orbit-ring';
+export { VISIBILITY_SPAN_MS, hourTicks, visibilityWindows } from './visibility-bar';
+export type { VisibilityWindow } from './visibility-bar';
 export { FOV_DEFAULT_DEG, FOV_MAX_DEG, FOV_MIN_DEG, FOV_STEP_DEG, normalizeFov } from './fov';
 export {
   footprintAngularRadiusDeg,

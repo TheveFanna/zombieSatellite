@@ -211,3 +211,55 @@ export function edgeArrow(
   const scale = 0.9 / Math.max(Math.abs(rx), Math.abs(ry));
   return { angleRad, ndcX: rx * scale, ndcY: ry * scale };
 }
+
+/** Angle in the screen plane (0 = right, π/2 = up) toward the target; 0 when it is exactly behind. */
+export function guideAngleRad(az: number, el: number, offsetDeg: number, basis: CameraBasis): number {
+  const u = dir(az, el, offsetDeg);
+  const rx = u.x * basis.right.x + u.y * basis.right.y + u.z * basis.right.z;
+  const ry = u.x * basis.up.x + u.y * basis.up.y + u.z * basis.up.z;
+  if (Math.abs(rx) < 1e-9 && Math.abs(ry) < 1e-9) return 0;
+  return Math.atan2(ry, rx);
+}
+
+export interface Star { readonly azimuthDeg: number; readonly elevationDeg: number; readonly magnitude: number }
+
+/** Deterministic stars, uniform on the sphere (mulberry32); an orientation aid, not a star catalogue. */
+export function starField(count: number, seed: number): Star[] {
+  let a = seed >>> 0;
+  const next = (): number => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const out: Star[] = [];
+  for (let i = 0; i < count; i += 1) {
+    const u1 = next();
+    const u2 = next();
+    const u3 = next();
+    out.push({
+      azimuthDeg: 360 * u1,
+      elevationDeg: (Math.asin(2 * u2 - 1) * 180) / Math.PI,
+      magnitude: 0.3 + 0.7 * u3 ** 3,
+    });
+  }
+  return out;
+}
+
+export function projectStars(
+  stars: readonly Star[],
+  offsetDeg: number,
+  basis: CameraBasis,
+  aspect: number,
+  fovDeg: number,
+): Array<{ ndcX: number; ndcY: number; magnitude: number }> {
+  const out: Array<{ ndcX: number; ndcY: number; magnitude: number }> = [];
+  for (const s of stars) {
+    const m = arMarker(s.azimuthDeg, s.elevationDeg, offsetDeg, basis, aspect, fovDeg);
+    if (m.inFront && Math.abs(m.ndcX) <= 1.1 && Math.abs(m.ndcY) <= 1.1) {
+      out.push({ ndcX: m.ndcX, ndcY: m.ndcY, magnitude: s.magnitude });
+    }
+  }
+  return out;
+}

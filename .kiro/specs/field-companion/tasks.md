@@ -263,12 +263,12 @@ Ground rules for the implementer:
 
 - [ ] 18. Owner's acceptance on a real phone (review items, executed by the project owner)
   - Depends on: task 17, with its push deployed (confirm that the Live_URL serves the final push).
-  - [~] 18.1 Present the Requirement 25 checklist to the owner against the Live_URL and record the owner's report per item: the AR_View with the Track_Arc, the Lock_Ring, the Edge_Arrow and the FOV_Calibration; Shadow_Silence; the Sky_Track; the Tuning_Table with the copy and CSV actions; the Pass_Planner and an imported Calendar_Event; the smoothness of the Ground_Track_Map; the Model_Viewer and a Model_Download; the Listening_Guide links; the Listening_Log; the First_Run_Guide. Record outcomes only as the owner reports them. Never run, assume, infer or fabricate an outcome. A failed item is recorded with the owner's words and raised as a follow-up, not fixed inside this task.
+  - [ ] 18.1 Present the Requirement 25 checklist to the owner against the Live_URL and record the owner's report per item: the AR_View with the Track_Arc, the Lock_Ring, the Edge_Arrow and the FOV_Calibration; Shadow_Silence; the Sky_Track; the Tuning_Table with the copy and CSV actions; the Pass_Planner and an imported Calendar_Event; the smoothness of the Ground_Track_Map; the Model_Viewer and a Model_Download; the Listening_Guide links; the Listening_Log; the First_Run_Guide. Record outcomes only as the owner reports them. Never run, assume, infer or fabricate an outcome. A failed item is recorded with the owner's words and raised as a follow-up, not fixed inside this task.
     - _Requirements: 25.1, 25.2_
     - Not yet reported: every item.
-  - [~] 18.2 Confirm with the owner that the S6 Device_Checklist (S6 task 7) and the S6 Final_Submission_Checklist (S6 task 11) stay S6 tasks and that the latter runs after this spec lands. Report any tier at risk to the owner instead of cutting a part silently.
+  - [ ] 18.2 Confirm with the owner that the S6 Device_Checklist (S6 task 7) and the S6 Final_Submission_Checklist (S6 task 11) stay S6 tasks and that the latter runs after this spec lands. Report any tier at risk to the owner instead of cutting a part silently.
     - _Requirements: 25.3, 26.4_
-  - [~] 18.3 Main agent: after the owner has reported every item, mark the tasks of this file that are complete, then commit staging `.kiro/specs/field-companion/tasks.md` by name with `docs(field): record owner acceptance (S7 task 18)`, then push.
+  - [ ] 18.3 Main agent: after the owner has reported every item, mark the tasks of this file that are complete, then commit staging `.kiro/specs/field-companion/tasks.md` by name with `docs(field): record owner acceptance (S7 task 18)`, then push.
 
 - [x] 19. AR Track_Arc refinement (Requirement 7, criteria 16 to 19)
   - Depends on: task 7.
