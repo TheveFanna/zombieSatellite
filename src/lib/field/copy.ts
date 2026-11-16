@@ -46,4 +46,5 @@ export const FIELD_COPY = {
   arFovLabel: 'Vertical field of view',
   arNoCamera: 'Camera unavailable. The overlay is drawn on a plain background.',
   arEnableSensors: 'Enable motion sensors',
+  mapNoOrbit: 'No orbit data for this instant, so the satellite is not drawn.',
 } as const;

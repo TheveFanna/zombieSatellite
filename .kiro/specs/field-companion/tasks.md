@@ -110,7 +110,7 @@ Ground rules for the implementer:
     - _Requirements: 7.13, 9.6_
   - [x] 6.3 Main agent: commit staging `src/lib/field/ar.ts`, `src/lib/field/fov.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/ar-projection.test.ts` by name, then push.
 
-- [ ] 7. AR_View with camera, overlay and FOV calibration
+- [x] 7. AR_View with camera, overlay and FOV calibration
   - Depends on: task 6.
   - [x] 7.1 Add `demoBasis` to the S4 snapshot
     - `src/components/session/session-controller.ts`: `demoBasis: CameraBasis | null` in `SessionSnapshot` per design "Camera basis" (auto-point from the aimed pose, manual from the drag compass pose, `null` for the sensor source, cleared with the other sample state). `src/app/session/[noradId]/page.tsx`: `initialSnapshot` gains `demoBasis: null`.
@@ -127,20 +127,20 @@ Ground rules for the implementer:
   - [x] 7.4 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/field/ar-view.tsx` and `components/field/visuals/ar-overlay.tsx`; the `FIELD_COMPONENTS` group of checks 1.24 and 1.25 gains the same two files by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [-] 7.5 Main agent: commit staging `src/components/session/session-controller.ts`, `src/components/field/fov-store.ts`, `src/components/field/visuals/ar-overlay.tsx`, `src/components/field/ar-view.tsx`, `src/app/session/[noradId]/page.tsx`, `src/app/globals.css`, `tests/scaffold/scaffold.test.ts` and, only if it was adjusted, `tests/session/session-controller.test.ts` by name, then push. The Must tier is complete here.
+  - [x] 7.5 Main agent: commit staging `src/components/session/session-controller.ts`, `src/components/field/fov-store.ts`, `src/components/field/visuals/ar-overlay.tsx`, `src/components/field/ar-view.tsx`, `src/app/session/[noradId]/page.tsx`, `src/app/globals.css`, `tests/scaffold/scaffold.test.ts` and, only if it was adjusted, `tests/session/session-controller.test.ts` by name, then push. The Must tier is complete here.
 
 - [ ] 8. Ground-track core: geodetic point, footprint, terminator, coastline
   - Depends on: task 7.
-  - [~] 8.1 Create `scripts/build-coastline.mjs` and `src/lib/field/data/coastline.ts` (parallel with 8.2; disjoint files, no barrel edit)
+  - [x] 8.1 Create `scripts/build-coastline.mjs` and `src/lib/field/data/coastline.ts` (parallel with 8.2; disjoint files, no barrel edit)
     - Per design "Coastline data": Node built-ins only, Ramer-Douglas-Peucker at 0.25° per line, 0.1° quantization, absolute `M` and relative `l` commands in map units, one exported string `COASTLINE_PATH`, at most 40 KB (raise the tolerance in 0.05° steps if needed). Download `ne_110m_coastline.geojson` once as the design says; commit the generated TypeScript file, not the GeoJSON. The main agent adds the `COASTLINE_PATH` export to `index.ts` after both sub-tasks return.
     - _Requirements: 13.7, 13.8_
-  - [~] 8.2 Create `src/lib/field/geodetic.ts` and `ground-track.ts`; extend `index.ts` and `copy.ts` (parallel with 8.1)
+  - [x] 8.2 Create `src/lib/field/geodetic.ts` and `ground-track.ts`; extend `index.ts` and `copy.ts` (parallel with 8.1)
     - `subSatellitePoint` (Bowring iteration), `orbitalPeriodMin`, `groundTrack`, `footprint` (radius on the 6371.0088 km sphere), `terminator` per design "Geodetic, footprint, terminator" and "Ground track"; `FIELD_COPY.mapNoOrbit`.
     - _Requirements: 12.1–12.5, 13.3, 13.5_
-  - [~] 8.3 Write `tests/field/ground.test.ts`
+  - [x] 8.3 Write `tests/field/ground.test.ts`
     - The two cases of design "Testing Strategy": Sub_Satellite_Point at the Reference_ISS_Instant against literals from `satellite.js` `eciToGeodetic`, and the footprint radius at `h = 0, R, R(√2−1)`. Run it, `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 12.6, 12.7_
-  - [~] 8.4 Main agent: commit staging `scripts/build-coastline.mjs`, `src/lib/field/data/coastline.ts`, `src/lib/field/geodetic.ts`, `src/lib/field/ground-track.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/ground.test.ts` by name, then push.
+  - [-] 8.4 Main agent: commit staging `scripts/build-coastline.mjs`, `src/lib/field/data/coastline.ts`, `src/lib/field/geodetic.ts`, `src/lib/field/ground-track.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/ground.test.ts` by name, then push.
 
 - [ ] 9. Ground_Track_Map component
   - Depends on: task 8.

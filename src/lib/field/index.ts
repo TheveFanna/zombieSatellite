@@ -37,4 +37,12 @@ export {
 } from './ar';
 export type { ArPiece, ArPoint } from './ar';
 export { FOV_DEFAULT_DEG, FOV_MAX_DEG, FOV_MIN_DEG, FOV_STEP_DEG, normalizeFov } from './fov';
+export {
+  footprintAngularRadiusDeg,
+  footprintRing,
+  subSatellitePoint,
+  terminator,
+} from './geodetic';
+export type { MapLine, MapPoint, MapRing } from './geodetic';
+export { groundTrack, orbitalPeriodMin } from './ground-track';
 export { FIELD_COPY } from './copy';
