@@ -141,14 +141,14 @@ Ground rules for the implementer:
     - _Requirements: 14.1–14.4, 14.6_
   - [x] 9.3 Main agent: commit staging `src/components/console/console-home.tsx`, `src/components/console/console-preview.tsx`, `src/components/console/copy.ts`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 10. Touch and motion pass
+- [x] 10. Touch and motion pass
   - Depends on: task 9.
-  - [ ] 10.1 Apply the Touch_Minimum and the motion rules to the console
+  - [x] 10.1 Apply the Touch_Minimum and the motion rules to the console
     - CSS in the "Console" block of `src/app/globals.css` and presentational prop changes only: every control this spec adds or restyles is at least 44 × 44 CSS pixels with a visible focus indicator (dial buttons, dock, meter button, sheet close, tabs, secondary row, `selecting` buttons of the session page); the Radar_Sweep `sweep` prop is read once through an injected `matchMedia('(prefers-reduced-motion: reduce)')` in the session page and the home and is false under Reduced_Motion (a static radar is shown); the meter still updates without easing; no loop runs while its component is not visible; the Seance Observatory look is kept (night palette, bone text, phosphor accent, brass for history, serif stories, monospace telemetry, no web font).
     - _Requirements: 5.6, 11.1–11.5_
-  - [ ] 10.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. No scaffold enumeration changes in this task.
+  - [x] 10.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. No scaffold enumeration changes in this task.
     - _Requirements: 14.6_
-  - [ ] 10.3 Main agent: commit staging by name every file 10.1 changed (expected: `src/app/globals.css`, `src/app/session/[noradId]/page.tsx`, `src/components/console/console-home.tsx`, `src/components/console/radar-panel.tsx`), then push.
+  - [x] 10.3 Main agent: commit staging by name every file 10.1 changed (expected: `src/app/globals.css`, `src/app/session/[noradId]/page.tsx`, `src/components/console/console-home.tsx`, `src/components/console/radar-panel.tsx`), then push.
 
 - [ ] 11. Switch `/` to the Console_Home
   - Depends on: task 10. The Should tier is complete here.

@@ -1559,3 +1559,18 @@ table.tuning td:first-of-type {
 .home-secondary { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
 .home-secondary .button { min-height: 44px; display: inline-flex; align-items: center; }
 .home-footer p { margin: 0; font-size: 0.85rem; }
+/* Console: touch and motion pass (S8 task 10) */
+.sheetBody a, .home a, [data-tab="session"] > a, .dock a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.sheetBody input[type="number"], .home input[type="number"], [data-tab="session"] input[type="number"] { min-height: 44px; }
+.sheetBody input[type="checkbox"], .home input[type="checkbox"], [data-tab="session"] input[type="checkbox"] { min-height: 44px; height: 44px; }
+.sheetBody input[type="range"], [data-tab="session"] input[type="range"] { min-height: 44px; height: 44px; }
+.sheetBody summary, [data-tab="session"] summary { display: block; min-height: 44px; }
+.sheetClose:focus-visible, .tabsTab:focus-visible, .dockBtn:focus-visible, .console-btn:focus-visible, .dialStep:focus-visible, .dialAction:focus-visible {
+  outline: 2px solid var(--phosphor);
+  outline-offset: 2px;
+}
+[data-ar-open] .ring-fill, [data-ar-open] .meter-fill, [data-ar-open] .dialRotor { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .radar-sweep { display: none; animation: none; }
+  .meter-fill, .ring-fill, .dialRotor, .sheet, .tabsTab { transition: none; animation: none; }
+}
