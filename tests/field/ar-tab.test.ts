@@ -114,7 +114,9 @@ describe('AR tab core', () => {
     expect(w[0].running).toBe(true);
     expect(w[1].endFrac).toBe(1);
     const ticks = hourTicks(now);
-    expect(ticks.map((t) => t.label)).toEqual(['12Z', '18Z', '00Z', '06Z']);
+    expect(ticks).toHaveLength(24);
+    expect(ticks[0].label).toBe('12');
+    expect(ticks[23].label).toBe('11');
     expect(ticks[0].frac).toBeCloseTo((37 * min) / day, 9);
   });
 });

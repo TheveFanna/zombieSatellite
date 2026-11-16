@@ -1,4 +1,4 @@
-// Visibility_Bar math of the AR tab (S9 design "Visibility bar"). Pure functions of passes and the clock.
+// Visibility_Bar math of the AR tab (S9 design "Visibility bar", S10 design "Visibility_Bar").
 import type { Pass } from '../orbit/index';
 
 export const VISIBILITY_SPAN_MS = 86_400_000;
@@ -33,16 +33,12 @@ export function visibilityWindows(
   return out;
 }
 
-/** UTC hour ticks (multiples of `stepHours`) inside the span, labelled "HHZ". */
-export function hourTicks(
-  nowMs: number,
-  spanMs: number = VISIBILITY_SPAN_MS,
-  stepHours = 6,
-): Array<{ frac: number; label: string }> {
-  const stepMs = stepHours * 3_600_000;
+/** One tick per whole UTC hour strictly after `originMs` and up to `originMs + spanMs`, labelled "HH". */
+export function hourTicks(originMs: number, spanMs: number = VISIBILITY_SPAN_MS): Array<{ frac: number; label: string }> {
+  const stepMs = 3_600_000;
   const out: Array<{ frac: number; label: string }> = [];
-  for (let t = Math.ceil(nowMs / stepMs) * stepMs; t <= nowMs + spanMs; t += stepMs) {
-    out.push({ frac: (t - nowMs) / spanMs, label: `${String(new Date(t).getUTCHours()).padStart(2, '0')}Z` });
+  for (let t = Math.floor(originMs / stepMs) * stepMs + stepMs; t <= originMs + spanMs; t += stepMs) {
+    out.push({ frac: (t - originMs) / spanMs, label: String(new Date(t).getUTCHours()).padStart(2, '0') });
   }
   return out;
 }

@@ -6,6 +6,8 @@ import { listPlayableEntries } from '../../lib/catalog/index';
 import {
   AR_MAX_FPS,
   FOV_DEFAULT_DEG,
+  VISIBILITY_SPAN_MS,
+  hourTicks,
   FOV_MAX_DEG,
   FOV_MIN_DEG,
   FOV_STEP_DEG,
@@ -20,7 +22,6 @@ import {
   cardinalMarks,
   guideAngleRad,
   horizonLine,
-  hourTicks,
   lockRing,
   projectStars,
   projectTrackArc,
@@ -319,18 +320,27 @@ export function ArTab() {
   if (model !== null && basis !== null && nightness > 0.01) {
     model = { ...model, nightness, stars: projectStars(stars, offsetDeg, basis, aspect, fovDeg) };
   }
-  const nextWindow = bar.windows[0];
-  const summary =
-    nextWindow === undefined
-      ? 'No pass in 24 h'
-      : nextWindow.running
-        ? 'In view now, max ' + Math.round(nextWindow.maxElevationDeg) + '°'
-        : 'Next ' + formatUtc(nextWindow.riseMs).slice(11, 16) + 'Z, max ' + Math.round(nextWindow.maxElevationDeg) + '°';
+  const nowMsLive = Date.now();
+  const barOrigin = bar.nowMs;
+  const nowFrac = barOrigin === 0 ? 0 : Math.min(1, Math.max(0, (nowMsLive - barOrigin) / VISIBILITY_SPAN_MS));
+  const hhmm = (ms: number) => formatUtc(ms).slice(11, 16) + 'Z';
+  const inView = live !== null && live.elevationDeg >= 0;
+  const losWindow = bar.windows.find((w) => w.riseMs <= nowMsLive && w.setMs > nowMsLive);
+  const nextAos = bar.windows.find((w) => w.riseMs > nowMsLive);
+  let sat: { frac: number; inView: boolean } | null = null;
+  let satLabel = 'No pass in 24 h';
+  if (inView) {
+    sat = { frac: nowFrac, inView: true };
+    satLabel = losWindow === undefined ? 'In view now' : 'In view, LOS ' + hhmm(losWindow.setMs);
+  } else if (nextAos !== undefined) {
+    sat = { frac: nextAos.startFrac, inView: false };
+    satLabel = 'AOS ' + hhmm(nextAos.riseMs) + ', max ' + Math.round(nextAos.maxElevationDeg) + '°';
+  }
   const dragLayer = snap?.dragActive === true;
   const needsSensors = snap !== null && (snap.permission === 'unknown' || snap.permission === 'denied');
   const pointer = (e: PointerEvent<HTMLDivElement>) => ({ pointerId: e.pointerId, clientX: e.clientX, clientY: e.clientY });
-  const changeFov = (delta: number) => {
-    const next = Math.min(FOV_MAX_DEG, Math.max(FOV_MIN_DEG, fovDeg + delta));
+  const changeFov = (value: number) => {
+    const next = Math.min(FOV_MAX_DEG, Math.max(FOV_MIN_DEG, value));
     setFovDeg(next);
     if (depsRef.current !== null) writeFov(depsRef.current.storage, next);
   };
@@ -427,7 +437,26 @@ export function ArTab() {
       </label>
 
       <div className="ar-tab-bottom">
-      <VisibilityBar windows={bar.windows} ticks={bar.nowMs === 0 ? [] : hourTicks(bar.nowMs)} summary={summary} />
+      <label className="ar-fov">
+        <span>FOV {Math.round(fovDeg)}°</span>
+        <input
+          type="range"
+          min={FOV_MIN_DEG}
+          max={FOV_MAX_DEG}
+          step={FOV_STEP_DEG}
+          value={fovDeg}
+          onChange={(e) => changeFov(Number(e.target.value))}
+          aria-label="Field of view"
+        />
+      </label>
+      <VisibilityBar
+        nowFrac={nowFrac}
+        nowLabel={'NOW ' + formatUtc(nowMsLive).slice(11, 19) + 'Z'}
+        windows={bar.windows}
+        ticks={barOrigin === 0 ? [] : hourTicks(barOrigin)}
+        sat={sat}
+        satLabel={satLabel}
+      />
       <div className="ar-tab-controls">
         {needsSensors ? (
           <button type="button" onClick={() => pointing?.requestPermission()} disabled={pointing === null}>
@@ -440,13 +469,6 @@ export function ArTab() {
         <button type="button" onClick={() => pointing?.stepCalibration(CALIBRATION_STEP_DEG)} aria-label="Calibrate clockwise">
           ↻ {CALIBRATION_STEP_DEG}°
         </button>
-        <button type="button" onClick={() => changeFov(-FOV_STEP_DEG)} aria-label="Narrower field of view">
-          FOV −
-        </button>
-        <button type="button" onClick={() => changeFov(FOV_STEP_DEG)} aria-label="Wider field of view">
-          FOV +
-        </button>
-        <span>{Math.round(fovDeg)}°</span>
         {cameraState === 'off' ? <span>No camera</span> : null}
       </div>
       </div>

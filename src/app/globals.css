@@ -1684,27 +1684,61 @@ table.tuning td:first-of-type {
 .ar-vis-running {
   background: var(--phosphor);
 }
-.ar-vis-tick {
-  position: absolute;
-  top: 100%;
-  padding-left: 2px;
-  border-left: 1px solid var(--tick);
-  color: var(--dim);
-  font-size: 0.55rem;
-  line-height: 1;
+.ar-vis-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  color: var(--bone-2);
+  font-size: 0.64rem;
+  text-shadow: 0 0 4px #000;
 }
 .ar-vis-now {
   position: absolute;
-  top: -2px;
-  bottom: -2px;
-  left: 0;
+  top: -3px;
+  bottom: -3px;
   width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
   background: var(--ember);
 }
-.ar-vis-text {
-  margin: 0.9rem 0 0;
-  font-size: 0.7rem;
-  text-shadow: 0 0 4px #000;
+.ar-vis-sat {
+  position: absolute;
+  top: 50%;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin: -0.35rem 0 0 -0.35rem;
+  border-radius: 50%;
+  background: var(--bone);
+  box-shadow: 0 0 0 2px rgba(5, 8, 13, 0.6);
+}
+.ar-vis-sat-on {
+  background: var(--phosphor);
+  box-shadow: 0 0 10px var(--phosphor);
+}
+.ar-vis-hours {
+  position: relative;
+  height: 0.9rem;
+  margin-top: 0.25rem;
+  color: var(--dim);
+  font-size: 0.5rem;
+  line-height: 1;
+}
+.ar-vis-hours span {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+}
+.ar-fov {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.4rem 0.6rem 0;
+  font-size: 0.66rem;
+}
+.ar-fov input {
+  flex: 1;
+  accent-color: var(--phosphor);
 }
 .ar-sky {
   position: absolute;
