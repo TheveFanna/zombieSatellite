@@ -130,16 +130,16 @@ Ground rules for the implementer:
     - _Requirements: 14.1–14.3, 14.6_
   - [x] 8.5 Main agent: commit staging `src/lib/console/dial.ts`, `src/lib/console/index.ts`, `src/components/console/copy.ts`, `src/components/console/satellite-dial.tsx`, `src/components/console/home-controller.ts`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 9. Console_Home on the preview URL
+- [x] 9. Console_Home on the preview URL
   - Depends on: task 8.
-  - [ ] 9.1 Create `src/components/console/console-home.tsx` and the temporary `src/components/console/console-preview.tsx`
+  - [x] 9.1 Create `src/components/console/console-home.tsx` and the temporary `src/components/console/console-preview.tsx`
     - `ConsoleHome` per design "Console home": header, `SatelliteDial`, the Radar_Panel with the live position and the next-pass path (`buildSkyTrack`, memoised per pass) when a Playable_Entry is selected and an Observer is known, the location control (landed `createLocator`, geolocation and manual input) when no Observer is known, the story hint and lifeline for a Story_Only_Entry, `CountdownRing` "to next pass" with formatted time and UTC AOS, "In pass now", "Calculating passes…" and "No pass found in the next 48 hours" states, the primary action, the secondary row of 44 px buttons (Cards, Log, Planner, Guide as links for a Playable_Entry only, About), the Story sheet through `story-panel.tsx` for every entry (including the Model_Viewer and its download), the landed `FirstRunGuide` mounted as landed, the honesty footer `SHELL_COPY.honestyFooter`, times through `formatUtc` with the Local_Time_Note as a secondary line. The landed Global_Navigation is unchanged.
     - `console-preview.tsx` (client component, temporary): renders `ConsoleHome` when the URL has `?console=1`, and the landed home content otherwise. `src/app/page.tsx` renders it in place of the landed body and stays a server page free of `'use client'`, `fetch`, `async`, `next/font` and `next/image` (checks 1.20 and 1.21). Append `.home*` classes to the "Console" block of `src/app/globals.css`.
     - _Requirements: 7.1, 7.4, 7.6, 8.1, 8.4–8.7, 9.2, 12.2, 12.3, 15.3_
-  - [ ] 9.2 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 9.2 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/console/console-home.tsx` and `components/console/console-preview.tsx`; the `CONSOLE_COMPONENTS` group of checks 1.24 and 1.25 gains the same two files by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. With no query the landed home is served unchanged.
     - _Requirements: 14.1–14.4, 14.6_
-  - [ ] 9.3 Main agent: commit staging `src/components/console/console-home.tsx`, `src/components/console/console-preview.tsx`, `src/components/console/copy.ts`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 9.3 Main agent: commit staging `src/components/console/console-home.tsx`, `src/components/console/console-preview.tsx`, `src/components/console/copy.ts`, `src/app/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 10. Touch and motion pass
   - Depends on: task 9.
