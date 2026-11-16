@@ -158,6 +158,7 @@ function checkedTexts(): Array<[string, string[]]> {
     ['session copy strings', propertyStrings('src/components/session/copy.ts')],
     ['qsl copy strings', propertyStrings('src/lib/qsl/copy.ts')],
     ['shell copy strings', propertyStrings('src/components/shell/copy.ts')],
+    ['field copy strings', propertyStrings('src/lib/field/copy.ts')],
     ['manifest strings', propertyStrings('src/app/manifest.ts')],
   ];
 }
