@@ -64,3 +64,17 @@ Researched during the Kiroween 2026 build for task 13.1. Research date: 2026-11-
 1. All seven entries are Illustrative; no `.obj` was adopted.
 2. Dimensions for six entries are unconfirmed (fetches of several skyrocket pages returned 404 or empty).
 3. Reconciliation (task 13.3, 2026-11-16): the Wikipedia LES page was fetched and gives no dimensions for LES-1 or LES-5; the skyrocket Galaxy 15, NSSDC IMAGE, Wikipedia Transit and AMSAT AO-7 fetches returned nothing usable; the IMAGE mission page gave no dimensions. Six entries (LES-1, Transit 5B-5, AO-7, IMAGE, Galaxy 15, LES-5) remain unconfirmed: their shapes are schematic and the attribution text says 'schematic, dimensions not confirmed'. Prospero's shape uses the confirmed 1.2 m diameter, 0.7 m height and 4 antennas.
+
+## Shape sources (round 3, 2026-11-16)
+
+The Illustrative_Models of `src/lib/field/model-defs.ts` are vector sketches drawn from the descriptions below. Where no description gave a shape, the model is a sphere.
+
+| Entry | Source read | What it gave | Model |
+|---|---|---|---|
+| AO-7 (`ao-7`) | https://en.wikipedia.org/wiki/AMSAT-OSCAR_7 | Octagonal prism, 360 mm high, 424 mm across; four radio masts at 90° on the base; turnstile antenna | Octagonal prism with four base masts and a crossed antenna |
+| Prospero (`prospero`) | https://space.skyrocket.de/doc_sdat/prospero.htm ; https://en.wikipedia.org/wiki/Prospero_X-3 | 1.2 m across, 0.7 m high, four antennas | Ten-sided body with four antennas |
+| LES-1 (`les-1`) | https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1965-008C ; https://space.skyrocket.de/doc_sdat/les-1.htm | 26-sided polyhedron, 61 cm diameter; eight-horn antenna | Twelve-sided prism, 0.61 m across, four horns on top (the horns are a simplification of the eight) |
+| LES-5 (`les-5`) | https://space.skyrocket.de/doc_sdat/les-5.htm | Cylinder with a platform near the centre; antenna elements around the surface | Sixteen-sided cylinder with a platform and six antenna elements |
+| IMAGE (`image`) | https://en.wikipedia.org/wiki/Imager_for_Magnetopause-to-Aurora_Global_Exploration | Spin-stabilised; 225 × 152 cm in the infobox; long radio antenna (502 m, not to scale) | Octagonal drum with crossed booms (not to scale) and one panel |
+| Galaxy 15 (`galaxy-15`) | https://en.wikipedia.org/wiki/Galaxy_15 | GEOStar-2 bus, 2033 kg at launch; reflector antenna; solar wings | Octagonal bus with two solar wings and a reflector dish |
+| Transit 5B-5 (`transit-5b-5`) | https://en.wikipedia.org/wiki/Transit_(satellite) | Spin-stabilised; no shape in the sources read | Sphere (fallback) |

@@ -2412,3 +2412,33 @@ input[type='number'].ios-input {
 .plain article[id] {
   scroll-margin-top: 1rem;
 }
+
+/* Kiroween 2026 note on the home page (S11 round 3) */
+.contest {
+  margin: 0.4rem 0 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  background: rgba(17, 26, 46, 0.5);
+}
+.contest-kicker {
+  margin: 0 0 0.4rem;
+  color: var(--phosphor);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.contest p {
+  margin: 0.3rem 0;
+  font-size: 0.85rem;
+}
+.contest-note {
+  color: var(--dim);
+  font-size: 0.78rem !important;
+}
+.contest-links a {
+  margin-right: 1rem;
+  color: var(--phosphor);
+  font-size: 0.8rem;
+}

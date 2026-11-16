@@ -83,3 +83,14 @@ On a small phone the AR tab's layout breaks and the Passes and Planner pages sta
 1. THE QSL card SHALL draw a background artwork generated from the NORAD id: engraved curves, an orbit arc and a fixed star field, the same output for the same card.
 2. THE QSL card SHALL keep every text, mark and escape rule of the current card (checked by `tests/qsl/card-svg.test.ts`).
 3. THE project SHALL NOT use a generated photograph or an AI image; the artwork is drawn in SVG by code.
+## Round 3
+
+### Requirement 13: Satellite shapes
+
+1. THE model viewer SHALL draw each Illustrative_Model as a vector sketch of the satellite's documented form, or as a sphere where no form was found; it SHALL NOT draw a plain box as the model of a satellite.
+2. THE model text SHALL say that the model is a sketch drawn from public descriptions.
+
+### Requirement 14: Contest note on the home page
+
+1. THE home page SHALL state that zombieSatellite is an entry in the Kiroween 2026 hackathon, written during the submission period, with Kiro.
+2. THE home page SHALL link the source code (MIT licence) and the specs folder, and SHALL repeat the provenance statement of the README.

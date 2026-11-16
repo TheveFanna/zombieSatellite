@@ -22,6 +22,19 @@ function LandedHome() {
         </h1>
         <p>{SHELL_COPY.appStatement}</p>
       </div>
+      <div className="contest">
+        <p className="contest-kicker">{SHELL_COPY.contestHeading}</p>
+        <p>{SHELL_COPY.contestBody}</p>
+        <p className="contest-note">{SHELL_COPY.contestProvenance}</p>
+        <p className="contest-links">
+          <a href="https://github.com/TheveFanna/zombieSatellite" rel="noopener noreferrer" target="_blank">
+            {SHELL_COPY.contestSource}
+          </a>
+          <a href="https://github.com/TheveFanna/zombieSatellite/tree/main/.kiro/specs" rel="noopener noreferrer" target="_blank">
+            {SHELL_COPY.contestSpecs}
+          </a>
+        </p>
+      </div>
       <section className="plain">
         <div className="entry-grid">
           <Link className="card entry entry-wide" href="/ar">

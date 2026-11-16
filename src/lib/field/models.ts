@@ -18,27 +18,23 @@ export interface ModelRecord {
 const ILLUSTRATIVE_AUTHOR = 'zombieSatellite project';
 const ILLUSTRATIVE_LICENCE = 'Authored for this project, simplified from public dimensions';
 
-// Only pages listed in docs/reference/MODELS.md. Only Prospero has dimensions read from a page.
-const LES_PAGES = ['https://en.wikipedia.org/wiki/Lincoln_Experimental_Satellite'] as const;
-const LES1_PAGES = [...LES_PAGES, 'https://spacedaily.com/t-les-1-satellite-radio-return-rooftop-antenna/'] as const;
-const TRANSIT_PAGES = [
-  'https://timeandnavigation.si.edu/multimedia-asset/transit-satellite',
-  'https://en.wikipedia.org/wiki/Transit_(satellite)',
+// Pages read for each shape (docs/reference/MODELS.md, "Shape sources"). dimensionsConfirmed is true only when
+// the cited page gives the dimensions; the other shapes are sketches from the described form.
+const LES1_PAGES = [
+  'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1965-008C',
+  'https://space.skyrocket.de/doc_sdat/les-1.htm',
 ] as const;
-const AO7_PAGES = [
-  'https://www.amsat.org/two-way-satellites/ao-7/',
-  'https://amsat-dl.org/en/amsat-oscar-7/',
-  'https://amsat.org/wordpress/wp-content/uploads/2024/10/AO-7-History-Lesson-Complete_241015.pdf',
-] as const;
+const TRANSIT_PAGES = ['https://en.wikipedia.org/wiki/Transit_(satellite)'] as const;
+const AO7_PAGES = ['https://en.wikipedia.org/wiki/AMSAT-OSCAR_7'] as const;
 const PROSPERO_PAGES = [
   'https://space.skyrocket.de/doc_sdat/prospero.htm',
-  'https://amsat-uk.org/2011/11/15/prospero-x-3-satellite-blog/',
+  'https://en.wikipedia.org/wiki/Prospero_X-3',
 ] as const;
 const IMAGE_PAGES = [
-  'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=2000-017A',
-  'https://image.gsfc.nasa.gov/',
+  'https://en.wikipedia.org/wiki/Imager_for_Magnetopause-to-Aurora_Global_Exploration',
 ] as const;
-const GALAXY_PAGES = ['https://space.skyrocket.de/doc_sdat/galaxy-15.htm'] as const;
+const GALAXY_PAGES = ['https://en.wikipedia.org/wiki/Galaxy_15'] as const;
+const LES5_PAGES = ['https://space.skyrocket.de/doc_sdat/les-5.htm'] as const;
 
 function illustrative(slug: string, pages: readonly string[], dimensionsConfirmed: boolean): ModelRecord {
   return {
@@ -57,12 +53,11 @@ function illustrative(slug: string, pages: readonly string[], dimensionsConfirme
 export const MODEL_RECORDS: readonly ModelRecord[] = [
   illustrative('les-1', LES1_PAGES, false),
   illustrative('transit-5b-5', TRANSIT_PAGES, false),
-  illustrative('ao-7', AO7_PAGES, false),
+  illustrative('ao-7', AO7_PAGES, true),
   illustrative('prospero', PROSPERO_PAGES, true),
   illustrative('image', IMAGE_PAGES, false),
   illustrative('galaxy-15', GALAXY_PAGES, false),
-  illustrative('les-5', LES_PAGES, false),
-];
+  illustrative('les-5', LES5_PAGES, false),];
 export const MODEL_TEXT = {
   title: 'zombieSatellite model attribution',
   slugLabel: 'Entry',
@@ -71,7 +66,7 @@ export const MODEL_TEXT = {
   licenceLabel: 'Licence',
   retrievedLabel: 'Retrieved',
   illustrativeStatement:
-    'This model is illustrative. It is a simplified shape authored for zombieSatellite, not an engineering model.',
+    'This model is illustrative. It is a vector sketch drawn from public descriptions, not an engineering model. Where no description gave a shape, it is a sphere.',
   dimensionSourcesLabel: 'Dimensions drawn from',
   schematicStatement: 'Schematic, dimensions not confirmed. The shape does not imply measured sizes.',
   confirmedStatement: 'Dimensions read from the cited page: 1.2 m equatorial diameter, 0.7 m height, 4 antennas.',

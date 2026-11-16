@@ -62,3 +62,22 @@ export function merge(...models: readonly ModelGeometry[]): ModelGeometry {
   }
   return { vertices, faces };
 }
+/** UV sphere as a wireframe: `rings` latitude bands and `segments` meridians, drawn as quads. */
+export function sphere(radius: number, rings = 6, segments = 12): ModelGeometry {
+  const vertices: number[] = [];
+  for (let i = 0; i <= rings; i += 1) {
+    const lat = -Math.PI / 2 + (Math.PI * i) / rings;
+    for (let j = 0; j < segments; j += 1) {
+      const lon = (2 * Math.PI * j) / segments;
+      vertices.push(radius * Math.cos(lat) * Math.cos(lon), radius * Math.sin(lat), radius * Math.cos(lat) * Math.sin(lon));
+    }
+  }
+  const faces: number[][] = [];
+  for (let i = 0; i < rings; i += 1) {
+    for (let j = 0; j < segments; j += 1) {
+      const next = (j + 1) % segments;
+      faces.push([i * segments + j, i * segments + next, (i + 1) * segments + next, (i + 1) * segments + j]);
+    }
+  }
+  return { vertices, faces };
+}

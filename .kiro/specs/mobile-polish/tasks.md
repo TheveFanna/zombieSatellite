@@ -52,3 +52,11 @@ Ground rules: one commit per task after its tests pass, then push at once. Guard
   - [x] 7.1 Rewrite `buildCardSvg` visuals in `src/lib/qsl/card-svg.ts`: seeded background artwork, frame, typography. Keep all texts and marks.
     - _Requirements: 12.1 to 12.3_
   - [x] 7.2 Run the checks; main agent commits by name, then pushes.
+## Round 3 tasks
+
+- [x] 8. Shapes and contest note
+  - [x] 8.1 Sphere builder in `model-build.ts`; vector shapes in `model-defs.ts`; sources and texts in `models.ts`, `copy.ts` and `docs/reference/MODELS.md`.
+    - _Requirements: 13.1, 13.2_
+  - [x] 8.2 Contest block on the home page (`console-preview.tsx`, `shell/copy.ts`, `globals.css`).
+    - _Requirements: 14.1, 14.2_
+  - [x] 8.3 Run the checks; main agent commits by name, then pushes.

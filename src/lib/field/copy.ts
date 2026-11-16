@@ -100,7 +100,7 @@ export const FIELD_COPY = {
   guideRecordingsLabel: 'Recordings (links only)',
   guideSourceLabel: 'Source',
   guideOwnEquipment: 'Only your own equipment can pick up the real downlink. zombieSatellite does not.',
-  modelIllustrative: 'Illustrative model, simplified from documented dimensions',
+  modelIllustrative: 'Illustrative model, a vector sketch drawn from public descriptions',
   modelHeading: 'Model',
   modelDownload: 'Download model',
   modelAuthorLabel: 'Author',
