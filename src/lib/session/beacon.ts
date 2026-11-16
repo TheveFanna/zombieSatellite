@@ -27,6 +27,7 @@ export interface BeaconInputs {
   readonly beacon: BeaconBlock;
   /** Beacon_Phase_Input, seconds of audio time. */
   readonly phaseS: number;
+  readonly shadowSilent?: boolean;
 }
 
 export interface BeaconState {
@@ -85,7 +86,7 @@ function keyLevel(mode: BeaconSoundMode, phaseS: number): number {
 export function beaconState(inputs: BeaconInputs): BeaconState {
   const { beacon, phaseS } = inputs;
   const mode = soundMode(beacon);
-  const q = signalQuality(inputs.pointingErrorDeg);
+  const q = inputs.shadowSilent === true ? 0 : signalQuality(inputs.pointingErrorDeg);
   const noiseGain = NOISE_FLOOR_GAIN + NOISE_SPAN_GAIN * (1 - q);
   const carrierFrequencyHz = AUDIBLE_BASE_FREQUENCY_HZ + dopplerGlideHz(inputs.rangeRateKmPerS);
 

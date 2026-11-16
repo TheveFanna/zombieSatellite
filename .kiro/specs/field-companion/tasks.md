@@ -23,7 +23,7 @@ Ground rules for the implementer:
 
 ## Tasks
 
-- [ ] 1. Field_Core foundation: Sun direction, shadow model, illumination profile
+- [x] 1. Field_Core foundation: Sun direction, shadow model, illumination profile
   - Depends on: nothing (first task).
   - [x] 1.1 Create the Field_Core base: `src/lib/field/constants.ts`, `time.ts`, `sun.ts`, `shadow.ts`, `illumination.ts`, `copy.ts`, `index.ts`
     - Per design "Time and Sun direction", "Shadow model", "Illumination profile" and "Field_Copy": `julianDate`, `gmstRad`, `sunDirection` (USNO formula), `subsolarPoint`, `illuminationState`, `isInShadow` (cylindrical, radius 6378.137 km, `'sunlit' | 'umbra'`), `illuminationProfile`, `shadowedAt`, `shadowIntervals` (10 s steps, cap 600 samples, 1 s bisection, failed samples skipped, `unavailable` when no sample succeeds), the constants of design "Data Models", and `FIELD_COPY` with the keys needed so far (illumination badge texts, `silentInShadow`, `shadowSilenceNote`, `instrumentLabel`) under the Field_Copy wording rules. `index.ts` is the barrel of every name above.
@@ -39,20 +39,20 @@ Ground rules for the implementer:
     - Enumerations touched: check 1.24 and 1.25 `checkedTexts()` gains `['field copy strings', propertyStrings('src/lib/field/copy.ts')]`. Check 1.19 listing and `.tsx` inventory are unchanged in this task. No other change.
     - Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 21.3–21.5, 23.4_
-  - [-] 1.4 Main agent: commit staging `.kiro/specs/field-companion/.config.kiro`, `requirements.md`, `design.md`, `tasks.md`, the seven `src/lib/field` files, `tests/helpers/field-source-scan.ts`, `tests/field/source-boundary.test.ts`, `tests/field/sun-shadow.test.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 1.4 Main agent: commit staging `.kiro/specs/field-companion/.config.kiro`, `requirements.md`, `design.md`, `tasks.md`, the seven `src/lib/field` files, `tests/helpers/field-source-scan.ts`, `tests/field/source-boundary.test.ts`, `tests/field/sun-shadow.test.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 2. Shadow_Silence of the simulated beacon (S4 change)
   - Depends on: task 1.
-  - [~] 2.1 Change the landed S4 code as design "Shadow_Silence and the S4 change" lists, no more
+  - [x] 2.1 Change the landed S4 code as design "Shadow_Silence and the S4 change" lists, no more
     - `src/lib/session/beacon.ts`: optional `shadowSilent` in `BeaconInputs`; the one changed line in `beaconState`.
     - `src/components/session/session-controller.ts`: import `isInShadow` from `../../lib/field/index`; `shadowSilent` in `BeaconLevels`, `NO_BEACON_LEVELS`, `refreshPointingError`, `sampleAt`, `stateAt` and the snapshot; reset to `NO_BEACON_LEVELS` on an observation failure. Do not add `demoBasis` yet (task 7).
     - `src/components/session/copy.ts`: the new `sunlitNote` text. Add `FIELD_COPY.shadowSilenceNote` use below.
     - `src/app/session/[noradId]/page.tsx`: `initialSnapshot` gains `shadowSilent: false`; a paragraph with `FIELD_COPY.shadowSilenceNote` while `snapshot.shadowSilent`. No other change.
     - If an added snapshot field breaks an exact-equality assertion in `tests/session/session-controller.test.ts`, adjust that assertion only. Add no case.
     - _Requirements: 4.1–4.7, 22.1, 22.2_
-  - [~] 2.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. The landed `beacon.test.ts` and `session-controller.test.ts` cases must pass unchanged (an omitted flag keeps the landed behavior).
+  - [x] 2.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. The landed `beacon.test.ts` and `session-controller.test.ts` cases must pass unchanged (an omitted flag keeps the landed behavior).
     - _Requirements: 4.5, 23.4_
-  - [~] 2.3 Main agent: commit staging `src/lib/session/beacon.ts`, `src/components/session/session-controller.ts`, `src/components/session/copy.ts`, `src/app/session/[noradId]/page.tsx` and, only if it was adjusted, `tests/session/session-controller.test.ts` by name, then push.
+  - [-] 2.3 Main agent: commit staging `src/lib/session/beacon.ts`, `src/components/session/session-controller.ts`, `src/components/session/copy.ts`, `src/app/session/[noradId]/page.tsx` and, only if it was adjusted, `tests/session/session-controller.test.ts` by name, then push.
 
 - [ ] 3. Tuning table core
   - Depends on: task 2.

@@ -3,6 +3,7 @@
 import { createSatrec, observeAt } from '../../lib/orbit/index';
 import type { Pass, Satrec, TleFetcher, TleRecord } from '../../lib/orbit/index';
 import type { PlayableEntry } from '../../lib/catalog/index';
+import { isInShadow } from '../../lib/field/index';
 import { cameraBasisFromDrag, evaluateLock, sceneDirection } from '../../lib/pointing/index';
 import type { DragPose, LockResult, TargetDirection } from '../../lib/pointing/index';
 import {
@@ -81,6 +82,7 @@ export interface SessionSnapshot {
   readonly lastRejection: TransitionRejection | null;
   readonly result: SessionResult | null;
   readonly joined: boolean;
+  readonly shadowSilent: boolean;
 }
 
 export interface SessionController {
@@ -105,9 +107,14 @@ export interface SessionController {
 interface BeaconLevels {
   readonly pointingErrorDeg: number | null;
   readonly rangeRateKmPerS: number | null;
+  readonly shadowSilent: boolean;
 }
 
-const NO_BEACON_LEVELS: BeaconLevels = Object.freeze({ pointingErrorDeg: null, rangeRateKmPerS: null });
+const NO_BEACON_LEVELS: BeaconLevels = Object.freeze({
+  pointingErrorDeg: null,
+  rangeRateKmPerS: null,
+  shadowSilent: false,
+});
 
 export function createSessionController(deps: SessionControllerDeps, entry: PlayableEntry): SessionController {
   const observerStore = createObserverStore(deps.storage);
@@ -199,6 +206,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
       lastRejection,
       result,
       joined,
+      shadowSilent: beaconLevels.shadowSilent,
     });
   }
 
@@ -287,13 +295,14 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
     return beaconState({
       pointingErrorDeg: beaconLevels.pointingErrorDeg,
       rangeRateKmPerS: beaconLevels.rangeRateKmPerS,
+      shadowSilent: beaconLevels.shadowSilent,
       beacon: entry.beacon,
       phaseS,
     });
   }
 
   function refreshPointingError(pointingErrorDeg: number | null): void {
-    beaconLevels = { pointingErrorDeg, rangeRateKmPerS: beaconLevels.rangeRateKmPerS };
+    beaconLevels = { ...beaconLevels, pointingErrorDeg };
   }
 
   /** S3 snapshot changed (Sensor_Pointing): refresh the beacon's Pointing_Error without a Lock_Sample. */
@@ -379,6 +388,7 @@ export function createSessionController(deps: SessionControllerDeps, entry: Play
     beaconLevels = {
       pointingErrorDeg: evaluated === null ? null : evaluated.pointingErrorDeg,
       rangeRateKmPerS: observation.rangeRateKmPerS,
+      shadowSilent: entry.beacon.sunlitOnly === true && isInShadow(observation.eciPositionKm, t),
     };
     doppler = dopplerReadout(entry.beacon.downlinkMhz, observation.rangeRateKmPerS);
   }

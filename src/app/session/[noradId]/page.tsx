@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { PointerEvent } from 'react';
 import type { PlayableEntry } from '../../../lib/catalog/index';
+import { FIELD_COPY } from '../../../lib/field/index';
 import { CALIBRATION_STEP_DEG } from '../../../lib/pointing/index';
 import { createBrowserDeps } from '../../../components/pointing/browser-deps';
 import {
@@ -74,6 +75,7 @@ function initialSnapshot(entry: PlayableEntry): SessionSnapshot {
     lastRejection: null,
     result: null,
     joined: false,
+    shadowSilent: false,
   });
 }
 
@@ -301,6 +303,7 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
         </p>
         <p>Downlink frequency: {beacon.displayFrequency ?? SESSION_COPY.noFrequency}</p>
         {beacon.sunlitOnly ? <p>{SESSION_COPY.sunlitNote}</p> : null}
+        {snapshot.shadowSilent ? <p>{FIELD_COPY.shadowSilenceNote}</p> : null}
         {beacon.downlinkMhz === null ? <p>{SESSION_COPY.imageNote}</p> : null}
         <p>{SESSION_COPY.utcNote}</p>
         <p>

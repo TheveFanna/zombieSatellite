@@ -14,7 +14,7 @@ export const SESSION_COPY = Object.freeze({
   imageNote:
     'IMAGE has been silent again since August 2018. The soft ticks are a simulated sketch of its telemetry character, synthesized from public orbital data, and do not mean that it transmits today.',
   sunlitNote:
-    'Sunlit only: in reality it transmits only in sunlight. This app has no eclipse model, so the simulated beacon plays during every pass.',
+    "Sunlit only: in reality it transmits only while the Sun shines on it. In Earth's shadow the simulated beacon falls silent.",
   noFrequency: 'No documented downlink frequency',
   noOrbitData: 'No orbit data at this instant',
   audioUnavailable:
