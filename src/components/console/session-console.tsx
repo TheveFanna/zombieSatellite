@@ -4,7 +4,7 @@ import type { PlayableEntry } from '../../lib/catalog/index';
 import { FIELD_COPY } from '../../lib/field/index';
 import type { SkySampleOk } from '../../lib/field/index';
 import type { LockResult } from '../../lib/pointing/index';
-import { formatCountdown, formatDopplerReadout, formatUtc } from '../../lib/session/index';
+import { formatDopplerReadout, formatUtc } from '../../lib/session/index';
 import type { SessionResult } from '../../lib/session/index';
 import type { PassFieldSnapshot } from '../field/pass-field-controller';
 import type { PointingSession, PointingSnapshot } from '../pointing/pointing-session';
@@ -14,6 +14,8 @@ import { SHELL_COPY } from '../shell/copy';
 import { DopplerDial } from '../shell/visuals/doppler-dial';
 import { AlignmentMeter } from './alignment-meter';
 import { CONSOLE_COPY } from './copy';
+import { CountdownRing } from './countdown-ring';
+import { PassTimeline } from './pass-timeline';
 import { RadarPanel } from './radar-panel';
 
 export interface SessionConsoleProps {
@@ -175,9 +177,18 @@ export function SessionConsole({
           ) : null}
         </div>
         {phase === 'awaiting-pass' ? (
-          <p className="console-countdown">{snapshot.countdownMs === null ? '—' : formatCountdown(snapshot.countdownMs)}</p>
+          <CountdownRing mode="awaiting" countdownMs={snapshot.countdownMs} />
         ) : (
           <div className="console-row">
+            {targetPass !== null ? (
+              <CountdownRing
+                mode="in-pass"
+                countdownMs={null}
+                nowMs={snapshot.sessionInstantMs}
+                riseMs={targetPass.riseMs}
+                setMs={targetPass.setMs}
+              />
+            ) : null}
             <span className="console-badge">{lockBadge}</span>
             <span>
               {CONSOLE_COPY.dopplerLabel}: {snapshot.doppler === null ? '—' : formatDopplerReadout(snapshot.doppler)}
@@ -185,6 +196,14 @@ export function SessionConsole({
             <span>{snapshot.sessionInstantMs === null ? '—' : formatUtc(snapshot.sessionInstantMs)}</span>
           </div>
         )}
+        {targetPass !== null ? (
+          <PassTimeline
+            riseMs={targetPass.riseMs}
+            peakMs={targetPass.peakMs}
+            setMs={targetPass.setMs}
+            nowMs={phase === 'in-pass' ? snapshot.sessionInstantMs : null}
+          />
+        ) : null}
         {phase === 'in-pass' ? (
           <div>
             <DopplerDial readout={snapshot.doppler} caption={SHELL_COPY.dialCaption} />

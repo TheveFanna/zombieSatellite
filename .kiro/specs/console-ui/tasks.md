@@ -77,18 +77,18 @@ Ground rules for the implementer:
     - _Requirements: 14.1–14.3, 14.6_
   - [x] 4.3 Main agent: commit staging `src/components/console/session-console.tsx`, `src/app/session/[noradId]/page.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push. The Must tier is complete here.
 
-- [ ] 5. Countdown_Ring and pass timeline
+- [x] 5. Countdown_Ring and pass timeline
   - Depends on: task 4.
-  - [ ] 5.1 Create `src/lib/console/ring.ts`; extend `index.ts` and `copy.ts`
+  - [x] 5.1 Create `src/lib/console/ring.ts`; extend `index.ts` and `copy.ts`
     - `RING_LEAD_MS` (30 min), `RING_NEAR_MS` (5 min), `countdownRingFraction`, `remainingRingFraction`, `ringIsNear` per design "Countdown ring and timeline"; pure, no clock read. `CONSOLE_COPY` gains the ring group (to AOS, AOS soon, to LOS, in pass now, calculating, no pass in 48 h).
     - _Requirements: 6.3, 6.4_
-  - [ ] 5.2 Create `src/components/console/countdown-ring.tsx` and `pass-timeline.tsx`; wire them
+  - [x] 5.2 Create `src/components/console/countdown-ring.tsx` and `pass-timeline.tsx`; wire them
     - `CountdownRing`: `stroke-dasharray` fill, `formatCountdown` text inside, caption; near AOS the stroke changes from solid to dashed and the caption changes (not colour alone); in `in-pass` it shows `remainingRingFraction` with "to LOS". `PassTimeline`: thin rule with AOS, peak and LOS marks placed by the peak share, UTC times from `formatUtc(ms).slice(11, 19)`, and a moving tick for the current instant. Mount both in `session-console.tsx` (awaiting-pass and in-pass). Append `.ring*` and `.timeline*` classes to the "Console" block of `src/app/globals.css`.
     - _Requirements: 4.2, 6.1–6.3, 11.2_
-  - [ ] 5.3 Extend `tests/scaffold/scaffold.test.ts`
+  - [x] 5.3 Extend `tests/scaffold/scaffold.test.ts`
     - Enumerations touched: check 1.19 `.tsx` inventory gains `components/console/countdown-ring.tsx` and `components/console/pass-timeline.tsx`; the `CONSOLE_COMPONENTS` group of checks 1.24 and 1.25 gains the same two files by name. Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 14.1–14.3, 14.6_
-  - [ ] 5.4 Main agent: commit staging `src/lib/console/ring.ts`, `src/lib/console/index.ts`, `src/components/console/copy.ts`, `src/components/console/countdown-ring.tsx`, `src/components/console/pass-timeline.tsx`, `src/components/console/session-console.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
+  - [x] 5.4 Main agent: commit staging `src/lib/console/ring.ts`, `src/lib/console/index.ts`, `src/components/console/copy.ts`, `src/components/console/countdown-ring.tsx`, `src/components/console/pass-timeline.tsx`, `src/components/console/session-console.tsx`, `src/app/globals.css` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
 - [ ] 6. Sheet and tab primitives, `sections` prop and story panel
   - Depends on: task 5.

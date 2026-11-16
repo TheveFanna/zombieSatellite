@@ -40,4 +40,13 @@ export const CONSOLE_COPY = Object.freeze({
   resultMode: 'Mode',
   resultCompleted: 'Completed',
   resultAborted: 'Aborted',
+  ringToAos: 'to AOS',
+  ringAosSoon: 'AOS soon',
+  ringToLos: 'to LOS',
+  ringInPassNow: 'In pass now',
+  ringCalculating: 'Calculating passes…',
+  ringNoPass: 'No pass found in the next 48 hours',
+  timelineAos: 'AOS',
+  timelinePeak: 'Peak',
+  timelineLos: 'LOS',
 });
