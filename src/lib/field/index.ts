@@ -21,4 +21,6 @@ export { illuminationState, isInShadow } from './shadow';
 export type { IlluminationState } from './shadow';
 export { illuminationProfile, shadowIntervals, shadowedAt } from './illumination';
 export type { IlluminationProfile, ShadowTransition } from './illumination';
+export { minuteTable, roundMhz, tuningCsv, tuningFileName, tuningTable } from './tuning';
+export type { MinuteTableResult, TuningPoint, TuningResult } from './tuning';
 export { FIELD_COPY } from './copy';

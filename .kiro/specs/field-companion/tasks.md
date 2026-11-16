@@ -41,7 +41,7 @@ Ground rules for the implementer:
     - _Requirements: 21.3–21.5, 23.4_
   - [x] 1.4 Main agent: commit staging `.kiro/specs/field-companion/.config.kiro`, `requirements.md`, `design.md`, `tasks.md`, the seven `src/lib/field` files, `tests/helpers/field-source-scan.ts`, `tests/field/source-boundary.test.ts`, `tests/field/sun-shadow.test.ts` and `tests/scaffold/scaffold.test.ts` by name, then push.
 
-- [ ] 2. Shadow_Silence of the simulated beacon (S4 change)
+- [x] 2. Shadow_Silence of the simulated beacon (S4 change)
   - Depends on: task 1.
   - [x] 2.1 Change the landed S4 code as design "Shadow_Silence and the S4 change" lists, no more
     - `src/lib/session/beacon.ts`: optional `shadowSilent` in `BeaconInputs`; the one changed line in `beaconState`.
@@ -52,19 +52,19 @@ Ground rules for the implementer:
     - _Requirements: 4.1–4.7, 22.1, 22.2_
   - [x] 2.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass. The landed `beacon.test.ts` and `session-controller.test.ts` cases must pass unchanged (an omitted flag keeps the landed behavior).
     - _Requirements: 4.5, 23.4_
-  - [-] 2.3 Main agent: commit staging `src/lib/session/beacon.ts`, `src/components/session/session-controller.ts`, `src/components/session/copy.ts`, `src/app/session/[noradId]/page.tsx` and, only if it was adjusted, `tests/session/session-controller.test.ts` by name, then push.
+  - [x] 2.3 Main agent: commit staging `src/lib/session/beacon.ts`, `src/components/session/session-controller.ts`, `src/components/session/copy.ts`, `src/app/session/[noradId]/page.tsx` and, only if it was adjusted, `tests/session/session-controller.test.ts` by name, then push.
 
 - [ ] 3. Tuning table core
   - Depends on: task 2.
-  - [~] 3.1 Create `src/lib/field/tuning.ts` and extend `index.ts` and `copy.ts`
+  - [x] 3.1 Create `src/lib/field/tuning.ts` and extend `index.ts` and `copy.ts`
     - `tuningTable`, `minuteTable`, `tuningCsv`, `roundMhz`, the file-name builder and the formatting per design "Tuning table": `physicalDopplerShiftKhz` from the session barrel (Doppler is not reimplemented), 4-decimal MHz rounding, whole-UTC-minute rows plus AOS and LOS, "Now" and "Window end" labels for truncated passes, `{ kind: 'no-frequency' }` for IMAGE before any engine call, the five-column CSV with CRLF line ends. `FIELD_COPY` gains the tuning labels, `nominalNote`, `les1Note`, `prosperoNote`, `noFrequencyNote` and the CSV header.
     - The functions are wired into the Session_Page in task 4.
     - _Requirements: 5.1–5.8_
-  - [~] 3.2 Write `tests/field/tuning.test.ts`
+  - [x] 3.2 Write `tests/field/tuning.test.ts`
     - One case as design "Tuning table": the ISS fixture pass, TCA 145.9785 MHz from the baseline range rate −2.1094 km/s, AOS and LOS literals computed once with `rangeRateOracle` and `Δf = −f0 · ṙ / c`, with a comment naming the method.
     - Run it, `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
     - _Requirements: 5.9_
-  - [~] 3.3 Main agent: commit staging `src/lib/field/tuning.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/tuning.test.ts` by name, then push.
+  - [-] 3.3 Main agent: commit staging `src/lib/field/tuning.ts`, `src/lib/field/index.ts`, `src/lib/field/copy.ts` and `tests/field/tuning.test.ts` by name, then push.
 
 - [ ] 4. Session_Page field panel: badge, Tuning_Table, Instrument_Detail, copy and CSV
   - Depends on: task 3.
