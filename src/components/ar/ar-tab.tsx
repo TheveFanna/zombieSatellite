@@ -47,6 +47,7 @@ import { browserGeolocation, browserMediaDevices } from '../shell/browser-deps';
 import { createCameraController } from '../shell/camera';
 import { createLocator } from '../shell/geolocation';
 import { ArScene } from './ar-scene';
+import { SatelliteWheel } from './satellite-wheel';
 import { VisibilityBar } from './visibility-bar';
 import type { ArSceneModel } from './ar-scene';
 
@@ -336,6 +337,17 @@ export function ArTab() {
     sat = { frac: nextAos.startFrac, inView: false };
     satLabel = 'AOS ' + hhmm(nextAos.riseMs) + ', max ' + Math.round(nextAos.maxElevationDeg) + '°';
   }
+  const selectedIndex = Math.max(0, ENTRIES.findIndex((e) => e.noradId === selectedId));
+  const statusText =
+    status === 'loading'
+      ? 'Loading orbit data…'
+      : status === 'error'
+        ? 'Orbit data unavailable'
+        : live !== null && live.elevationDeg < 0
+          ? 'Below horizon'
+          : lockedNow
+            ? 'Locked on the satellite'
+            : 'Follow the arrow';
   const dragLayer = snap?.dragActive === true;
   const needsSensors = snap !== null && (snap.permission === 'unknown' || snap.permission === 'denied');
   const pointer = (e: PointerEvent<HTMLDivElement>) => ({ pointerId: e.pointerId, clientX: e.clientX, clientY: e.clientY });
@@ -391,37 +403,27 @@ export function ArTab() {
         />
       ) : null}
 
-      <div className="ar-tab-strip" role="tablist" aria-label="Satellite">
-        {ENTRIES.map((entry) => (
-          <button
-            key={entry.noradId}
-            type="button"
-            role="tab"
-            aria-selected={entry.noradId === selectedId}
-            className="ar-tab-card"
-            onClick={() => setSelectedId(entry.noradId)}
-          >
-            <strong>{entry.name}</strong>
-            <span>{entry.orbitLabel}</span>
-          </button>
-        ))}
-      </div>
+      <SatelliteWheel
+        items={ENTRIES.map((e) => ({ id: e.noradId, name: e.name, sub: e.orbitLabel ?? '' }))}
+        selectedIndex={selectedIndex}
+        onSelect={(i) => setSelectedId(ENTRIES[i].noradId)}
+      />
 
-      <div className="ar-hud ar-hud-left">
-        <p>{selected.name}</p>
-        {status === 'loading' ? <p>Loading orbit data…</p> : null}
-        {status === 'error' ? <p>Orbit data unavailable</p> : null}
-        <p>
-          AZ {live === null ? '—' : live.azimuthDeg.toFixed(1)}° EL {live === null ? '—' : live.elevationDeg.toFixed(1)}°
-        </p>
-        <p>{live !== null && live.elevationDeg < 0 ? 'Below horizon' : ' '}</p>
+      <div className="ar-hud-row">
+        <div className="ar-pill">
+          <span>AZ</span>
+          {live === null ? '—' : live.azimuthDeg.toFixed(1) + '°'}
+          <span>EL</span>
+          {live === null ? '—' : live.elevationDeg.toFixed(1) + '°'}
+        </div>
+        <div className="ar-pill">
+          <span>RNG</span>
+          {live === null ? '—' : Math.round(live.slantRangeKm) + ' km'}
+          <span>RATE</span>
+          {live === null ? '—' : live.rangeRateKmPerS.toFixed(2)}
+        </div>
       </div>
-      <div className="ar-hud ar-hud-right">
-        <p>RNG {live === null ? '—' : Math.round(live.slantRangeKm)} km</p>
-        <p>RATE {live === null ? '—' : live.rangeRateKmPerS.toFixed(2)} km/s</p>
-        <p>{lockedNow ? 'Locked' : 'Aim'}</p>
-        <p>{pointing === null ? ' ' : `${formatUtc(Date.now()).slice(11, 19)}Z`}</p>
-      </div>
+      <p className="ar-status">{statusText}</p>
 
       <label className="ar-sky">
         <span>Cam</span>
@@ -436,41 +438,41 @@ export function ArTab() {
         <span>Sky</span>
       </label>
 
-      <div className="ar-tab-bottom">
-      <label className="ar-fov">
-        <span>FOV {Math.round(fovDeg)}°</span>
-        <input
-          type="range"
-          min={FOV_MIN_DEG}
-          max={FOV_MAX_DEG}
-          step={FOV_STEP_DEG}
-          value={fovDeg}
-          onChange={(e) => changeFov(Number(e.target.value))}
-          aria-label="Field of view"
+      <div className="ar-bottom">
+        <label className="ar-fov">
+          <span>FOV {Math.round(fovDeg)}°</span>
+          <input
+            type="range"
+            min={FOV_MIN_DEG}
+            max={FOV_MAX_DEG}
+            step={FOV_STEP_DEG}
+            value={fovDeg}
+            onChange={(e) => changeFov(Number(e.target.value))}
+            aria-label="Field of view"
+          />
+        </label>
+        <VisibilityBar
+          nowFrac={nowFrac}
+          nowLabel={'NOW ' + formatUtc(nowMsLive).slice(11, 19) + 'Z'}
+          windows={bar.windows}
+          ticks={barOrigin === 0 ? [] : hourTicks(barOrigin)}
+          sat={sat}
+          satLabel={satLabel}
         />
-      </label>
-      <VisibilityBar
-        nowFrac={nowFrac}
-        nowLabel={'NOW ' + formatUtc(nowMsLive).slice(11, 19) + 'Z'}
-        windows={bar.windows}
-        ticks={barOrigin === 0 ? [] : hourTicks(barOrigin)}
-        sat={sat}
-        satLabel={satLabel}
-      />
-      <div className="ar-tab-controls">
-        {needsSensors ? (
-          <button type="button" onClick={() => pointing?.requestPermission()} disabled={pointing === null}>
-            Enable motion sensors
+        <div className="ar-actions">
+          {needsSensors ? (
+            <button type="button" onClick={() => pointing?.requestPermission()} disabled={pointing === null}>
+              Enable motion sensors
+            </button>
+          ) : null}
+          <button type="button" onClick={() => pointing?.stepCalibration(-CALIBRATION_STEP_DEG)} aria-label="Calibrate counter-clockwise">
+            ↺ {CALIBRATION_STEP_DEG}°
           </button>
-        ) : null}
-        <button type="button" onClick={() => pointing?.stepCalibration(-CALIBRATION_STEP_DEG)} aria-label="Calibrate counter-clockwise">
-          ↺ {CALIBRATION_STEP_DEG}°
-        </button>
-        <button type="button" onClick={() => pointing?.stepCalibration(CALIBRATION_STEP_DEG)} aria-label="Calibrate clockwise">
-          ↻ {CALIBRATION_STEP_DEG}°
-        </button>
-        {cameraState === 'off' ? <span>No camera</span> : null}
-      </div>
+          <button type="button" onClick={() => pointing?.stepCalibration(CALIBRATION_STEP_DEG)} aria-label="Calibrate clockwise">
+            ↻ {CALIBRATION_STEP_DEG}°
+          </button>
+          {cameraState === 'off' ? <span className="ar-note">No camera</span> : null}
+        </div>
       </div>
     </div>
   );

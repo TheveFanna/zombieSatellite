@@ -8,12 +8,12 @@ Ground rules: one commit per task after its tests pass, then push at once; never
   - [x] 1.2 Run `pnpm vitest run tests/field`, `pnpm typecheck`.
   - [x] 1.3 Main agent: commit by name, then push.
 
-- [ ] 2. Satellite_Wheel and AR layout
+- [x] 2. Satellite_Wheel and AR layout
   - Depends on: task 1.
-  - [ ] 2.1 Add `src/components/ar/satellite-wheel.tsx` (arc placement, drag and tap). Move the readouts below the wheel and the calibration and sensor controls into the bottom panel. Add the `satellite-wheel.tsx` file to the scaffold list.
+  - [x] 2.1 Add `src/components/ar/satellite-wheel.tsx` (arc placement, drag and tap). Move the readouts below the wheel and the calibration and sensor controls into the bottom panel. Add the `satellite-wheel.tsx` file to the scaffold list.
     - _Requirements: 2.1 to 2.3, 1.2, 1.3_
-  - [ ] 2.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
-  - [ ] 2.3 Main agent: commit by name, then push.
+  - [x] 2.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
+  - [x] 2.3 Main agent: commit by name, then push.
 
 - [ ] 3. Visual tokens
   - Depends on: task 2.

@@ -1580,109 +1580,170 @@ table.tuning td:first-of-type {
   .meter-fill, .ring-fill, .dialRotor, .sheet, .tabsTab { transition: none; animation: none; }
 }
 
-/* AR tab (S9) */
+/* AR tab (S9, S10): iOS-style glass surfaces over the camera picture */
 .ar-tab {
+  --ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
   color: var(--bone);
-  font-family: var(--mono);
+  font-family: var(--ui);
 }
-.ar-tab-strip {
+.ar-tab button {
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: rgba(40, 46, 60, 0.55);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  color: var(--bone);
+  font-family: var(--ui);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.ar-wheel {
   position: absolute;
-  top: 0;
+  top: calc(env(safe-area-inset-top, 0px) + 0.4rem);
   right: 0;
   left: 0;
-  display: flex;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  background: linear-gradient(180deg, rgba(5, 8, 13, 0.75), transparent);
+  height: 6rem;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
 }
-.ar-tab-card {
-  flex: 0 0 8.5rem;
+.ar-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.45rem 0.6rem;
-  scroll-snap-align: start;
-  border: 1px solid var(--hair);
-  border-radius: 0.5rem;
-  background: rgba(10, 15, 28, 0.7);
+  align-items: flex-start;
+  gap: 0.1rem;
+  width: 7.2rem;
+  min-height: 2.9rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 12px;
+  background: rgba(22, 30, 46, 0.62);
   color: var(--bone-2);
-  font-family: var(--mono);
-  font-size: 0.7rem;
   text-align: left;
+  transform-origin: 50% 50%;
+  transition:
+    transform 480ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 300ms ease,
+    box-shadow 300ms ease;
 }
-.ar-tab-card span {
+.ar-card strong {
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+.ar-card span {
   color: var(--dim);
   font-size: 0.6rem;
 }
-.ar-tab-card[aria-selected='true'] {
-  border-color: var(--phosphor);
-  color: var(--phosphor);
-  box-shadow: 0 0 10px var(--phosphor-glow);
+.ar-card[aria-selected='true'] {
+  border-color: rgba(168, 240, 207, 0.55);
+  color: var(--bone);
+  box-shadow: 0 0 16px rgba(168, 240, 207, 0.22);
 }
-.ar-hud {
+.ar-card[aria-selected='true'] span {
+  color: var(--phosphor);
+}
+.ar-hud-row {
   position: absolute;
-  top: 4.4rem;
-  max-width: 48%;
-  font-size: 0.72rem;
-  line-height: 1.5;
-  text-shadow: 0 0 4px #000, 0 0 2px #000;
+  top: calc(env(safe-area-inset-top, 0px) + 6.7rem);
+  right: 0.6rem;
+  left: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
   pointer-events: none;
 }
-.ar-hud p {
-  margin: 0;
-}
-.ar-hud-left {
-  left: 0.6rem;
-}
-.ar-hud-right {
-  right: 0.6rem;
-  text-align: right;
-}
-.ar-tab-bottom {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: linear-gradient(0deg, rgba(5, 8, 13, 0.85), transparent);
-}
-.ar-tab-controls {
+.ar-pill {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.5rem 0.5rem;
-  font-size: 0.72rem;
+  align-items: baseline;
+  gap: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(10, 14, 22, 0.55);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
-.ar-tab-controls button {
-  min-height: 2.2rem;
-  padding: 0 0.7rem;
-  border: 1px solid var(--hair);
-  border-radius: 0.4rem;
-  background: rgba(10, 15, 28, 0.75);
-  color: var(--bone);
-  font-family: var(--mono);
-  font-size: 0.72rem;
+.ar-pill span {
+  color: var(--dim);
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+}
+.ar-status {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 8.4rem);
+  left: 50%;
+  margin: 0;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(10, 14, 22, 0.5);
+  color: var(--bone-2);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.ar-sky {
+  position: absolute;
+  top: 50%;
+  right: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0.3rem;
+  border-radius: 999px;
+  background: rgba(10, 14, 22, 0.5);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: var(--dim);
+  font-size: 0.56rem;
+  transform: translateY(-50%);
+}
+.ar-sky input {
+  height: 8rem;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  accent-color: var(--phosphor);
+}
+.ar-bottom {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  left: 0.6rem;
+  padding: 0.8rem 0.9rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(14, 20, 32, 0.62);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.ar-fov {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.7rem;
+  color: var(--bone-2);
+}
+.ar-fov span {
+  min-width: 4.6rem;
+  font-variant-numeric: tabular-nums;
+}
+.ar-fov input {
+  flex: 1;
+  accent-color: var(--phosphor);
 }
 .ar-vis {
-  padding: 0.4rem 0.6rem 0;
-}
-.ar-vis-track {
-  position: relative;
-  height: 1.1rem;
-  border: 1px solid var(--hair);
-  border-radius: 0.3rem;
-  background: rgba(10, 15, 28, 0.7);
-}
-.ar-vis-win {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  background: var(--phosphor-2);
-}
-.ar-vis-running {
-  background: var(--phosphor);
+  margin: 0.8rem 0 0;
 }
 .ar-vis-head {
   display: flex;
@@ -1691,7 +1752,23 @@ table.tuning td:first-of-type {
   margin-bottom: 0.35rem;
   color: var(--bone-2);
   font-size: 0.64rem;
-  text-shadow: 0 0 4px #000;
+  font-variant-numeric: tabular-nums;
+}
+.ar-vis-track {
+  position: relative;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: rgba(233, 228, 216, 0.12);
+}
+.ar-vis-win {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: rgba(168, 240, 207, 0.4);
+}
+.ar-vis-running {
+  background: var(--phosphor);
 }
 .ar-vis-now {
   position: absolute;
@@ -1723,39 +1800,31 @@ table.tuning td:first-of-type {
   color: var(--dim);
   font-size: 0.5rem;
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 .ar-vis-hours span {
   position: absolute;
   top: 0;
   transform: translateX(-50%);
 }
-.ar-fov {
+.ar-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.6rem;
-  margin: 0.4rem 0.6rem 0;
-  font-size: 0.66rem;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
 }
-.ar-fov input {
-  flex: 1;
-  accent-color: var(--phosphor);
+.ar-actions button {
+  flex: 1 1 auto;
+  min-width: 5.5rem;
 }
-.ar-sky {
-  position: absolute;
-  top: 50%;
-  right: 0.3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-  transform: translateY(-50%);
-  font-size: 0.55rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.ar-note {
+  color: var(--dim);
+  font-size: 0.7rem;
 }
-.ar-sky input {
-  height: 8rem;
-  writing-mode: vertical-lr;
-  direction: rtl;
-  accent-color: var(--phosphor);
+@media (prefers-reduced-motion: reduce) {
+  .ar-card {
+    transition: none;
+  }
 }
