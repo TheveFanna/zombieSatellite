@@ -1,0 +1,31 @@
+In December two thousand five, NASA lost contact with IMAGE. The spacecraft went silent.
+
+More than twelve years later, amateur astronomer Scott Tilley found its signal again.
+
+What if a phone could help you take the first steps into that world?
+
+zombieSatellite helps radio hobbyists find a pass, point toward a satellite, and follow its Doppler shift.
+
+Seven spacecraft connect the experience to documented history. Five offer playable sessions.
+
+Public orbital data predicts the next pass over your location. Observer coordinates are hidden here.
+
+Choose a spacecraft and open its session. Times are shown in coordinated universal time.
+
+The camera view overlays the computed satellite direction. Switch spacecraft to explore the sky around you.
+
+Direction cues and the sky view help you orient the phone, even when an object is off screen.
+
+Demo mode accelerates a predicted pass to sixty times normal speed, with automatic pointing available.
+
+Next, listen to the app itself. This beacon is synthesized, not received from a satellite.
+
+The result shows pointing accuracy and time on target. Each completed pass produces a simulated Q S L card.
+
+Cards record the satellite and session details, and explicitly distinguish simulation from real radio reception.
+
+Kiro development follows eleven feature specifications and two steering files, all included in the repository.
+
+Requirements, design, and tasks structure implementation. Steering documents define the scope and development rules.
+
+Start with a forgotten spacecraft. Learn when to look and where to point. The orbit is real. The beacon is simulated.

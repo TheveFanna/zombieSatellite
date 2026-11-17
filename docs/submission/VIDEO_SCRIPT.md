@@ -1,5 +1,19 @@
 # zombieSatellite: video script
 
+## Cinematic judge editions (current delivery, 2026-11-17)
+
+Current files: `docs/video/zombieSatellite_Cinematic_landscape_EN.mp4` and `docs/video/zombieSatellite_Cinematic_portrait_EN.mp4`. Both run 147.5 seconds at 30 fps, in 1920 x 1080 and 1080 x 1920 respectively. They supersede the earlier judge editions below.
+
+The opening tells the documented IMAGE story: contact lost in December 2005; rediscovered by Scott Tilley in January 2018, more than twelve years later. Source: [NASA's IMAGE recovery timeline](https://www.nasa.gov/solar-system/a-detailed-timeline-of-the-image-mission-recovery/) and [NASA's rediscovery article](https://www.nasa.gov/solar-system/nasas-newly-rediscovered-image-mission-provided-key-aurora-research/). The opening orbital graphic is an original illustration, not spacecraft engineering imagery or a recording of historical reception.
+
+The layout puts the recording in the centre, uses synchronized enlarged details in landscape, and enlarges the phone in portrait. Headlines change with each explanation using slide/scale entrances and bright rule accents. The observer-coordinate segment still uses the two opaque-redacted frames; raw scrolling coordinate footage is excluded.
+
+The new score is locally synthesized cinematic pulse music with suspended chords, distant metallic tones and soft heartbeat pulses. It contains no third-party music samples. Original phone audio takes priority: source-audio analysis determines the 87–103 second window, where the music stem is exactly zero. The music fades away before that interval and returns afterwards. An amber APP AUDIO ON / MUSIC OFF badge and level-responsive bars appear during the same interval; the simulated-beacon disclosure remains visible. The enlarged detail is synchronized to the central recording.
+
+TTS handoff: `cinematic_tts_script.txt`, `cinematic_tts_timing.csv` and `cinematic.en.srt`. Narration slots are estimated at 130 words per minute plus a one-second pause. **Do not narrate from 87–103 seconds**: this is reserved for app audio, including the result-page tail. No TTS voice has been added. Measure generated sentences before final placement.
+
+Audio stems: `cinematic_music_full.wav` (unmuted score), `cinematic_music_ducked.wav` (score with app-audio silence), `cinematic_phone_audio.wav` (edited original phone sound). Use the ducked music and phone stems once each when mixing future narration. `cinematic_audio_windows.json` records the mute intervals and zero-sample check. Rebuild with `python docs/video/render_cinematic.py`.
+
 ## Judge editions with privacy, music and TTS timing (2026-11-17)
 
 Use `docs/video/zombieSatellite_Judges_landscape_EN.mp4` (1920 x 1080) or `docs/video/zombieSatellite_Judges_portrait_EN.mp4` (1080 x 1920). Both use the same 173-second English explanation and are under three minutes. The portrait edition has its own layout; it is not a crop of the landscape video.

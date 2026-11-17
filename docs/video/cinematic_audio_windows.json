@@ -1,0 +1,10 @@
+{
+  "threshold_dbfs": -48,
+  "music_zero_windows": [
+    [
+      87.0,
+      103.0
+    ]
+  ],
+  "max_music_during_app_audio": 0.0
+}

@@ -1,0 +1,239 @@
+{
+  "duration": 147.5,
+  "scenes": [
+    {
+      "kind": "story",
+      "tag": "A TRUE STORY / 2005",
+      "beats": [
+        [
+          "In December two thousand five, NASA lost contact with IMAGE. The spacecraft went silent.",
+          "LOST\nIN SPACE."
+        ]
+      ],
+      "detail": "IMAGE / CONTACT LOST",
+      "year": "2005",
+      "out": 0,
+      "duration": 7.5
+    },
+    {
+      "kind": "story",
+      "tag": "A TRUE STORY / 2018",
+      "beats": [
+        [
+          "More than twelve years later, amateur astronomer Scott Tilley found its signal again.",
+          "THEN SOMEONE\nHEARD IT."
+        ]
+      ],
+      "detail": "SCOTT TILLEY / REDISCOVERY",
+      "year": "2018",
+      "out": 7.5,
+      "duration": 7.0
+    },
+    {
+      "kind": "story",
+      "tag": "KIROWEEN / RESURRECTION",
+      "beats": [
+        [
+          "What if a phone could help you take the first steps into that world?",
+          "YOUR PHONE.\nTHEIR ORBIT."
+        ]
+      ],
+      "detail": "FIND / POINT / FOLLOW",
+      "year": "NOW",
+      "out": 14.5,
+      "duration": 7.5
+    },
+    {
+      "kind": "phone",
+      "tag": "01 / THE IDEA",
+      "start": 8,
+      "end": 20,
+      "focus": 12,
+      "beats": [
+        [
+          "zombieSatellite helps radio hobbyists find a pass, point toward a satellite, and follow its Doppler shift.",
+          "KNOW WHEN.\nKNOW WHERE."
+        ],
+        [
+          "Seven spacecraft connect the experience to documented history. Five offer playable sessions.",
+          "SEVEN STORIES.\nFIVE TO TRY."
+        ]
+      ],
+      "detail": "PUBLIC ORBITS\nDOCUMENTED STORIES",
+      "steps": [
+        "Find the next pass",
+        "Point toward the spacecraft",
+        "Follow the frequency shift"
+      ],
+      "out": 22.0,
+      "duration": 15.5
+    },
+    {
+      "kind": "private",
+      "tag": "02 / FIND A PASS",
+      "beats": [
+        [
+          "Public orbital data predicts the next pass over your location. Observer coordinates are hidden here.",
+          "THE NEXT PASS.\nYOUR LOCATION."
+        ],
+        [
+          "Choose a spacecraft and open its session. Times are shown in coordinated universal time.",
+          "PICK A PASS.\nOPEN A SESSION."
+        ]
+      ],
+      "detail": "TLE + SGP4\nCOMPUTED PASS TIMES",
+      "steps": [
+        "Public orbital data",
+        "Location-based prediction",
+        "Times shown in UTC"
+      ],
+      "out": 37.5,
+      "duration": 15.5
+    },
+    {
+      "kind": "phone",
+      "tag": "03 / POINT",
+      "start": 30,
+      "end": 42,
+      "focus": 38,
+      "beats": [
+        [
+          "The camera view overlays the computed satellite direction. Switch spacecraft to explore the sky around you.",
+          "THE SKY,\nWITH DIRECTIONS."
+        ],
+        [
+          "Direction cues and the sky view help you orient the phone, even when an object is off screen.",
+          "FIND IT.\nFACE IT."
+        ]
+      ],
+      "detail": "AR POINTING\nCAMERA + GEOMETRY",
+      "steps": [
+        "Computed direction",
+        "Off-screen guidance",
+        "Camera is a visual layer"
+      ],
+      "out": 53.0,
+      "duration": 18.0
+    },
+    {
+      "kind": "phone",
+      "tag": "04 / TRY THE DEMO",
+      "start": 48,
+      "end": 62,
+      "focus": 60,
+      "beats": [
+        [
+          "Demo mode accelerates a predicted pass to sixty times normal speed, with automatic pointing available.",
+          "A FULL PASS.\nSIXTY TIMES FASTER."
+        ],
+        [
+          "Next, listen to the app itself. This beacon is synthesized, not received from a satellite.",
+          "UP NEXT:\nHEAR THE APP."
+        ]
+      ],
+      "detail": "DEMO 60x\nNO RADIO REQUIRED",
+      "steps": [
+        "Predict a real orbit",
+        "Practise the session",
+        "Listen to a synthesized tone"
+      ],
+      "out": 71.0,
+      "duration": 16.0
+    },
+    {
+      "kind": "listen",
+      "tag": "05 / LISTEN TO THE APP",
+      "start": 99,
+      "end": 109,
+      "duration": 10,
+      "focus": 104,
+      "beats": [],
+      "detail": "SIMULATED BEACON\nORIGINAL PHONE AUDIO",
+      "steps": [
+        "Watch the lock indicator",
+        "Follow the kHz readout",
+        "No radio signal is received"
+      ],
+      "out": 87.0
+    },
+    {
+      "kind": "phone",
+      "tag": "06 / COMPLETE THE SESSION",
+      "start": 110,
+      "end": 116,
+      "visual_end": 113.3,
+      "focus": 112,
+      "beats": [
+        [
+          "The result shows pointing accuracy and time on target. Each completed pass produces a simulated Q S L card.",
+          "FINISH THE PASS.\nKEEP THE RECORD."
+        ]
+      ],
+      "detail": "SESSION RESULTS\nSIMULATED QSL",
+      "steps": [
+        "Locked time",
+        "Lock ratio",
+        "Best pointing error"
+      ],
+      "out": 97.0,
+      "duration": 16.0
+    },
+    {
+      "kind": "phone",
+      "tag": "07 / COLLECT",
+      "start": 185,
+      "end": 189,
+      "focus": 186.4,
+      "beats": [
+        [
+          "Cards record the satellite and session details, and explicitly distinguish simulation from real radio reception.",
+          "A SESSION CARD.\nCLEARLY SIMULATED."
+        ]
+      ],
+      "detail": "COLLECTION\nHONEST BY DESIGN",
+      "steps": [
+        "Satellite and timing",
+        "Demo clearly labelled",
+        "No claim of RF reception"
+      ],
+      "out": 113.0,
+      "duration": 8.0
+    },
+    {
+      "kind": "kiro",
+      "tag": "08 / BUILT WITH KIRO",
+      "beats": [
+        [
+          "Kiro development follows eleven feature specifications and two steering files, all included in the repository.",
+          "ELEVEN SPECS.\nONE CLEAR PROCESS."
+        ],
+        [
+          "Requirements, design, and tasks structure implementation. Steering documents define the scope and development rules.",
+          "REQUIREMENTS.\nDESIGN. TASKS."
+        ]
+      ],
+      "detail": "REPOSITORY EVIDENCE\n.kiro/",
+      "steps": [
+        "Requirements",
+        "Design",
+        "Tasks"
+      ],
+      "out": 121.0,
+      "duration": 15.5
+    },
+    {
+      "kind": "close",
+      "tag": "KIROWEEN / RESURRECTION",
+      "beats": [
+        [
+          "Start with a forgotten spacecraft. Learn when to look and where to point. The orbit is real. The beacon is simulated.",
+          "THE ORBIT IS REAL.\nTHE BEACON\nIS SIMULATED."
+        ]
+      ],
+      "detail": "zombie-satellite.vercel.app",
+      "steps": [],
+      "out": 136.5,
+      "duration": 11.0
+    }
+  ]
+}

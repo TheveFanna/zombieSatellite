@@ -1,0 +1,18 @@
+﻿start,end,type,text
+0,7.5,narration,"In December two thousand five, NASA lost contact with IMAGE. The spacecraft went silent."
+7.5,14.5,narration,"More than twelve years later, amateur astronomer Scott Tilley found its signal again."
+14.5,22.0,narration,What if a phone could help you take the first steps into that world?
+22.0,30.5,narration,"zombieSatellite helps radio hobbyists find a pass, point toward a satellite, and follow its Doppler shift."
+30.5,37.5,narration,Seven spacecraft connect the experience to documented history. Five offer playable sessions.
+37.5,45.5,narration,Public orbital data predicts the next pass over your location. Observer coordinates are hidden here.
+45.5,53.0,narration,Choose a spacecraft and open its session. Times are shown in coordinated universal time.
+53.0,61.5,narration,The camera view overlays the computed satellite direction. Switch spacecraft to explore the sky around you.
+61.5,71.0,narration,"Direction cues and the sky view help you orient the phone, even when an object is off screen."
+71.0,79.0,narration,"Demo mode accelerates a predicted pass to sixty times normal speed, with automatic pointing available."
+79.0,87.0,narration,"Next, listen to the app itself. This beacon is synthesized, not received from a satellite."
+87.0,103.0,listen_only,"LEAVE SILENT: original synthesized app audio, including result-screen tail"
+103.0,113.0,narration,The result shows pointing accuracy and time on target. Each completed pass produces a simulated Q S L card.
+113.0,121.0,narration,"Cards record the satellite and session details, and explicitly distinguish simulation from real radio reception."
+121.0,129.0,narration,"Kiro development follows eleven feature specifications and two steering files, all included in the repository."
+129.0,136.5,narration,"Requirements, design, and tasks structure implementation. Steering documents define the scope and development rules."
+136.5,147.5,narration,Start with a forgotten spacecraft. Learn when to look and where to point. The orbit is real. The beacon is simulated.
