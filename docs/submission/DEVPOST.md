@@ -10,6 +10,17 @@ zombieSatellite
 
 Find a zombie satellite's next pass, point your phone at it and follow its Doppler shift, with a simulated beacon built from public orbital data.
 
+## Category
+Resurrection. The seven zombie satellites are old spacecraft that were given up for dead and turned out to still be transmitting, or whose story deserves retelling. The app brings them back as a planning and listening aid.
+
+## Try it out
+- Live app: https://zombie-satellite.vercel.app/ (HTTPS, works in a desktop browser).
+- No radio is needed. Open **Passes**, pick a satellite and tap **Open session**, then use **Start demo (60x)**. The demo plays the next real pass in a few minutes.
+- On a phone, **AR** asks once for the camera and the motion sensors. On iPhone the motion prompt needs a tap. Without sensors the sky view still shows the horizon, the cardinal marks and the satellite orbit.
+- The archive (**Archive**) has each satellite's story and its illustrative model.
+
+## Demo video
+[Link to be added after upload. The video is under three minutes; the script is in docs/submission/VIDEO_SCRIPT.md.]
 ## Inspiration (the problem)
 
 Some satellites were declared dead decades ago and are still in orbit. A few of them are still transmitting, and almost every one of those was found again by an amateur with an antenna, not by the agency that built it.
@@ -65,17 +76,14 @@ The zombie-satellite hobby exists because amateurs did the work that institution
 - All code was newly written during the Kiroween 2026 submission period. Only the coordinate conventions and the numeric acceptance baselines come from SatAware AR.
 
 ## Kiro usage
-
-The project was built spec by spec with Kiro, and the specs are in the repository under `.kiro/specs`.
-
-- **Eleven spec folders:** orbit-engine, zombie-catalog, ar-pointing, seance-session, qsl-card, shell-pwa-deploy, field-companion, console-ui, ui-refresh, mobile-polish and ar-tab. Most have requirements, design and tasks documents; the later rounds keep their design notes in the requirements and tasks files.
+The project was built spec by spec with Kiro, in 113 commits, starting on 14 November 2026.
+- **Specs:** eleven spec folders in `.kiro/specs`: orbit-engine, zombie-catalog, ar-pointing, seance-session, qsl-card, shell-pwa-deploy, field-companion, console-ui, ar-tab, ui-refresh and mobile-polish. Most features have requirements written as EARS statements, a design and a task list, and tasks are committed one at a time.
+- **Steering:** two files in `.kiro/steering`. `project-scope.md` fixes the catalog, UTC, the absence of a custom backend and the rule against claiming real reception. `workflow.md` sets the commit and push rules, the spec language and the verification discipline.
+- **Verification:** 25 test files use fast-check property tests or example tests. The scaffold tests scan the app's own text for wording that could suggest real reception.
 - **Models:** Opus wrote the requirements and the designs; Sonnet did most of the implementation.
 - **Review gates:** a human review between stages. The requirements, the design and the task list of each spec were approved by the author before the next stage started, and several designs were changed after review.
-- **Steering:** two steering files in `.kiro/steering` hold the project scope (a fixed catalog, no custom backend, UTC everywhere, no claim of real reception) and the workflow rules.
-- **Commits:** one commit per task, made after that task's tests passed, staging files by name.
-- **Verification:** the test suite, which has 384 passing tests in 81 test files at the time of writing (one more file, the live CelesTrak test, is skipped by default), plus the opt-in test against the live CelesTrak endpoint. It includes property-based tests (fast-check) for the orbit engine and scaffold checks that scan the app's own text for wording that could suggest real reception.
+- **Not used:** Kiro hooks, MCP servers, Kiro powers and Kiro Crew are not part of this project. The app does not depend on them.
 - **What Kiro did not do:** deploy the app, or run the device checks. The author deployed to Vercel and runs the device checklist on real phones.
-
 ## Challenges
 
 - **Honest wording.** The app must never suggest that it hears a real satellite. Two scaffold checks scan every page text, the copy modules and the README: a text that mentions a beacon, signal or radio must also say simulated or synthesized, and no sentence may pair a reception word with a radio term. They shaped the copy: for example, the app names its audience hobbyists and watchers, because the word listeners next to a radio term fails the scan.

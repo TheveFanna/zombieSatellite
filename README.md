@@ -86,7 +86,7 @@ These lines document shell usage and are not package.json scripts, because pnpm 
 
 ## Built with Kiro
 
-The project was specified and built spec by spec with Kiro. Each spec has its requirements, design and tasks in `.kiro/specs`, and the steering rules are in `.kiro/steering`.
+The project was specified and built spec by spec with Kiro. The 11 spec folders in `.kiro/specs` hold each feature's requirements (EARS), design and tasks, and tasks are committed one at a time. The two steering files in `.kiro/steering` fix the project scope and the workflow rules. Kiro hooks, MCP servers, powers and Kiro Crew are not used.
 
 ## Origins
 
