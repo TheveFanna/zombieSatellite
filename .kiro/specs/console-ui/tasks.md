@@ -150,7 +150,7 @@ Ground rules for the implementer:
     - _Requirements: 14.6_
   - [x] 10.3 Main agent: commit staging by name every file 10.1 changed (expected: `src/app/globals.css`, `src/app/session/[noradId]/page.tsx`, `src/components/console/console-home.tsx`, `src/components/console/radar-panel.tsx`), then push.
 
-- [ ] 11. Switch `/` to the Console_Home
+- [-] 11. Switch `/` to the Console_Home (cancelled by the owner: the `?console=1` preview and Console_Home were removed; the home page is the landed home)
   - Depends on: task 10. The Should tier is complete here.
   - [ ] 11.1 Replace the landed home by the Console_Home
     - `src/app/page.tsx`: render `<ConsoleHome />` directly, and stay a server page free of `'use client'`, `fetch`, `async`, `next/font` and `next/image`. Delete `src/components/console/console-preview.tsx`. Remove the landed `EntryArticle` markup and the `GhostSky` use from the home page; every route that existed after S7 stays reachable (cards, log, planner, guide, session and the seven entries). Check that the landed `FirstRunGuide` and the Model_Viewer remain reachable from the Console_Home.
