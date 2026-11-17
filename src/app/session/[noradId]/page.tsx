@@ -10,7 +10,6 @@ import type { FieldBrowserDeps } from '../../../components/field/browser-deps';
 import { createFieldDownloader } from '../../../components/field/field-downloader';
 import { createPassFieldController } from '../../../components/field/pass-field-controller';
 import type { PassFieldController, PassFieldSnapshot } from '../../../components/field/pass-field-controller';
-import { ArView } from '../../../components/field/ar-view';
 import { createTleSource } from '../../../components/field/tle-source';
 import { createBrowserDeps } from '../../../components/pointing/browser-deps';
 import {
@@ -113,7 +112,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [fieldController, setFieldController] = useState<PassFieldController | null>(null);
   const [fieldDeps, setFieldDeps] = useState<FieldBrowserDeps | null>(null);
-  const [arOpen, setArOpen] = useState(false);
 
   const serverSnapshot = useMemo(() => initialSnapshot(entry), [entry]);
   const getServerSnapshot = (): SessionSnapshot => serverSnapshot;
@@ -286,17 +284,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
     video.srcObject = camera.getStream() as MediaStream | null;
   }, [cameraOn, camera]);
 
-  const arPhase = phase === 'awaiting-pass' || phase === 'in-pass';
-  useEffect(() => {
-    if (!arPhase) setArOpen(false);
-  }, [arPhase]);
-
-  // S6 DD-2 extended: the AR_View owns its own camera, so the Sky_View stream stops first.
-  function openAr() {
-    camera?.stop();
-    setCameraOn(false);
-    setArOpen(true);
-  }
 
   function toggleCamera() {
     if (camera === null) return;
@@ -329,7 +316,7 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
   );
 
   return (
-    <main data-tab="session" data-ar-open={arOpen && arPhase ? '' : undefined} style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
+    <main data-tab="session" style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem' }}>
       <title>{`${entry.name} · zombieSatellite`}</title>
 
       <SessionConsole
@@ -339,7 +326,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
         field={fieldSnapshot}
         pointing={pointing}
         controller={controller}
-        onOpenAr={openAr}
         onStartDemo={startDemo}
         onCopy={copyTable}
         onDownloadCsv={downloadCsv}
@@ -393,17 +379,6 @@ function SessionView({ entry }: { entry: PlayableEntry }) {
         </section>
       ) : null}
 
-      {arOpen && arPhase ? (
-        <ArView
-          snapshot={snapshot}
-          field={fieldSnapshot}
-          pointing={pointing}
-          pointingSnapshot={pointingSnapshot}
-          controller={controller}
-          camera={!isDemo}
-          onClose={() => setArOpen(false)}
-        />
-      ) : null}
 
     </main>
   );

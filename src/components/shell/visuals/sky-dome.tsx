@@ -2,7 +2,6 @@
 // The dome is an azimuthal equidistant map of the sky: zenith at the centre, horizon on the rim,
 // north up, east right (src/lib/shell/sky.ts).
 import type { CatalogEntry } from '../../../lib/catalog/index';
-import { effectiveAzimuthDeg, LOCK_TOLERANCE_DEG } from '../../../lib/pointing/index';
 import { domePoint, domeRadius } from '../../../lib/shell/index';
 
 export const DOME_RADIUS = 100;
@@ -112,40 +111,3 @@ export function GhostSky({ entries }: { entries: readonly CatalogEntry[] }) {
  * lock tolerance as a dashed ring around it, and the phone's aim as a reticle when it is known.
  * The target azimuth is calibrated with the offset, as the lock evaluates it.
  */
-export function PassDome({
-  target,
-  aim,
-  locked,
-  offsetDeg,
-}: {
-  target: { readonly azimuthDeg: number; readonly elevationDeg: number } | null;
-  aim: { readonly headingDeg: number; readonly pitchDeg: number } | null;
-  locked: boolean;
-  offsetDeg: number;
-}) {
-  const sat =
-    target === null ? null : domePoint(effectiveAzimuthDeg(target.azimuthDeg, offsetDeg), target.elevationDeg, R);
-  const reticle = aim === null ? null : domePoint(aim.headingDeg, Math.max(aim.pitchDeg, 0), R);
-  return (
-    <svg className={locked ? 'dome dome-pass dome-locked' : 'dome dome-pass'} viewBox={VIEW} role="img" aria-label="Sky dome">
-      <circle className="dome-floor" r={R} />
-      <DomeFrame />
-      {sat === null ? null : (
-        <g transform={`translate(${sat.x} ${sat.y})`}>
-          <circle className="pass-ring" r={domeRadius(LOCK_TOLERANCE_DEG, R)} />
-          <circle className="pass-halo" r={9} />
-          <circle className="pass-sat" r={2.6} />
-        </g>
-      )}
-      {reticle === null ? null : (
-        <g className="pass-reticle" transform={`translate(${reticle.x} ${reticle.y})`}>
-          <circle r={5.5} />
-          <line x1={-11} y1={0} x2={-7} y2={0} />
-          <line x1={7} y1={0} x2={11} y2={0} />
-          <line x1={0} y1={-11} x2={0} y2={-7} />
-          <line x1={0} y1={7} x2={0} y2={11} />
-        </g>
-      )}
-    </svg>
-  );
-}

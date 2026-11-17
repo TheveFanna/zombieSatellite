@@ -78,19 +78,16 @@ const SHELL_REGISTRAR = 'src/components/shell/service-worker-registrar.tsx';
 const SHELL_VISUALS = [
   'src/components/shell/visuals/doppler-dial.tsx',
   'src/components/shell/visuals/lifeline.tsx',
-  'src/components/shell/visuals/pass-profile.tsx',
   'src/components/shell/visuals/sky-dome.tsx',
 ];
 /** The console components, listed by name. */
 const CONSOLE_COMPONENTS = ['src/components/console/alignment-meter.tsx', 'src/components/console/console-sheet.tsx', 'src/components/console/console-tabs.tsx', 'src/components/console/countdown-ring.tsx', 'src/components/console/pass-timeline.tsx', 'src/components/console/radar-panel.tsx', 'src/components/console/session-console.tsx', 'src/components/console/story-panel.tsx'];
 /** The field companion components, listed by name. */
 const FIELD_COMPONENTS = [
-  'src/components/field/ar-view.tsx',
   'src/components/field/first-run-guide.tsx',
   'src/components/field/ground-track-map.tsx',
   'src/components/field/model-viewer.tsx',
   'src/components/field/session-panel.tsx',
-  'src/components/field/visuals/ar-overlay.tsx',
   'src/components/field/visuals/field-bits.tsx',
   'src/components/field/visuals/sky-track.tsx',
 ];
@@ -247,7 +244,7 @@ describe('Requirement 1: project scaffold', () => {
     expect(Object.entries(pkg.scripts ?? {}).filter(([, command]) => OS_SPECIFIC_SYNTAX.test(command))).toEqual([]);
   });
 
-  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards, pointing and session routes, globals.css and the named .ts files, and no .tsx file other than these pages, the shell service-worker registrar and the named shell visuals and the named field components and the named console components exists under src', () => {
+  it('1.19 src/app holds only layout.tsx, page.tsx, the approved api, cards and session routes, globals.css and the named .ts files, and no .tsx file other than these pages, the shell service-worker registrar and the named shell visuals and the named field components and the named console components exists under src', () => {
     expect(readdirSync(join(root, 'src', 'app')).sort()).toEqual([
       'api',
       'ar',
@@ -260,7 +257,6 @@ describe('Requirement 1: project scaffold', () => {
       'manifest.ts',
       'page.tsx',
       'planner',
-      'pointing',
       'session',
     ]);
     const appTsFiles = readdirSync(join(root, 'src', 'app'), { encoding: 'utf8', recursive: true })
@@ -280,7 +276,6 @@ describe('Requirement 1: project scaffold', () => {
       'app/log/page.tsx',
       'app/page.tsx',
       'app/planner/[noradId]/page.tsx',
-      'app/pointing/page.tsx',
       'app/session/[noradId]/page.tsx',
       'app/session/page.tsx',
       'components/ar/ar-scene.tsx',
@@ -299,18 +294,15 @@ describe('Requirement 1: project scaffold', () => {
       'components/console/radar-panel.tsx',
       'components/console/session-console.tsx',
       'components/console/story-panel.tsx',
-      'components/field/ar-view.tsx',
       'components/field/first-run-guide.tsx',
       'components/field/ground-track-map.tsx',
       'components/field/model-viewer.tsx',
       'components/field/session-panel.tsx',
-      'components/field/visuals/ar-overlay.tsx',
       'components/field/visuals/field-bits.tsx',
       'components/field/visuals/sky-track.tsx',
       'components/shell/service-worker-registrar.tsx',
       'components/shell/visuals/doppler-dial.tsx',
       'components/shell/visuals/lifeline.tsx',
-      'components/shell/visuals/pass-profile.tsx',
       'components/shell/visuals/sky-dome.tsx',
     ]);
   });

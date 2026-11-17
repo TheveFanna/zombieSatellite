@@ -35,7 +35,6 @@ export interface SessionConsoleProps {
   readonly field: PassFieldSnapshot;
   readonly pointing: PointingSession | null;
   readonly controller: SessionController | null;
-  readonly onOpenAr: () => void;
   readonly onStartDemo: () => void;
   readonly onCopy: (text: string) => Promise<boolean>;
   readonly onDownloadCsv: (csv: string, aosMs: number) => void;
@@ -93,7 +92,6 @@ export function SessionConsole({
   field,
   pointing,
   controller,
-  onOpenAr,
   onStartDemo,
   onCopy,
   onDownloadCsv,
@@ -491,9 +489,9 @@ export function SessionConsole({
         ) : null}
         {phase === 'in-pass' ? <p>{SHELL_COPY.dialCaption}</p> : null}
         <p className="console-row">
-          <button type="button" className="console-btn console-ar" onClick={onOpenAr}>
+          <Link className="console-btn console-ar" href="/ar">
             {FIELD_COPY.arOpen}
-          </button>
+          </Link>
           {phase === 'awaiting-pass' ? (
             <button type="button" className="console-btn" onClick={onStartDemo} disabled={controller === null}>
               {CONSOLE_COPY.demoShort}
