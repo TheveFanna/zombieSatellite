@@ -1,0 +1,115 @@
+[
+  {
+    "file": "01-home.png",
+    "source": "docs/ScreenRecording.mp4",
+    "source_seconds": 10.0,
+    "title": "Home / project introduction",
+    "description": "Product positioning and simulated-beacon disclosure.",
+    "dimensions": [
+      1170,
+      2140
+    ],
+    "changes": [
+      "Crop phone status bar and browser toolbar"
+    ]
+  },
+  {
+    "file": "02-archive.png",
+    "source": "docs/ScreenRecording.mp4",
+    "source_seconds": 85.0,
+    "title": "Archive / satellite stories",
+    "description": "Documented spacecraft history and session entry points.",
+    "dimensions": [
+      1170,
+      2140
+    ],
+    "changes": [
+      "Crop phone status bar and browser toolbar"
+    ]
+  },
+  {
+    "file": "03-passes-redacted.png",
+    "source": "docs/ScreenRecording.mp4",
+    "source_seconds": 86.5,
+    "title": "Passes / location hidden",
+    "description": "Upcoming passes; observer latitude and longitude are covered.",
+    "dimensions": [
+      1170,
+      2140
+    ],
+    "changes": [
+      "Crop phone status bar and browser toolbar",
+      "Opaque mask over observer coordinates"
+    ]
+  },
+  {
+    "file": "04-camera-ar.png",
+    "source": "docs/ScreenRecording.mp4",
+    "source_seconds": 36.5,
+    "title": "AR / camera overlay",
+    "description": "Satellite direction over the real phone camera. This is not radio reception.",
+    "dimensions": [
+      1170,
+      2140
+    ],
+    "changes": [
+      "Crop phone status bar and browser toolbar"
+    ]
+  },
+  {
+    "file": "05-sky-view.png",
+    "source": "docs/ScreenRecording.mp4",
+    "source_seconds": 60.0,
+    "title": "Sky view / orbit geometry",
+    "description": "Sky geometry and off-screen direction guidance; below-horizon status is preserved.",
+    "dimensions": [
+      1170,
+      2140
+    ],
+    "changes": [
+      "Crop phone status bar and browser toolbar"
+    ]
+  },
+  {
+    "file": "06-demo-doppler.png",
+    "source": "docs/ScreenRecording.mp4",
+    "source_seconds": 104.0,
+    "title": "Demo / pointing and Doppler",
+    "description": "A simulated session from the 60x demo, showing pointing lock and computed Doppler.",
+    "dimensions": [
+      1170,
+      2140
+    ],
+    "changes": [
+      "Crop phone status bar and browser toolbar"
+    ]
+  },
+  {
+    "file": "07-session-result.png",
+    "source": "docs/ScreenRecording.mp4",
+    "source_seconds": 112.0,
+    "title": "Result / completed demo",
+    "description": "Completed LES-1 demo with lock statistics and the Demo (60x) label.",
+    "dimensions": [
+      1170,
+      2140
+    ],
+    "changes": [
+      "Crop phone status bar and browser toolbar"
+    ]
+  },
+  {
+    "file": "08-qsl-cards.png",
+    "source": "docs/ScreenRecording.mp4",
+    "source_seconds": 185.2,
+    "title": "QSL / simulated sessions",
+    "description": "Saved cards explicitly labelled as simulated sessions, not actual RF reception.",
+    "dimensions": [
+      1170,
+      2140
+    ],
+    "changes": [
+      "Crop phone status bar and browser toolbar"
+    ]
+  }
+]
