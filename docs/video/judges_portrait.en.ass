@@ -1,0 +1,30 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 0
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Segoe UI,40,&H00F3F3ED,&H00FFFFFF,&H00100905,&H00100905,0,0,0,0,100,100,0,0,1,1,0,2,60,60,68,1
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:09.00,Default,,0,0,0,,Satellite hobbyists need to know when to look,\Nwhere to point, and how the radio frequency shifts.
+Dialogue: 0,0:00:09.00,0:00:18.50,Default,,0,0,0,,zombieSatellite brings those steps together on a\Nphone, giving forgotten spacecraft a new role in\Nhands-on learning.
+Dialogue: 0,0:00:18.50,0:00:26.50,Default,,0,0,0,,The archive covers seven zombie satellites, with\Ndocumented stories and sources. Five support\Nplayable sessions.
+Dialogue: 0,0:00:26.50,0:00:33.50,Default,,0,0,0,,For example, radio amateur Scott Tilley rediscovered\Nthe IMAGE spacecraft in twenty eighteen.
+Dialogue: 0,0:00:33.50,0:00:40.50,Default,,0,0,0,,The augmented reality view places the calculated\Nsatellite direction over the phone camera.
+Dialogue: 0,0:00:40.50,0:00:49.50,Default,,0,0,0,,Switch spacecraft to explore their different positions.\NThe camera is a visual backdrop, not a radio receiver.
+Dialogue: 0,0:00:49.50,0:00:56.50,Default,,0,0,0,,Without the camera, the sky view still shows orbit\Ngeometry and direction cues.
+Dialogue: 0,0:00:56.50,0:01:05.00,Default,,0,0,0,,These cues help you orient the phone, including\Nwhen the selected satellite is outside the view.
+Dialogue: 0,0:01:05.00,0:01:15.00,Default,,0,0,0,,Public orbital data and the observer location\Ndetermine the next predicted pass. Times are shown\Nin coordinated universal time.
+Dialogue: 0,0:01:15.00,0:01:24.00,Default,,0,0,0,,Choose a satellite, inspect the pass, and open its\Nsession. Observer coordinates are hidden here for\Nprivacy.
+Dialogue: 0,0:01:24.00,0:01:32.00,Default,,0,0,0,,This demonstration plays a predicted pass at sixty\Ntimes normal speed, with automatic pointing\Nenabled.
+Dialogue: 0,0:01:32.00,0:01:41.50,Default,,0,0,0,,During the pass, the lock indicator shows pointing\Naccuracy, while the Doppler readout tracks the\Ncomputed frequency shift.
+Dialogue: 0,0:01:41.50,0:01:51.00,Default,,0,0,0,,The beacon sound is synthesized. The app receives\Nno satellite radio signal. Real reception requires your\Nown radio.
+Dialogue: 0,0:01:51.00,0:02:01.00,Default,,0,0,0,,At the end of the pass, review locked time, lock ratio,\Nand pointing error, then open the card collection.
+Dialogue: 0,0:02:01.00,0:02:09.50,Default,,0,0,0,,Each completed session produces a Q S L card\Ncontaining the satellite, timing, and session details.
+Dialogue: 0,0:02:09.50,0:02:18.50,Default,,0,0,0,,Every card identifies the session as simulated, so it\Ncannot be mistaken for proof of radio reception.
+Dialogue: 0,0:02:18.50,0:02:26.00,Default,,0,0,0,,The project was built with Kiro, using eleven feature\Nspecifications and two steering files.
+Dialogue: 0,0:02:26.00,0:02:34.00,Default,,0,0,0,,Requirements, design, and tasks structure the work.\NSteering documents define project scope and\Ndevelopment rules.
+Dialogue: 0,0:02:34.00,0:02:42.50,Default,,0,0,0,,This evidence is included in the repository, covering\Norbit prediction, pointing, sessions, and the app\Nshell.
+Dialogue: 0,0:02:42.50,0:02:53.00,Default,,0,0,0,,zombieSatellite makes the first steps of satellite\Ntracking accessible on a phone. The orbit is real. The\Nbeacon is simulated.

@@ -1,0 +1,79 @@
+1
+00:00:00,000 --> 00:00:09,000
+Satellite hobbyists need to know when to look, where to point, and how the radio frequency shifts.
+
+2
+00:00:09,000 --> 00:00:18,500
+zombieSatellite brings those steps together on a phone, giving forgotten spacecraft a new role in hands-on learning.
+
+3
+00:00:18,500 --> 00:00:26,500
+The archive covers seven zombie satellites, with documented stories and sources. Five support playable sessions.
+
+4
+00:00:26,500 --> 00:00:33,500
+For example, radio amateur Scott Tilley rediscovered the IMAGE spacecraft in twenty eighteen.
+
+5
+00:00:33,500 --> 00:00:40,500
+The augmented reality view places the calculated satellite direction over the phone camera.
+
+6
+00:00:40,500 --> 00:00:49,500
+Switch spacecraft to explore their different positions. The camera is a visual backdrop, not a radio receiver.
+
+7
+00:00:49,500 --> 00:00:56,500
+Without the camera, the sky view still shows orbit geometry and direction cues.
+
+8
+00:00:56,500 --> 00:01:05,000
+These cues help you orient the phone, including when the selected satellite is outside the view.
+
+9
+00:01:05,000 --> 00:01:15,000
+Public orbital data and the observer location determine the next predicted pass. Times are shown in coordinated universal time.
+
+10
+00:01:15,000 --> 00:01:24,000
+Choose a satellite, inspect the pass, and open its session. Observer coordinates are hidden here for privacy.
+
+11
+00:01:24,000 --> 00:01:32,000
+This demonstration plays a predicted pass at sixty times normal speed, with automatic pointing enabled.
+
+12
+00:01:32,000 --> 00:01:41,500
+During the pass, the lock indicator shows pointing accuracy, while the Doppler readout tracks the computed frequency shift.
+
+13
+00:01:41,500 --> 00:01:51,000
+The beacon sound is synthesized. The app receives no satellite radio signal. Real reception requires your own radio.
+
+14
+00:01:51,000 --> 00:02:01,000
+At the end of the pass, review locked time, lock ratio, and pointing error, then open the card collection.
+
+15
+00:02:01,000 --> 00:02:09,500
+Each completed session produces a Q S L card containing the satellite, timing, and session details.
+
+16
+00:02:09,500 --> 00:02:18,500
+Every card identifies the session as simulated, so it cannot be mistaken for proof of radio reception.
+
+17
+00:02:18,500 --> 00:02:26,000
+The project was built with Kiro, using eleven feature specifications and two steering files.
+
+18
+00:02:26,000 --> 00:02:34,000
+Requirements, design, and tasks structure the work. Steering documents define project scope and development rules.
+
+19
+00:02:34,000 --> 00:02:42,500
+This evidence is included in the repository, covering orbit prediction, pointing, sessions, and the app shell.
+
+20
+00:02:42,500 --> 00:02:53,000
+zombieSatellite makes the first steps of satellite tracking accessible on a phone. The orbit is real. The beacon is simulated.

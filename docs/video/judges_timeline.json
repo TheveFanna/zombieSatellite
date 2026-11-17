@@ -1,0 +1,169 @@
+{
+  "duration": 173.0,
+  "target_wpm": 130,
+  "pause_per_cue": 1,
+  "scenes": [
+    {
+      "start": 8,
+      "end": 20,
+      "tag": "01 / RESURRECTION",
+      "title": "Old spacecraft.\nA new way in.",
+      "body": "A mobile companion for amateur radio\nand satellite hobbyists.",
+      "metric": "FIND  /  POINT  /  FOLLOW",
+      "note": "Real orbital data. Simulated beacon.",
+      "subs": [
+        "Satellite hobbyists need to know when to look, where to point, and how the radio frequency shifts.",
+        "zombieSatellite brings those steps together on a phone, giving forgotten spacecraft a new role in hands-on learning."
+      ],
+      "output_start": 0,
+      "output_duration": 18.5
+    },
+    {
+      "start": 65,
+      "end": 76,
+      "tag": "02 / THE STORIES",
+      "title": "Seven satellites.\nDocumented history.",
+      "body": "Explore the people and discoveries\nbehind the zombie satellites.",
+      "metric": "5 PLAYABLE  +  2 STORY-ONLY",
+      "note": "Historical receptions are not app activity.",
+      "subs": [
+        "The archive covers seven zombie satellites, with documented stories and sources. Five support playable sessions.",
+        "For example, radio amateur Scott Tilley rediscovered the IMAGE spacecraft in twenty eighteen."
+      ],
+      "output_start": 18.5,
+      "output_duration": 15.0
+    },
+    {
+      "start": 30,
+      "end": 42,
+      "tag": "03 / POINT",
+      "title": "Put the orbit\nin your view.",
+      "body": "Use the phone camera as a backdrop\nfor the computed satellite direction.",
+      "metric": "CAMERA + ORBIT GEOMETRY",
+      "note": "This recording shows the app on a phone.",
+      "subs": [
+        "The augmented reality view places the calculated satellite direction over the phone camera.",
+        "Switch spacecraft to explore their different positions. The camera is a visual backdrop, not a radio receiver."
+      ],
+      "output_start": 33.5,
+      "output_duration": 16.0
+    },
+    {
+      "start": 48,
+      "end": 62,
+      "tag": "04 / ORIENTATION",
+      "title": "See where\nto look.",
+      "body": "Sky view, direction cues and orbit arcs\nhelp you orient the phone.",
+      "metric": "AZIMUTH  /  ELEVATION  /  RANGE",
+      "note": "Below-horizon objects are labelled in the app.",
+      "subs": [
+        "Without the camera, the sky view still shows orbit geometry and direction cues.",
+        "These cues help you orient the phone, including when the selected satellite is outside the view."
+      ],
+      "output_start": 49.5,
+      "output_duration": 15.5
+    },
+    {
+      "start": 84,
+      "end": 94,
+      "tag": "05 / FIND A PASS",
+      "title": "Know when\nto begin.",
+      "body": "Choose a spacecraft and inspect\nits next pass over your location.",
+      "metric": "PUBLIC TLE DATA + SGP4",
+      "note": "Pass times are shown in UTC.",
+      "subs": [
+        "Public orbital data and the observer location determine the next predicted pass. Times are shown in coordinated universal time.",
+        "Choose a satellite, inspect the pass, and open its session. Observer coordinates are hidden here for privacy."
+      ],
+      "output_start": 65.0,
+      "output_duration": 19.0
+    },
+    {
+      "start": 94,
+      "end": 100,
+      "tag": "06 / PRACTISE",
+      "title": "A whole pass.\nAt 60x speed.",
+      "body": "Practise the session with auto-point\nbefore trying it in real time.",
+      "metric": "DEMO 60x  /  AUTO-POINT",
+      "note": "Accelerated simulation of a predicted pass.",
+      "subs": [
+        "This demonstration plays a predicted pass at sixty times normal speed, with automatic pointing enabled."
+      ],
+      "output_start": 84.0,
+      "output_duration": 8.0
+    },
+    {
+      "start": 100,
+      "end": 110,
+      "tag": "07 / FOLLOW",
+      "title": "Watch the\nDoppler shift.",
+      "body": "The displayed kHz value follows\nthe computed orbital motion.",
+      "metric": "LOCK TOLERANCE  +/-10 DEGREES",
+      "note": "Synthesized tone. No radio reception.",
+      "subs": [
+        "During the pass, the lock indicator shows pointing accuracy, while the Doppler readout tracks the computed frequency shift.",
+        "The beacon sound is synthesized. The app receives no satellite radio signal. Real reception requires your own radio."
+      ],
+      "output_start": 92.0,
+      "output_duration": 19.0
+    },
+    {
+      "start": 110,
+      "end": 116,
+      "tag": "08 / COMPLETE",
+      "title": "Finish the pass.\nReview the result.",
+      "body": "See locked time, lock ratio\nand best pointing error.",
+      "metric": "SESSION COMPLETE",
+      "note": "Results here come from demo mode.",
+      "subs": [
+        "At the end of the pass, review locked time, lock ratio, and pointing error, then open the card collection."
+      ],
+      "output_start": 111.0,
+      "output_duration": 10.0
+    },
+    {
+      "start": 185,
+      "end": 189,
+      "hold": 6,
+      "tag": "09 / COLLECT",
+      "title": "Keep a record\nof the experience.",
+      "body": "QSL cards record the satellite,\ntiming and session details.",
+      "metric": "SIMULATED SESSION QSL",
+      "note": "Cards explicitly distinguish simulation from RF.",
+      "subs": [
+        "Each completed session produces a Q S L card containing the satellite, timing, and session details.",
+        "Every card identifies the session as simulated, so it cannot be mistaken for proof of radio reception."
+      ],
+      "output_start": 121.0,
+      "output_duration": 17.5
+    },
+    {
+      "duration": 12,
+      "tag": "10 / BUILT WITH KIRO",
+      "title": "Spec by spec.\nThen into code.",
+      "body": "Feature requirements, design and tasks\nare kept alongside the implementation.",
+      "metric": "11 SPEC FOLDERS  /  2 STEERING FILES",
+      "note": "Project evidence: .kiro/specs and .kiro/steering",
+      "subs": [
+        "The project was built with Kiro, using eleven feature specifications and two steering files.",
+        "Requirements, design, and tasks structure the work. Steering documents define project scope and development rules.",
+        "This evidence is included in the repository, covering orbit prediction, pointing, sessions, and the app shell."
+      ],
+      "output_start": 138.5,
+      "output_duration": 24.0
+    },
+    {
+      "duration": 8,
+      "tag": "KIROWEEN 2026 / RESURRECTION",
+      "title": "The orbit is real.\nThe beacon\nis simulated.",
+      "body": "Try a pass on your phone.\nBring your own radio for real listening.",
+      "metric": "zombie-satellite.vercel.app",
+      "note": "zombieSatellite",
+      "subs": [
+        "zombieSatellite makes the first steps of satellite tracking accessible on a phone. The orbit is real. The beacon is simulated."
+      ],
+      "output_start": 162.5,
+      "output_duration": 10.5
+    }
+  ]
+}

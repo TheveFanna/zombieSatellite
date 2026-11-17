@@ -1,4 +1,5 @@
 work/
 *.mp4
+*.wav
 preview.jpg
 __pycache__/

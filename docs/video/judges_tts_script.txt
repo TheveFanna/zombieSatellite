@@ -1,0 +1,39 @@
+Satellite hobbyists need to know when to look, where to point, and how the radio frequency shifts.
+
+zombieSatellite brings those steps together on a phone, giving forgotten spacecraft a new role in hands-on learning.
+
+The archive covers seven zombie satellites, with documented stories and sources. Five support playable sessions.
+
+For example, radio amateur Scott Tilley rediscovered the IMAGE spacecraft in twenty eighteen.
+
+The augmented reality view places the calculated satellite direction over the phone camera.
+
+Switch spacecraft to explore their different positions. The camera is a visual backdrop, not a radio receiver.
+
+Without the camera, the sky view still shows orbit geometry and direction cues.
+
+These cues help you orient the phone, including when the selected satellite is outside the view.
+
+Public orbital data and the observer location determine the next predicted pass. Times are shown in coordinated universal time.
+
+Choose a satellite, inspect the pass, and open its session. Observer coordinates are hidden here for privacy.
+
+This demonstration plays a predicted pass at sixty times normal speed, with automatic pointing enabled.
+
+During the pass, the lock indicator shows pointing accuracy, while the Doppler readout tracks the computed frequency shift.
+
+The beacon sound is synthesized. The app receives no satellite radio signal. Real reception requires your own radio.
+
+At the end of the pass, review locked time, lock ratio, and pointing error, then open the card collection.
+
+Each completed session produces a Q S L card containing the satellite, timing, and session details.
+
+Every card identifies the session as simulated, so it cannot be mistaken for proof of radio reception.
+
+The project was built with Kiro, using eleven feature specifications and two steering files.
+
+Requirements, design, and tasks structure the work. Steering documents define project scope and development rules.
+
+This evidence is included in the repository, covering orbit prediction, pointing, sessions, and the app shell.
+
+zombieSatellite makes the first steps of satellite tracking accessible on a phone. The orbit is real. The beacon is simulated.

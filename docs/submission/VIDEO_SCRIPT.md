@@ -1,5 +1,17 @@
 # zombieSatellite: video script
 
+## Judge editions with privacy, music and TTS timing (2026-11-17)
+
+Use `docs/video/zombieSatellite_Judges_landscape_EN.mp4` (1920 x 1080) or `docs/video/zombieSatellite_Judges_portrait_EN.mp4` (1080 x 1920). Both use the same 173-second English explanation and are under three minutes. The portrait edition has its own layout; it is not a crop of the landscape video.
+
+The observer-location segment uses two explicitly redacted still frames from the recording. Both latitude and longitude are covered with opaque masks before compositing; the original scrolling location footage is excluded. The previous 111-second export is superseded and is not the privacy-safe delivery.
+
+`judges_music.wav` is a newly synthesized instrumental ambient score, generated locally by `render_judges.py`, with no sampled music or third-party recording. It is normalized to -30 LUFS to leave room for future narration. Source recording audio is lowered by 12 dB. No TTS voice has been added.
+
+TTS handoff: `judges_tts_script.txt` contains the spoken English copy; `judges_tts_timing.csv` contains each sentence's exact start, end, word count and slot length. `judges.en.srt` matches the same timeline. Slots are calculated at approximately 130 words per minute plus at least one second of pause, rounded up to half a second. These are timing estimates, not durations measured from a generated voice. Generate each sentence independently and place it at the CSV start time; measure the actual voice before final mixing. Use the standalone music stem when replacing the soundtrack to avoid doubling the music.
+
+Rebuild both editions with `python docs/video/render_judges.py` (FFmpeg, Pillow and NumPy). The original recording remains unchanged. The script and captions are versioned; generated media remains local.
+
 ## Edited recording (2026-11-17)
 
 The delivered cut is `docs/video/zombieSatellite_Kiroween_EN.mp4`: approximately 111 seconds, 1920 x 1080, 30 fps, H.264/AAC. It uses the supplied `docs/ScreenRecording.mp4`, with English explanatory panels and burned-in English captions. Original recording audio is retained; no voice-over or music was added. The source remains untouched.

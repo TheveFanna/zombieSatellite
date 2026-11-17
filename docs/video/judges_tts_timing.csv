@@ -1,0 +1,21 @@
+﻿scene,start_seconds,end_seconds,slot_seconds,words,text
+1,0,9.0,9.0,17,"Satellite hobbyists need to know when to look, where to point, and how the radio frequency shifts."
+1,9.0,18.5,9.5,18,"zombieSatellite brings those steps together on a phone, giving forgotten spacecraft a new role in hands-on learning."
+2,18.5,26.5,8.0,15,"The archive covers seven zombie satellites, with documented stories and sources. Five support playable sessions."
+2,26.5,33.5,7.0,13,"For example, radio amateur Scott Tilley rediscovered the IMAGE spacecraft in twenty eighteen."
+3,33.5,40.5,7.0,13,The augmented reality view places the calculated satellite direction over the phone camera.
+3,40.5,49.5,9.0,17,"Switch spacecraft to explore their different positions. The camera is a visual backdrop, not a radio receiver."
+4,49.5,56.5,7.0,13,"Without the camera, the sky view still shows orbit geometry and direction cues."
+4,56.5,65.0,8.5,16,"These cues help you orient the phone, including when the selected satellite is outside the view."
+5,65.0,75.0,10.0,19,Public orbital data and the observer location determine the next predicted pass. Times are shown in coordinated universal time.
+5,75.0,84.0,9.0,17,"Choose a satellite, inspect the pass, and open its session. Observer coordinates are hidden here for privacy."
+6,84.0,92.0,8.0,15,"This demonstration plays a predicted pass at sixty times normal speed, with automatic pointing enabled."
+7,92.0,101.5,9.5,18,"During the pass, the lock indicator shows pointing accuracy, while the Doppler readout tracks the computed frequency shift."
+7,101.5,111.0,9.5,18,The beacon sound is synthesized. The app receives no satellite radio signal. Real reception requires your own radio.
+8,111.0,121.0,10.0,19,"At the end of the pass, review locked time, lock ratio, and pointing error, then open the card collection."
+9,121.0,129.5,8.5,16,"Each completed session produces a Q S L card containing the satellite, timing, and session details."
+9,129.5,138.5,9.0,17,"Every card identifies the session as simulated, so it cannot be mistaken for proof of radio reception."
+10,138.5,146.0,7.5,14,"The project was built with Kiro, using eleven feature specifications and two steering files."
+10,146.0,154.0,8.0,15,"Requirements, design, and tasks structure the work. Steering documents define project scope and development rules."
+10,154.0,162.5,8.5,16,"This evidence is included in the repository, covering orbit prediction, pointing, sessions, and the app shell."
+11,162.5,173.0,10.5,20,zombieSatellite makes the first steps of satellite tracking accessible on a phone. The orbit is real. The beacon is simulated.
