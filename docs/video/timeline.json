@@ -1,0 +1,144 @@
+{
+  "duration": 111,
+  "scenes": [
+    {
+      "start": 8,
+      "end": 20,
+      "tag": "01 / RESURRECTION",
+      "title": "Old spacecraft.\nA new way in.",
+      "body": "A mobile companion for amateur radio\nand satellite hobbyists.",
+      "metric": "FIND  /  POINT  /  FOLLOW",
+      "note": "Real orbital data. Simulated beacon.",
+      "subs": [
+        "zombieSatellite brings forgotten spacecraft into a hands-on mobile experience.",
+        "Find the next pass, point your phone, and follow the computed Doppler shift."
+      ]
+    },
+    {
+      "start": 65,
+      "end": 76,
+      "tag": "02 / THE STORIES",
+      "title": "Seven satellites.\nDocumented history.",
+      "body": "Explore the people and discoveries\nbehind the zombie satellites.",
+      "metric": "5 PLAYABLE  +  2 STORY-ONLY",
+      "note": "Historical receptions are not app activity.",
+      "subs": [
+        "The archive connects each spacecraft to its documented history.",
+        "IMAGE was rediscovered in 2018 by radio amateur Scott Tilley."
+      ]
+    },
+    {
+      "start": 30,
+      "end": 42,
+      "tag": "03 / POINT",
+      "title": "Put the orbit\nin your view.",
+      "body": "Use the phone camera as a backdrop\nfor the computed satellite direction.",
+      "metric": "CAMERA + ORBIT GEOMETRY",
+      "note": "This recording shows the app on a phone.",
+      "subs": [
+        "The AR view places the calculated satellite direction over the phone camera.",
+        "Switch satellites to explore their different positions in the sky."
+      ]
+    },
+    {
+      "start": 48,
+      "end": 62,
+      "tag": "04 / ORIENTATION",
+      "title": "See where\nto look.",
+      "body": "Sky view, direction cues and orbit arcs\nhelp you orient the phone.",
+      "metric": "AZIMUTH  /  ELEVATION  /  RANGE",
+      "note": "Below-horizon objects are labelled in the app.",
+      "subs": [
+        "The sky view keeps the orbit geometry visible without the camera backdrop.",
+        "Direction cues help you find an object even when it is outside the view."
+      ]
+    },
+    {
+      "start": 84,
+      "end": 94,
+      "tag": "05 / FIND A PASS",
+      "title": "Know when\nto begin.",
+      "body": "Choose a spacecraft and inspect\nits next pass over your location.",
+      "metric": "PUBLIC TLE DATA + SGP4",
+      "note": "Pass times are shown in UTC.",
+      "subs": [
+        "Pass predictions use public orbital data and the observer location.",
+        "Choose a satellite, open its session, and start the 60x demo."
+      ]
+    },
+    {
+      "start": 94,
+      "end": 100,
+      "tag": "06 / PRACTISE",
+      "title": "A whole pass.\nAt 60x speed.",
+      "body": "Practise the session with auto-point\nbefore trying it in real time.",
+      "metric": "DEMO 60x  /  AUTO-POINT",
+      "note": "Accelerated simulation of a predicted pass.",
+      "subs": [
+        "This is demo mode with auto-point: a predicted pass played at 60x speed."
+      ]
+    },
+    {
+      "start": 100,
+      "end": 110,
+      "tag": "07 / FOLLOW",
+      "title": "Watch the\nDoppler shift.",
+      "body": "The displayed kHz value follows\nthe computed orbital motion.",
+      "metric": "LOCK TOLERANCE  +/-10 DEGREES",
+      "note": "Synthesized tone. No radio reception.",
+      "subs": [
+        "Follow the pointing lock and watch the Doppler readout change through the pass.",
+        "The beacon tone is simulated. The phone receives no satellite radio signal."
+      ]
+    },
+    {
+      "start": 110,
+      "end": 116,
+      "tag": "08 / COMPLETE",
+      "title": "Finish the pass.\nReview the result.",
+      "body": "See locked time, lock ratio\nand best pointing error.",
+      "metric": "SESSION COMPLETE",
+      "note": "Results here come from demo mode.",
+      "subs": [
+        "At the end of the pass, review the session and open your QSL collection."
+      ]
+    },
+    {
+      "start": 185,
+      "end": 189,
+      "hold": 6,
+      "tag": "09 / COLLECT",
+      "title": "Keep a record\nof the experience.",
+      "body": "QSL cards record the satellite,\ntiming and session details.",
+      "metric": "SIMULATED SESSION QSL",
+      "note": "Cards explicitly distinguish simulation from RF.",
+      "subs": [
+        "Each completed session produces a QSL card in the amateur radio tradition.",
+        "The cards are labelled as simulated sessions, not proof of real reception."
+      ]
+    },
+    {
+      "duration": 12,
+      "tag": "10 / BUILT WITH KIRO",
+      "title": "Spec by spec.\nThen into code.",
+      "body": "Feature requirements, design and tasks\nare kept alongside the implementation.",
+      "metric": "11 SPEC FOLDERS  /  2 STEERING FILES",
+      "note": "Project evidence: .kiro/specs and .kiro/steering",
+      "subs": [
+        "Kiro development is documented in eleven feature specs and two steering files.",
+        "The specs cover orbit prediction, pointing, sessions, QSL cards and the app shell."
+      ]
+    },
+    {
+      "duration": 8,
+      "tag": "KIROWEEN 2026 / RESURRECTION",
+      "title": "The orbit is real.\nThe beacon\nis simulated.",
+      "body": "Try a pass on your phone.\nBring your own radio for real listening.",
+      "metric": "zombie-satellite.vercel.app",
+      "note": "zombieSatellite",
+      "subs": [
+        "Try zombieSatellite: find a pass, point your phone, and follow the orbit."
+      ]
+    }
+  ]
+}

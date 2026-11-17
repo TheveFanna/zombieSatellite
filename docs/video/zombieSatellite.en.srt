@@ -1,0 +1,75 @@
+1
+00:00:00,000 --> 00:00:06,000
+zombieSatellite brings forgotten spacecraft into a hands-on mobile experience.
+
+2
+00:00:06,000 --> 00:00:12,000
+Find the next pass, point your phone, and follow the computed Doppler shift.
+
+3
+00:00:12,000 --> 00:00:17,500
+The archive connects each spacecraft to its documented history.
+
+4
+00:00:17,500 --> 00:00:23,000
+IMAGE was rediscovered in 2018 by radio amateur Scott Tilley.
+
+5
+00:00:23,000 --> 00:00:29,000
+The AR view places the calculated satellite direction over the phone camera.
+
+6
+00:00:29,000 --> 00:00:35,000
+Switch satellites to explore their different positions in the sky.
+
+7
+00:00:35,000 --> 00:00:42,000
+The sky view keeps the orbit geometry visible without the camera backdrop.
+
+8
+00:00:42,000 --> 00:00:49,000
+Direction cues help you find an object even when it is outside the view.
+
+9
+00:00:49,000 --> 00:00:54,000
+Pass predictions use public orbital data and the observer location.
+
+10
+00:00:54,000 --> 00:00:59,000
+Choose a satellite, open its session, and start the 60x demo.
+
+11
+00:00:59,000 --> 00:01:05,000
+This is demo mode with auto-point: a predicted pass played at 60x speed.
+
+12
+00:01:05,000 --> 00:01:10,000
+Follow the pointing lock and watch the Doppler readout change through the pass.
+
+13
+00:01:10,000 --> 00:01:15,000
+The beacon tone is simulated. The phone receives no satellite radio signal.
+
+14
+00:01:15,000 --> 00:01:21,000
+At the end of the pass, review the session and open your QSL collection.
+
+15
+00:01:21,000 --> 00:01:26,000
+Each completed session produces a QSL card in the amateur radio tradition.
+
+16
+00:01:26,000 --> 00:01:31,000
+The cards are labelled as simulated sessions, not proof of real reception.
+
+17
+00:01:31,000 --> 00:01:37,000
+Kiro development is documented in eleven feature specs and two steering files.
+
+18
+00:01:37,000 --> 00:01:43,000
+The specs cover orbit prediction, pointing, sessions, QSL cards and the app shell.
+
+19
+00:01:43,000 --> 00:01:51,000
+Try zombieSatellite: find a pass, point your phone, and follow the orbit.

@@ -1,5 +1,17 @@
 # zombieSatellite: video script
 
+## Edited recording (2026-11-17)
+
+The delivered cut is `docs/video/zombieSatellite_Kiroween_EN.mp4`: approximately 111 seconds, 1920 x 1080, 30 fps, H.264/AAC. It uses the supplied `docs/ScreenRecording.mp4`, with English explanatory panels and burned-in English captions. Original recording audio is retained; no voice-over or music was added. The source remains untouched.
+
+Editable captions: `docs/video/zombieSatellite.en.srt` and `.ass`. The exact source selections and copy are in `docs/video/timeline.json`; regenerate with `python docs/video/render.py` (FFmpeg and Pillow required). Generated media and intermediate renders are local deliverables, excluded from Git.
+
+The edit shows the recorded phone UI, archive, AR and sky views, pass selection, a 60x demo, Doppler readout, results and QSL cards. It ends with repository-backed Kiro specs/steering information and the app URL. It does not depict unrecorded tuning tables, ground maps or a shadow transition. Demo and simulated reception labels are explicit.
+
+Official requirements checked on 2026-11-17: [rules](https://kiroween.devpost.com/rules), [submission requirements and judging criteria](https://kiroween.devpost.com/). The video should be under three minutes and show the intended device in use, and must be public on YouTube. The submission also needs a public licensed GitHub repository containing `.kiro`, a working app link, a functionality description and a Kiro usage write-up. Deadline: 2026-12-05 06:00 China Standard Time (2026-12-04 14:00 PST). This local export has not been uploaded or submitted.
+
+## Original recording plan
+
 A shot list for a video of at most 3 minutes (180 s). English only: narration, on-screen text and captions. The owner records and uploads the video; this file is the script.
 
 Arc: the story hook (LES-1, heard again in 2012), a real pass on the ground-track map, the tuning table, the AR view with the track arc over the real sky, the beacon sound and the Doppler readout, shadow silence, the QSL card, and the demo mode as the closing beat.

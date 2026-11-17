@@ -1,0 +1,29 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 0
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Segoe UI,34,&H00F3F3ED,&H00FFFFFF,&H00050910,&H00050910,0,0,0,0,100,100,0,0,1,1,0,2,100,100,38,1
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:06.00,Default,,0,0,0,,zombieSatellite brings forgotten spacecraft into a hands-on mobile experience.
+Dialogue: 0,0:00:06.00,0:00:12.00,Default,,0,0,0,,Find the next pass, point your phone, and follow the computed Doppler shift.
+Dialogue: 0,0:00:12.00,0:00:17.50,Default,,0,0,0,,The archive connects each spacecraft to its documented history.
+Dialogue: 0,0:00:17.50,0:00:23.00,Default,,0,0,0,,IMAGE was rediscovered in 2018 by radio amateur Scott Tilley.
+Dialogue: 0,0:00:23.00,0:00:29.00,Default,,0,0,0,,The AR view places the calculated satellite direction over the phone camera.
+Dialogue: 0,0:00:29.00,0:00:35.00,Default,,0,0,0,,Switch satellites to explore their different positions in the sky.
+Dialogue: 0,0:00:35.00,0:00:42.00,Default,,0,0,0,,The sky view keeps the orbit geometry visible without the camera backdrop.
+Dialogue: 0,0:00:42.00,0:00:49.00,Default,,0,0,0,,Direction cues help you find an object even when it is outside the view.
+Dialogue: 0,0:00:49.00,0:00:54.00,Default,,0,0,0,,Pass predictions use public orbital data and the observer location.
+Dialogue: 0,0:00:54.00,0:00:59.00,Default,,0,0,0,,Choose a satellite, open its session, and start the 60x demo.
+Dialogue: 0,0:00:59.00,0:01:05.00,Default,,0,0,0,,This is demo mode with auto-point: a predicted pass played at 60x speed.
+Dialogue: 0,0:01:05.00,0:01:10.00,Default,,0,0,0,,Follow the pointing lock and watch the Doppler readout change through the pass.
+Dialogue: 0,0:01:10.00,0:01:15.00,Default,,0,0,0,,The beacon tone is simulated. The phone receives no satellite radio signal.
+Dialogue: 0,0:01:15.00,0:01:21.00,Default,,0,0,0,,At the end of the pass, review the session and open your QSL collection.
+Dialogue: 0,0:01:21.00,0:01:26.00,Default,,0,0,0,,Each completed session produces a QSL card in the amateur radio tradition.
+Dialogue: 0,0:01:26.00,0:01:31.00,Default,,0,0,0,,The cards are labelled as simulated sessions, not proof of real reception.
+Dialogue: 0,0:01:31.00,0:01:37.00,Default,,0,0,0,,Kiro development is documented in eleven feature specs and two steering files.
+Dialogue: 0,0:01:37.00,0:01:43.00,Default,,0,0,0,,The specs cover orbit prediction, pointing, sessions, QSL cards and the app shell.
+Dialogue: 0,0:01:43.00,0:01:51.00,Default,,0,0,0,,Try zombieSatellite: find a pass, point your phone, and follow the orbit.
