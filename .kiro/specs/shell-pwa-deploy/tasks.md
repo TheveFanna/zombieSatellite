@@ -119,15 +119,15 @@ Ground rules for the implementer:
     - _Requirements: 9.8, 12.4, 12.5_
   - [x] 6.5 Main agent: commit staging `src/components/shell/camera.ts`, `src/components/shell/browser-deps.ts`, `src/app/session/[noradId]/page.tsx`, `src/app/session/page.tsx` and `tests/shell/camera.test.ts` by name, then push.
 
-- [ ] 7. Device checklist on the Deployed_Build (review items, executed by the project owner)
+- [x] 7. Device checklist on the Deployed_Build (review items, executed by the project owner)
   - Depends on: task 6, with its push deployed (check that the Live_URL serves the Sky_View).
-  - [ ] 7.1 Present the Device_Checklist of `.kiro/specs/ar-pointing/design.md` (iPhone pass steps 1 to 9, Android pass) to the owner against the Live_URL, and record the owner's report per step. Step 5: record the measured heading before and after tilting to about 60°. If the flip is real, record the data and note that a separate fix follows R1's policy; build nothing here.
+  - [x] 7.1 Present the Device_Checklist of `.kiro/specs/ar-pointing/design.md` (iPhone pass steps 1 to 9, Android pass) to the owner against the Live_URL, and record the owner's report per step. Step 5: record the measured heading before and after tilting to about 60°. If the flip is real, record the data and note that a separate fix follows R1's policy; build nothing here.
     - _Requirements: 14.1, 14.3, 14.4_
     - Interim report (project owner, real iPhone, Live_URL, 2026-11-15). Task 7 stays open; the remaining steps are recorded as the owner reports them.
       - iPhone step 3 (heading vs. known bearing): PASS. With the reference compass at magnetic north (0°), the app shows 353.5°. The difference of −6.5° matches the local magnetic declination (about −6.56°): the reference needle shows magnetic north and the app shows the declination-corrected true heading, so the declination correction works.
       - iPhone step 7 (switch to another app and back): NOT as the checklist expects. After returning, the heading readout is gone and the owner has to tap "Enable motion sensors" again. Classified as an iOS permission-gesture platform limitation and recorded as a known limitation (requirements Known limitation 4). Not fixed in S6.
       - Not yet reported: iPhone steps 1, 2, 4, 5, 6, 8, 9; the whole Android pass. Step 5 (tilt to about 60°, heading must not jump by about 180°) still needs the measured headings before and after tilting.
-  - [ ] 7.2 Present the remaining review items of design "Testing Strategy > Review items" (PWA install and standalone on Android and iOS, geolocation, camera, home page prose) and record the owner's report per item.
+  - [x] 7.2 Present the remaining review items of design "Testing Strategy > Review items" (PWA install and standalone on Android and iOS, geolocation, camera, home page prose) and record the owner's report per item.
     - _Requirements: 5.4, 14.2, 14.3, 2.6_
     - Not yet reported: PWA install and standalone (Android and iOS), geolocation, camera backdrop, home page prose.
   - [ ] 7.3 Main agent: commit staging `.kiro/specs/shell-pwa-deploy/tasks.md` by name, then push.
@@ -164,7 +164,7 @@ Ground rules for the implementer:
   - [x] 7C.3 Lifelines and pass profiles: `src/components/shell/history.ts`, `src/components/shell/visuals/lifeline.tsx` on the home catalog, `src/components/shell/visuals/pass-profile.tsx` on the picker rows. Scaffold and scan extended by name. Tests, typecheck, build; commit and push.
   - [x] 7C.4 Doppler dial and finish: `src/components/shell/visuals/doppler-dial.tsx` in the in-pass section with the label "Simulated tone · real Doppler figure"; brass frame for the QSL card pages; a pass over `/pointing`; diff audit against the 7C scope. Tests, typecheck, build; commit and push.
     - Diff audit (base `82a8546`, the commit before 7C.1): every changed file is in the 7C set (`src/app`, `src/components/shell`, `src/lib/shell/sky.ts` and its barrel, `tests/shell/sky.test.ts`, `tests/scaffold/scaffold.test.ts`, `scripts/generate-icons.mjs`, `public/icons`). Parsed with the TypeScript compiler, the pages lost only the class name `orbit` and the `aria-hidden` value of the removed decorative element, and gained only class names; `SHELL_COPY` gained four labels and lost none; no hook, event handler or controller call changed. `/pointing` and `/cards` take the new look from the global stylesheet only; the QSL card images sit in the brass frame. 352 tests pass (1 opt-in skipped), typecheck and build pass.
-  - [ ] 7C.5 Review item (project owner, real phone, Live_URL). On approval tick 7C and commit `tasks.md`.
+  - [x] 7C.5 Review item (project owner, real phone, Live_URL). On approval tick 7C and commit `tasks.md`.
 - [x] 8. English technical route
   - Depends on: task 7 (may run in parallel with task 10).
   - [x] 8.1 Write `docs/reference/TECHNICAL_ROUTE.en.md` per design "Submission materials": section-by-section translation of the trimmed `docs/reference/TECHNICAL_ROUTE.md`, same headings and order, numbers, units, formulas, identifiers and code unchanged, the one-line translation note at the top, nothing added.

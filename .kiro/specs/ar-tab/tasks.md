@@ -23,8 +23,8 @@ Ground rules: one commit per task after its tests pass, then push at once; never
   - [x] 3.2 Run `pnpm test`, `pnpm typecheck` and `pnpm run build`; all must pass.
   - [x] 3.3 Main agent: commit by name, then push.
 
-- [ ] 4. Review items for the project owner on a real phone (executed by the owner)
+- [x] 4. Review items for the project owner on a real phone (executed by the owner)
   - Depends on: task 3, with its push deployed.
-  - [ ] 4.1 Present this checklist and record the owner's report per item, never assuming an outcome: the AR tab opens in one tap from the bottom bar; the camera starts; the dot is visible below the horizon and moves; the ring is a near-closed loop with solid and dashed parts; the guide arrow turns toward the satellite and becomes a faint circle when aimed; switching a satellite morphs the ring; the 24-hour bar and its text; the slider from the camera to the night sky.
+  - [x] 4.1 Present this checklist and record the owner's report per item, never assuming an outcome: the AR tab opens in one tap from the bottom bar; the camera starts; the dot is visible below the horizon and moves; the ring is a near-closed loop with solid and dashed parts; the guide arrow turns toward the satellite and becomes a faint circle when aimed; switching a satellite morphs the ring; the 24-hour bar and its text; the slider from the camera to the night sky.
     - _Requirements: 10.4_
     - Not yet reported: every item.

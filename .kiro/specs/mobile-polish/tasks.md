@@ -26,9 +26,9 @@ Ground rules: one commit per task after its tests pass, then push at once. Guard
   - [x] 3.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
   - [x] 3.3 Main agent: commit by name, then push.
 
-- [ ] 4. Owner review on a real phone (executed by the owner)
+- [x] 4. Owner review on a real phone (executed by the owner)
   - Depends on: task 3, with its push deployed.
-  - [ ] 4.1 Present the checklist: the AR camera picture; one tap for both permissions; the rulers; the wheel rise animation; the settings sheet; the story card; the Passes and Planner layouts on a small phone. Record only the owner's words.
+  - [x] 4.1 Present the checklist: the AR camera picture; one tap for both permissions; the rulers; the wheel rise animation; the settings sheet; the story card; the Passes and Planner layouts on a small phone. Record only the owner's words.
     - _Requirements: 1.1 to 7.2_
     - Not yet reported: every item.
 

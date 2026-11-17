@@ -36,8 +36,8 @@ Ground rules: one commit per task after its tests pass, then push at once; never
   - [x] 5.2 Run `pnpm test`, `pnpm typecheck`, `pnpm run build`.
   - [x] 5.3 Main agent: commit by name, then push.
 
-- [ ] 6. Owner review on a real phone (executed by the owner)
+- [x] 6. Owner review on a real phone (executed by the owner)
   - Depends on: task 5, with its push deployed.
-  - [ ] 6.1 Present the checklist: the wheel swipes and rotates; the bar shows 24 hour labels, NOW and SAT; the FOV slider; the home, Passes and Archive have separate jobs; the corners and surfaces look as intended. Record only the owner's words.
+  - [x] 6.1 Present the checklist: the wheel swipes and rotates; the bar shows 24 hour labels, NOW and SAT; the FOV slider; the home, Passes and Archive have separate jobs; the corners and surfaces look as intended. Record only the owner's words.
     - _Requirements: 1.1 to 5.6_
     - Not yet reported: every item.
