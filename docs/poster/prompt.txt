@@ -1,0 +1,24 @@
+Create a finished, exceptionally polished English hackathon project POSTER, portrait 2:3 aspect ratio, ideally 1536 x 2304 or larger. Use case: ads-marketing. This is the participant's project poster, NOT an official event announcement. Project: zombieSatellite, an amateur-radio and satellite hobbyist mobile web companion entering Kiroween 2026 in the Resurrection category.
+
+Art direction: sophisticated cinematic orbital archaeology; dark midnight navy, oxidized graphite metal, warm ivory type, luminous mint telemetry and tiny amber accents. Beautiful print-poster quality with restrained film grain, confident editorial typography, carefully aligned grid, generous safe margins and genuinely legible exact English copy. Dramatic atmosphere but clear product communication for judges. No cartoon zombies, skulls, blood, pumpkin clipart, fake awards, fake sponsor marks, borrowed logos, generic gradient blobs, or unnecessary decorative labels.
+
+Composition: Top 25% holds competition/category eyebrow, the exact camel-case product name in a very large distinctive elegant sans-serif, then a large poetic headline in a refined contrasting editorial serif. Main middle hero is an original illustrated vintage spacecraft, scarred metal and long fine antennas, floating above the curved blue-black Earth limb; physically plausible and understated, an illustrative spacecraft rather than a claimed engineering reconstruction of a named mission. Soft mint light on one side, a warm amber rim on the other. An elegant orbital arc bends through the scene, continuing as one delicate heartbeat-like line. It must look like revived forgotten technology, not a modern luxury communications satellite. The object should feel lonely, haunting, resilient. Do not show radio beams connecting to a phone or invent app screenshots; all audio in this project is simulated.
+
+Bottom 30% is an integrated, clean information area with three small functional columns, a Kiro evidence line, a prominent honesty statement, and the exact website address. Ensure type contrast, precision and useful line breaks; no dense body paragraphs. The website and honesty statement must be plainly readable. Visual hierarchy should work as a thumbnail but reward close reading. Keep all text inside generous margins.
+
+Render ONLY this exact text (typographic bullets / separators are fine):
+Top eyebrow: "KIROWEEN 2026 / RESURRECTION"
+Project name, one line if possible: "zombieSatellite"
+Hero headline, across two lines: "Some stories" / "still orbit."
+A short subhead: "Forgotten spacecraft. A new way to follow them."
+Near the bottom above the three columns: "Find a pass. Point your phone. Follow the Doppler shift."
+Three columns:
+"FIND" / "Public TLE + SGP4"
+"POINT" / "Phone AR guidance"
+"COLLECT" / "Simulated QSL cards"
+Development evidence: "Built with Kiro / 11 specs / 2 steering files"
+Honesty statement, clearly legible and not hidden in microprint: "Real orbital data. Simulated beacon."
+Follow-up: "No radio reception."
+Bottom URL, exact spelling: "zombie-satellite.vercel.app"
+
+No additional prose, no invented statistics, no year other than 2026, no QR code, no watermark. Do not claim that the app receives a real satellite transmission. A premium final poster, not a poster photographed on a wall; flat full-bleed finished artwork.

@@ -1,0 +1,25 @@
+{
+  "file": "zombieSatellite_Kiroween_2026_EN.png",
+  "dimensions": [1024, 1536],
+  "language": "English",
+  "category": "Resurrection",
+  "purpose": "Participant project showcase poster, not an official event announcement",
+  "created_with": "Built-in image_gen tool",
+  "prompt": "prompt.txt",
+  "rules_checked_on": "2026-11-17",
+  "sources": [
+    "https://kiroween.devpost.com/rules",
+    "https://kiroween.devpost.com/"
+  ],
+  "requirements_notes": [
+    "The public rules require English submission materials or English translations.",
+    "The public rules do not specify a dedicated poster size; the portrait format is a design choice, not an official requirement.",
+    "This poster supplements the required demo, repository, app link and written submission."
+  ],
+  "content_checks": [
+    "Project name, category, website and Kiro evidence match the repository.",
+    "Audio is explicitly labelled as simulated and no real radio reception is claimed.",
+    "Spacecraft is an original illustrative rendering, not a named spacecraft engineering model.",
+    "All visible English text has been visually checked."
+  ]
+}
