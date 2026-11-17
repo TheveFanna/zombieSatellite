@@ -18,6 +18,8 @@ SHOTS=[
 
 def main():
     records=[]
+    manifest=HERE/'screenshots.json'
+    previous={r['file']:r for r in json.loads(manifest.read_text(encoding='utf-8'))} if manifest.exists() else {}
     for name,t,title,description in SHOTS:
         filters=[]
         if 'redacted' in name:
@@ -25,14 +27,19 @@ def main():
             filters.append('drawbox=x=800:y=535:w=335:h=320:color=0x192534:t=fill')
         filters.append('crop=1170:2140:0:130')
         target=HERE/(name+'.png')
-        subprocess.run(['ffmpeg','-y','-hide_banner','-loglevel','error','-ss',str(t),'-i',str(SOURCE),'-frames:v','1','-vf',','.join(filters),str(target)],check=True)
+        # Leave unchanged screenshots alone, including files open in image viewers.
+        if not target.exists() or previous.get(target.name,{}).get('source_seconds')!=t:
+            temp=HERE/(name+'.pending.png')
+            subprocess.run(['ffmpeg','-y','-hide_banner','-loglevel','error','-ss',str(t),'-i',str(SOURCE),'-frames:v','1','-vf',','.join(filters),str(temp)],check=True)
+            temp.replace(target)
         records.append(dict(file=target.name,source='docs/ScreenRecording.mp4',source_seconds=t,title=title,description=description,dimensions=[1170,2140],changes=['Crop phone status bar and browser toolbar']+(['Opaque mask over observer coordinates'] if 'redacted' in name else [])))
     (HERE/'screenshots.json').write_text(json.dumps(records,indent=2),encoding='utf-8')
     # Contact sheet is a navigation aid, not a fabricated app screenshot.
     sheet=Image.new('RGB',(1440,1460),'#080e18');d=ImageDraw.Draw(sheet)
     f=ImageFont.truetype('C:/Windows/Fonts/segoeuib.ttf',19)
     for i,(name,_,title,_) in enumerate(SHOTS):
-        im=Image.open(HERE/(name+'.png')).convert('RGB');im.thumbnail((330,650))
+        with Image.open(HERE/(name+'.png')) as source:im=source.convert('RGB')
+        im.thumbnail((330,650))
         x=15+(i%4)*360;y=50+(i//4)*730
         sheet.paste(im,(x,y));d.text((x,y-33),title,font=f,fill='#a4ebd1')
     sheet.save(HERE/'overview.jpg',quality=92)

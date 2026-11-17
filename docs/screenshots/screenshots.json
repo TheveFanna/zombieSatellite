@@ -45,7 +45,7 @@
   {
     "file": "04-camera-ar.png",
     "source": "docs/ScreenRecording.mp4",
-    "source_seconds": 36.5,
+    "source_seconds": 40.0,
     "title": "AR / camera overlay",
     "description": "Satellite direction over the real phone camera. This is not radio reception.",
     "dimensions": [
