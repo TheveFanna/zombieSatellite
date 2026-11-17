@@ -14,7 +14,7 @@ import {
   modelObjName,
   modelZipName,
   parseObj,
-  projectModel,
+  shadeModel,
   serializeObj,
 } from '../../lib/field/index';
 import type { ModelGeometry } from '../../lib/field/index';
@@ -41,13 +41,30 @@ function Canvas({ model }: { model: ModelGeometry }) {
     const draw = () => {
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       ctx.clearRect(0, 0, SIZE, SIZE);
-      ctx.lineWidth = 1;
-      ctx.lineCap = 'round';
-      for (const line of projectModel(model, yaw, PITCH_RAD, SIZE / 2)) {
-        ctx.strokeStyle = `rgba(168, 240, 207, ${(0.15 + 0.85 * line.depth).toFixed(3)})`;
+      // Night backdrop: a soft blue glow, not black.
+      const sky = ctx.createRadialGradient(SIZE / 2, SIZE * 0.4, SIZE * 0.05, SIZE / 2, SIZE / 2, SIZE * 0.72);
+      sky.addColorStop(0, '#2a4168');
+      sky.addColorStop(1, '#0c1424');
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+      // Soft contact shadow under the model.
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+      ctx.beginPath();
+      ctx.ellipse(SIZE / 2, SIZE * 0.82, SIZE * 0.26, SIZE * 0.05, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Lit, filled faces, painted far to near.
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = 0.8;
+      for (const face of shadeModel(model, yaw, PITCH_RAD, SIZE / 2)) {
         ctx.beginPath();
-        ctx.moveTo(SIZE / 2 + line.x1, SIZE / 2 + line.y1);
-        ctx.lineTo(SIZE / 2 + line.x2, SIZE / 2 + line.y2);
+        face.points.forEach((p, i) => {
+          if (i === 0) ctx.moveTo(SIZE / 2 + p.x, SIZE / 2 + p.y);
+          else ctx.lineTo(SIZE / 2 + p.x, SIZE / 2 + p.y);
+        });
+        ctx.closePath();
+        ctx.fillStyle = face.fill;
+        ctx.strokeStyle = face.fill;
+        ctx.fill();
         ctx.stroke();
       }
     };
@@ -94,7 +111,7 @@ function Canvas({ model }: { model: ModelGeometry }) {
       document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [model]);
-  return <canvas ref={ref} className="model-canvas" style={{ width: SIZE, height: SIZE }} aria-hidden="true" />;
+  return <canvas ref={ref} className="model-canvas" style={{ width: SIZE, height: SIZE, borderRadius: 12 }} aria-hidden="true" />;
 }
 
 export function ModelViewer({ slug }: { slug: string }) {

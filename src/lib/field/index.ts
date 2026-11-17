@@ -71,8 +71,8 @@ export { ILLUSTRATIVE_MODELS } from './model-defs';
 export { parseObj, serializeObj } from './obj';
 export type { ModelGeometry } from './obj';
 export { buildStoredZip, crc32 } from './zip';
-export { modelEdges, projectModel } from './model-view';
-export type { ModelLine } from './model-view';
+export { modelEdges, projectModel, shadeModel } from './model-view';
+export type { ModelLine, ShadedFace } from './model-view';
 export {
   MODEL_RECORDS,
   MODEL_TEXT,

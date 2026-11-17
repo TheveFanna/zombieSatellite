@@ -49,18 +49,27 @@ export function rod(length: number, thickness = 0.02): ModelGeometry {
 
 export function translate(model: ModelGeometry, dx: number, dy: number, dz: number): ModelGeometry {
   const vertices = model.vertices.map((value, i) => value + [dx, dy, dz][i % 3]);
-  return { vertices, faces: model.faces };
+  return { ...model, vertices };
+}
+
+export const DEFAULT_FACE_COLOR = '#c9d1db';
+
+/** The same model with every face painted one colour. */
+export function paint(model: ModelGeometry, color: string): ModelGeometry {
+  return { ...model, colors: model.faces.map(() => color) };
 }
 
 export function merge(...models: readonly ModelGeometry[]): ModelGeometry {
   const vertices: number[] = [];
   const faces: number[][] = [];
+  const colors: string[] = [];
   for (const model of models) {
     const base = vertices.length / 3;
     vertices.push(...model.vertices);
     for (const face of model.faces) faces.push(face.map((i) => i + base));
+    colors.push(...(model.colors ?? model.faces.map(() => DEFAULT_FACE_COLOR)));
   }
-  return { vertices, faces };
+  return { vertices, faces, colors };
 }
 /** UV sphere as a wireframe: `rings` latitude bands and `segments` meridians, drawn as quads. */
 export function sphere(radius: number, rings = 6, segments = 12): ModelGeometry {

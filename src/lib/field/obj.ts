@@ -2,6 +2,8 @@
 export interface ModelGeometry {
   readonly vertices: readonly number[];
   readonly faces: readonly (readonly number[])[];
+  /** Optional colour per face (hex). The OBJ file does not carry it; the viewer uses it. */
+  readonly colors?: readonly string[];
 }
 
 /** Parses v and f lines; returns null when the text holds no usable face. */
