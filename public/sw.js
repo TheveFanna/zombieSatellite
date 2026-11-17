@@ -1,7 +1,7 @@
 // zombieSatellite Service_Worker (S6 design "Service worker").
 // Caches only Shell_Assets. Every other request, including /api/tle and CelesTrak, is not intercepted
 // and is never cached or answered from the cache. Bump CACHE whenever this file changes.
-const CACHE = 'zombiesat-shell-v3';
+const CACHE = 'zombiesat-shell-v4';
 const SHELL_DOCUMENTS = ['/', '/session', '/ar', '/catalog', '/cards'];
 
 self.addEventListener('install', () => {
