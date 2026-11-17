@@ -1,5 +1,6 @@
 'use client';
 // Ruler of the AR tab (S11 design): a vertical scale with tick marks and a white bar at the current value.
+import { memo } from 'react';
 import type { PointerEvent, KeyboardEvent } from 'react';
 
 export interface RulerProps {
@@ -19,7 +20,7 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-export function Ruler({ side, label, value, min, max, step, format, onChange }: RulerProps) {
+function RulerImpl({ side, label, value, min, max, step, format, onChange }: RulerProps) {
   const fraction = (value - min) / (max - min);
   const topPct = (1 - fraction) * 100;
 
@@ -77,3 +78,5 @@ export function Ruler({ side, label, value, min, max, step, format, onChange }: 
     </div>
   );
 }
+
+export const Ruler = memo(RulerImpl);

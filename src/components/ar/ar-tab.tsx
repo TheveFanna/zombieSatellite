@@ -1,6 +1,6 @@
 'use client';
 // AR tab (S9, S11): standalone AR with its own pointing session, camera, TLE source and observer.
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 import { listPlayableEntries } from '../../lib/catalog/index';
 import type { PlayableEntry } from '../../lib/catalog/index';
@@ -97,6 +97,10 @@ function reducedMotion(): boolean {
 function clampPct(frac: number): number {
   return Math.min(1, Math.max(0, frac));
 }
+
+const WHEEL_ITEMS = ENTRIES.map((e) => ({ id: e.noradId, name: e.name, sub: e.orbitLabel ?? '' }));
+const formatFov = (v: number): string => `${Math.round(v)}°`;
+const formatSky = (v: number): string => (v >= 99 ? 'Cam' : v <= 1 ? 'Sky' : `${Math.round(v)}%`);
 
 export function ArTab() {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -396,11 +400,11 @@ export function ArTab() {
   const cameraBlocked = cameraState === 'off';
   const showGate = !gateDismissed && (permission === 'unknown' || permission === 'denied' || cameraBlocked);
 
-  const changeFov = (value: number) => {
+  const changeFov = useCallback((value: number) => {
     const next = Math.min(FOV_MAX_DEG, Math.max(FOV_MIN_DEG, value));
     setFovDeg(next);
     if (depsRef.current !== null) writeFov(depsRef.current.storage, next);
-  };
+  }, []);
 
   const enableSensors = () => {
     // Called inside the tap: iOS only shows the motion prompt for a user gesture.
@@ -408,14 +412,17 @@ export function ArTab() {
     if (cameraState === 'off') startCameraRef.current();
   };
 
-  const onWheelSelect = (index: number) => {
-    if (index === selectedIndex) {
-      setStoryOpen(true);
-      return;
-    }
-    setStoryOpen(false);
-    setSelectedId(ENTRIES[index].noradId);
-  };
+  const onWheelSelect = useCallback(
+    (index: number) => {
+      if (index === selectedIndex) {
+        setStoryOpen(true);
+        return;
+      }
+      setStoryOpen(false);
+      setSelectedId(ENTRIES[index].noradId);
+    },
+    [selectedIndex],
+  );
 
   const pointer = (e: PointerEvent<HTMLDivElement>) => ({ pointerId: e.pointerId, clientX: e.clientX, clientY: e.clientY });
   const dragLayer = snap?.dragActive === true;
@@ -488,7 +495,7 @@ export function ArTab() {
       </header>
 
       <SatelliteWheel
-        items={ENTRIES.map((e) => ({ id: e.noradId, name: e.name, sub: e.orbitLabel ?? '' }))}
+        items={WHEEL_ITEMS}
         selectedIndex={selectedIndex}
         onSelect={onWheelSelect}
       />
@@ -501,7 +508,7 @@ export function ArTab() {
           min={FOV_MIN_DEG}
           max={FOV_MAX_DEG}
           step={FOV_STEP_DEG}
-          format={(v) => `${Math.round(v)}°`}
+          format={formatFov}
           onChange={changeFov}
         />
         <Ruler
@@ -511,7 +518,7 @@ export function ArTab() {
           min={0}
           max={100}
           step={1}
-          format={(v) => (v >= 99 ? 'Cam' : v <= 1 ? 'Sky' : `${Math.round(v)}%`)}
+          format={formatSky}
           onChange={setCameraLevel}
         />
       </div>

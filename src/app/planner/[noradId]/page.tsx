@@ -79,13 +79,11 @@ function PassDetail({
   entry,
   snapshot,
   row,
-  nowMs,
   fieldDeps,
 }: {
   entry: PlayableEntry;
   snapshot: PlannerSnapshot;
   row: PlannerRow;
-  nowMs: number;
   fieldDeps: FieldBrowserDeps | null;
 }) {
   const { pass, profile } = row;
@@ -96,6 +94,12 @@ function PassDetail({
   );
   const downlinkMhz = entry.beacon.downlinkMhz;
   const [notice, setNotice] = useState<string | null>(null);
+  // The ground-track clock lives here, so only the open sheet re-renders once a second.
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNowMs(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const detail = useMemo(() => {
     if (satrec === null) return null;
@@ -263,8 +267,6 @@ function PlannerView({ entry }: { entry: PlayableEntry }) {
   const [fieldDeps, setFieldDeps] = useState<FieldBrowserDeps | null>(null);
   const [minElevation, setMinElevation] = useState(DEFAULT_PLANNER_MIN_ELEVATION_DEG);
   const [selected, setSelected] = useState<number | null>(null);
-  const [nowMs, setNowMs] = useState(() => Date.now());
-
   const serverSnapshot = useMemo(() => initialSnapshot(entry), [entry]);
   const getServerSnapshot = (): PlannerSnapshot => serverSnapshot;
 
@@ -288,11 +290,6 @@ function PlannerView({ entry }: { entry: PlayableEntry }) {
       setFieldDeps(null);
     };
   }, [entry]);
-
-  useEffect(() => {
-    const id = setInterval(() => setNowMs(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
 
   const snapshot = useSyncExternalStore(
     controller ? controller.subscribe : noopSubscribe,
@@ -433,7 +430,7 @@ function PlannerView({ entry }: { entry: PlayableEntry }) {
         onClose={() => setSelected(null)}
       >
         {selectedRow !== null ? (
-          <PassDetail entry={entry} snapshot={snapshot} row={selectedRow} nowMs={nowMs} fieldDeps={fieldDeps} />
+          <PassDetail entry={entry} snapshot={snapshot} row={selectedRow} fieldDeps={fieldDeps} />
         ) : null}
       </ConsoleSheet>
     </main>

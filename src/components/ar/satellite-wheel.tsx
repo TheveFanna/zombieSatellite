@@ -1,7 +1,7 @@
 'use client';
 // Satellite_Wheel of the AR tab (S11, S11 round 2): tall certificate cards in a row.
 // The selected card sits in front and is a little larger. Moving the selection slides the row sideways.
-import { useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 
 export interface WheelItem {
@@ -37,7 +37,7 @@ function Certificate({ item }: { item: WheelItem }) {
   );
 }
 
-export function SatelliteWheel({ items, selectedIndex, onSelect }: SatelliteWheelProps) {
+function SatelliteWheelImpl({ items, selectedIndex, onSelect }: SatelliteWheelProps) {
   // dragPx is the finger offset while a drag is in progress; it is 0 at rest.
   const [dragPx, setDragPx] = useState(0);
   const startRef = useRef<{ x: number } | null>(null);
@@ -114,3 +114,6 @@ export function SatelliteWheel({ items, selectedIndex, onSelect }: SatelliteWhee
     </div>
   );
 }
+
+/** Memoised: the AR frame loop re-renders the tab about 30 times a second; the wheel only changes on selection or drag. */
+export const SatelliteWheel = memo(SatelliteWheelImpl);
