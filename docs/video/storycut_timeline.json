@@ -1,0 +1,210 @@
+{
+  "duration": 64,
+  "voiceover": false,
+  "scenes": [
+    {
+      "d": 2,
+      "start": 65,
+      "end": 67,
+      "tag": "THE LOST / 2005",
+      "beats": [
+        [
+          "IMAGE\nGOES SILENT.",
+          "NASA loses contact."
+        ]
+      ],
+      "accent": "2005",
+      "out": 0
+    },
+    {
+      "d": 2,
+      "start": 67,
+      "end": 69,
+      "tag": "THE FOUND / 2018",
+      "beats": [
+        [
+          "SOMEONE\nHEARS IT.",
+          "Rediscovered by amateur Scott Tilley."
+        ]
+      ],
+      "accent": "2018",
+      "out": 2
+    },
+    {
+      "d": 2,
+      "start": 69,
+      "end": 71,
+      "tag": "RESURRECTION",
+      "beats": [
+        [
+          "NOT DEAD.\nNOT QUITE.",
+          "Some stories refuse to end."
+        ]
+      ],
+      "accent": "NOW",
+      "out": 4
+    },
+    {
+      "d": 6,
+      "start": 10,
+      "end": 16,
+      "tag": "YOUR TURN / ZOMBIESATELLITE",
+      "beats": [
+        [
+          "THE HUNT\nIS YOURS.",
+          "A phone companion for satellite hobbyists."
+        ],
+        [
+          "SEVEN GHOSTS.\nFIVE TO FOLLOW.",
+          "Documented stories. Playable satellite sessions."
+        ]
+      ],
+      "accent": "01",
+      "out": 6
+    },
+    {
+      "d": 6,
+      "kind": "private",
+      "tag": "FIND / THE NEXT ENCOUNTER",
+      "beats": [
+        [
+          "FIND ITS\nNEXT RETURN.",
+          "Public orbital data predicts the next pass."
+        ],
+        [
+          "CHOOSE\nYOUR GHOST.",
+          "Open a session. Coordinates hidden for privacy."
+        ]
+      ],
+      "accent": "02",
+      "out": 12
+    },
+    {
+      "d": 8,
+      "start": 30,
+      "end": 38,
+      "tag": "POINT / INTO THE SKY",
+      "beats": [
+        [
+          "WHERE\nDO YOU LOOK?",
+          "The camera view overlays the calculated direction."
+        ],
+        [
+          "LET THE ORBIT\nGUIDE YOU.",
+          "Follow the on-screen direction cues."
+        ]
+      ],
+      "accent": "03",
+      "out": 18
+    },
+    {
+      "d": 6,
+      "start": 50,
+      "end": 56,
+      "tag": "PRACTISE / BEFORE THE REAL PASS",
+      "beats": [
+        [
+          "AN INVISIBLE\nPATH, REVEALED.",
+          "Sky view makes the orbital geometry visible."
+        ],
+        [
+          "FAST-FORWARD\nTHE ENCOUNTER.",
+          "Demo mode plays a predicted pass at 60x."
+        ]
+      ],
+      "accent": "04",
+      "out": 26
+    },
+    {
+      "d": 3,
+      "kind": "warning",
+      "tag": "SOUND ON / LISTEN NEXT",
+      "beats": [
+        [
+          "LISTEN CLOSELY.\nA GHOST'S HEARTBEAT.",
+          "Simulated beacon / original phone audio"
+        ]
+      ],
+      "accent": "...",
+      "out": 32
+    },
+    {
+      "d": 10,
+      "start": 99,
+      "end": 109,
+      "kind": "listen",
+      "tag": "LISTEN / THE SIMULATED BEACON",
+      "beats": [
+        [
+          "A PULSE.\nSTILL FIGHTING.",
+          "A synthesized echo of a zombie satellite."
+        ],
+        [
+          "HEAR THE TONE.\nWATCH IT SHIFT.",
+          "The kHz readout shows computed Doppler shift."
+        ]
+      ],
+      "accent": "05",
+      "out": 35
+    },
+    {
+      "d": 4,
+      "start": 110,
+      "end": 113,
+      "tag": "COMPLETE / THE ENCOUNTER",
+      "beats": [
+        [
+          "THE PASS ENDS.\nTHE STORY STAYS.",
+          "Review lock time and pointing accuracy."
+        ]
+      ],
+      "accent": "06",
+      "out": 45
+    },
+    {
+      "d": 5,
+      "start": 185,
+      "end": 189,
+      "tag": "COLLECT / A SOUVENIR",
+      "beats": [
+        [
+          "BRING BACK\nA SOUVENIR.",
+          "Your QSL card records a simulated session."
+        ]
+      ],
+      "accent": "07",
+      "out": 49
+    },
+    {
+      "d": 6,
+      "kind": "kiro",
+      "tag": "BUILT WITH KIRO",
+      "beats": [
+        [
+          "BUILT TO BRING\nTHEM BACK.",
+          "11 feature specs. 2 steering files."
+        ],
+        [
+          "FROM SPECS\nTO EXPERIENCE.",
+          "Requirements, design and tasks live in the repo."
+        ]
+      ],
+      "accent": "08",
+      "out": 54
+    },
+    {
+      "d": 4,
+      "start": 8,
+      "end": 12,
+      "tag": "KIROWEEN / RESURRECTION",
+      "beats": [
+        [
+          "SOME STORIES\nSTILL ORBIT.",
+          "Real orbital data. A simulated beacon."
+        ]
+      ],
+      "accent": "GO",
+      "out": 60
+    }
+  ]
+}

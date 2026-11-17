@@ -1,0 +1,94 @@
+1
+00:00:00,000 --> 00:00:02,000
+IMAGE GOES SILENT.
+NASA loses contact.
+
+2
+00:00:02,000 --> 00:00:04,000
+SOMEONE HEARS IT.
+Rediscovered by amateur Scott Tilley.
+
+3
+00:00:04,000 --> 00:00:06,000
+NOT DEAD. NOT QUITE.
+Some stories refuse to end.
+
+4
+00:00:06,000 --> 00:00:09,000
+THE HUNT IS YOURS.
+A phone companion for satellite hobbyists.
+
+5
+00:00:09,000 --> 00:00:12,000
+SEVEN GHOSTS. FIVE TO FOLLOW.
+Documented stories. Playable satellite sessions.
+
+6
+00:00:12,000 --> 00:00:15,000
+FIND ITS NEXT RETURN.
+Public orbital data predicts the next pass.
+
+7
+00:00:15,000 --> 00:00:18,000
+CHOOSE YOUR GHOST.
+Open a session. Coordinates hidden for privacy.
+
+8
+00:00:18,000 --> 00:00:22,000
+WHERE DO YOU LOOK?
+The camera view overlays the calculated direction.
+
+9
+00:00:22,000 --> 00:00:26,000
+LET THE ORBIT GUIDE YOU.
+Follow the on-screen direction cues.
+
+10
+00:00:26,000 --> 00:00:29,000
+AN INVISIBLE PATH, REVEALED.
+Sky view makes the orbital geometry visible.
+
+11
+00:00:29,000 --> 00:00:32,000
+FAST-FORWARD THE ENCOUNTER.
+Demo mode plays a predicted pass at 60x.
+
+12
+00:00:32,000 --> 00:00:35,000
+LISTEN CLOSELY. A GHOST'S HEARTBEAT.
+Simulated beacon / original phone audio
+
+13
+00:00:35,000 --> 00:00:40,000
+A PULSE. STILL FIGHTING.
+A synthesized echo of a zombie satellite.
+
+14
+00:00:40,000 --> 00:00:45,000
+HEAR THE TONE. WATCH IT SHIFT.
+The kHz readout shows computed Doppler shift.
+
+15
+00:00:45,000 --> 00:00:49,000
+THE PASS ENDS. THE STORY STAYS.
+Review lock time and pointing accuracy.
+
+16
+00:00:49,000 --> 00:00:54,000
+BRING BACK A SOUVENIR.
+Your QSL card records a simulated session.
+
+17
+00:00:54,000 --> 00:00:57,000
+BUILT TO BRING THEM BACK.
+11 feature specs. 2 steering files.
+
+18
+00:00:57,000 --> 00:01:00,000
+FROM SPECS TO EXPERIENCE.
+Requirements, design and tasks live in the repo.
+
+19
+00:01:00,000 --> 00:01:04,000
+SOME STORIES STILL ORBIT.
+Real orbital data. A simulated beacon.

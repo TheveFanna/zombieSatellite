@@ -1,6 +1,16 @@
 # zombieSatellite: video script
 
-## Cinematic judge editions (current delivery, 2026-11-17)
+## Short story editions — current delivery (2026-11-17)
+
+`docs/video/zombieSatellite_Story_landscape_EN.mp4` and `docs/video/zombieSatellite_Story_portrait_EN.mp4` are the current versions. Both are 64 seconds, 30 fps, H.264/AAC, in 1920 x 1080 and 1080 x 1920. They replace the earlier TTS-paced editions. No voice-over is planned or included.
+
+The opening three cards run exactly two seconds each. Short text carries the story from IMAGE's loss and rediscovery to the viewer's own pass, pointing, simulated beacon and QSL card. The historical sources below still apply. Landscape has exactly two columns: an illustrated story panel on the left, one phone recording on the right. The IN FOCUS column and duplicate detail footage are removed. Portrait uses one recording under the story text. Observer coordinates remain opaquely covered.
+
+The newly synthesized 120 BPM score uses a piano-like motif, bass, kick, snare and hi-hat, with a sparse opening, rhythmic build, listening break and return. Music and phone stems target -16 LUFS / -2 dBTP. The normalized music measured approximately -15.5 LUFS before gating. A three-second SOUND ON countdown begins at 32 seconds, with “Listen closely. A ghost's heartbeat.” and a simulated-beacon label. Music is fully zero from 35–48 seconds while the original app sound plays; no historical satellite reception is represented by that audio. The two stems do not clip in the final mix (measured sample peak approximately 0.801).
+
+Rebuild: `python docs/video/render_storycut.py`. Editable copy: `storycut.en.srt`, `storycut_landscape.ass`, `storycut_portrait.ass` and `storycut_timeline.json`. Audio: `storycut_music.wav`, `storycut_music_gated.wav`, `storycut_phone.wav`. `storycut_audio.json` records the audio priority window. Earlier TTS scripts and timings are archived artifacts and do not apply to these exports.
+
+## Cinematic judge editions (previous delivery, 2026-11-17)
 
 Current files: `docs/video/zombieSatellite_Cinematic_landscape_EN.mp4` and `docs/video/zombieSatellite_Cinematic_portrait_EN.mp4`. Both run 147.5 seconds at 30 fps, in 1920 x 1080 and 1080 x 1920 respectively. They supersede the earlier judge editions below.
 

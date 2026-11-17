@@ -1,0 +1,12 @@
+{
+  "music_target_lufs": -16,
+  "phone_target_lufs": -16,
+  "music_zero_windows": [
+    [
+      35.0,
+      48.00000000000001
+    ]
+  ],
+  "max_music_in_phone_windows": 0.0,
+  "mix_peak": 0.80133056640625
+}
