@@ -6,7 +6,7 @@ Live app: https://zombie-satellite.vercel.app/
 
 ## How to play
 
-1. Pick a satellite. The home page presents all seven entries with their documented history; five of them are playable, two are story-only because they have no regular passes to play.
+1. Pick a satellite. The Archive page (/catalog) presents all seven entries with their documented history; five of them are playable, two are story-only because they have no regular passes to play.
 2. Predict the pass. The app computes the next pass over your position from public CelesTrak TLE data with SGP4. Your position comes from the browser geolocation, with manual coordinates as the fallback. All times are UTC, with a local start time shown on the picker.
 3. Point the phone. During a pass, a marker shows where the satellite is in the sky, optionally over the camera picture. The pointing lock tolerance is ±10°.
 4. Follow the simulated beacon. A tone synthesized in the browser follows the Doppler shift of the pass, and the real shift is shown in kHz next to it.
@@ -38,7 +38,7 @@ The field companion update adds these tools around each pass. All of them are co
 
 The beacon sound is simulated: the browser synthesizes it from public TLE data. zombieSatellite has no radio hardware and processes no real-world transmission; the only real input is public orbital data.
 
-The stories on the home page are documented history, attributed to named amateurs and to their sources. None of them describes something this app does.
+The stories in the Archive are documented history, attributed to named amateurs and to their sources. None of them describes something this app does.
 
 ## Run locally
 

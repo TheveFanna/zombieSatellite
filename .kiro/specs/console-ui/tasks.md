@@ -1,3 +1,5 @@
+> Status (repository tidy-up): the tasks below are not all done. The Console_Home was removed in S11 and the `?console=1` preview with it; the session console (tasks 4 to 10) stayed. Tasks 1 to 3 and 11 are not implemented.
+
 # Implementation Plan: console-ui (S8)
 
 ## Overview

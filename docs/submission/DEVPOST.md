@@ -68,12 +68,12 @@ The zombie-satellite hobby exists because amateurs did the work that institution
 
 The project was built spec by spec with Kiro, and the specs are in the repository under `.kiro/specs`.
 
-- **Seven specs:** orbit-engine, zombie-catalog, ar-pointing, seance-session, qsl-card, shell-pwa-deploy and field-companion. Each has its own requirements, design and tasks documents.
+- **Eleven spec folders:** orbit-engine, zombie-catalog, ar-pointing, seance-session, qsl-card, shell-pwa-deploy, field-companion, console-ui, ui-refresh, mobile-polish and ar-tab. Most have requirements, design and tasks documents; the later rounds keep their design notes in the requirements and tasks files.
 - **Models:** Opus wrote the requirements and the designs; Sonnet did most of the implementation.
 - **Review gates:** a human review between stages. The requirements, the design and the task list of each spec were approved by the author before the next stage started, and several designs were changed after review.
 - **Steering:** two steering files in `.kiro/steering` hold the project scope (a fixed catalog, no custom backend, UTC everywhere, no claim of real reception) and the workflow rules.
 - **Commits:** one commit per task, made after that task's tests passed, staging files by name.
-- **Verification:** the landed test suite, which has 368 passing tests in 78 test files at the time of writing (one more test is skipped by default), plus the opt-in test against the live CelesTrak endpoint. It includes property-based tests (fast-check) for the orbit engine and scaffold checks that scan the app's own text for wording that could suggest real reception.
+- **Verification:** the test suite, which has 384 passing tests in 81 test files at the time of writing (one more file, the live CelesTrak test, is skipped by default), plus the opt-in test against the live CelesTrak endpoint. It includes property-based tests (fast-check) for the orbit engine and scaffold checks that scan the app's own text for wording that could suggest real reception.
 - **What Kiro did not do:** deploy the app, or run the device checks. The author deployed to Vercel and runs the device checklist on real phones.
 
 ## Challenges
@@ -81,7 +81,7 @@ The project was built spec by spec with Kiro, and the specs are in the repositor
 - **Honest wording.** The app must never suggest that it hears a real satellite. Two scaffold checks scan every page text, the copy modules and the README: a text that mentions a beacon, signal or radio must also say simulated or synthesized, and no sentence may pair a reception word with a radio term. They shaped the copy: for example, the app names its audience hobbyists and watchers, because the word listeners next to a radio term fails the scan.
 - **Orbit data in China.** A direct connection to celestrak.org is not reliable from many phones, so the browser talks only to the app's own server route.
 - **Phone sensors.** Heading comes from different sources on iOS and Android and needs a declination correction to be a true heading. On iPhone the motion sensors have to be enabled again after the user returns from another app; this is an iOS permission limitation that we recorded and did not work around.
-- **A fixed field of view.** The marker uses a fixed 75° vertical field of view, so it can sit slightly off over the camera picture on some phones.
+- **A fixed field of view.** The marker first used a fixed 75° vertical field of view, so it could sit slightly off over the camera picture on some phones. The AR tab now has a field-of-view slider, but each phone still needs its own setting.
 
 ## What we learned
 
@@ -89,14 +89,14 @@ Writing the numeric baselines down first, and then building tests against them, 
 
 ## What's next
 
-- Calibrating the camera field of view for each device.
+- Keeping a field-of-view profile for each device, so the slider setting survives a change of phone.
 - Exports of the collection of QSL cards.
 - Licensed original 3D models, where an agency or museum releases them, in place of the illustrative ones.
 
 ## Credits and limits
 
 - Coastlines: Natural Earth, public domain. Sun position: the USNO approximate solar coordinates algorithm.
-- The satellite models are illustrative, built from published dimensions and photographs. They are not original engineering models.
+- The satellite models are illustrative, built from published descriptions and dimensions; no photographs were used. The Transit 5B-5 model is a sphere, because no shape was found in the sources. They are not original engineering models.
 - The listening log is self-reported and unverified.
 - The shadow prediction is geometric. A real transmitter may switch on or off at slightly different moments.
 
