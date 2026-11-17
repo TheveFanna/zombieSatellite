@@ -1,4 +1,4 @@
-"""No-voice story cut: two-column landscape, quick intro, original rhythmic score."""
+"""No-voice story cut: two-column landscape, quick intro, original phone audio only."""
 import json, math, wave
 import numpy as np
 from PIL import Image,ImageDraw
@@ -92,48 +92,7 @@ def audio(total):
     art.write_wav(WORK/'phone-raw.wav',src)
     base.run(['-i',str(WORK/'phone-raw.wav'),'-af','loudnorm=I=-16:TP=-2:LRA=9','-ar','48000','-ac','2','-c:a','pcm_s16le',str(HERE/'storycut_phone.wav')],WORK/'phone-level.log')
     src=readwav(HERE/'storycut_phone.wav')[:n]
-    music=np.zeros((n,2),np.float32);rng=np.random.default_rng(902)
-    def put(start,z,pan=.5):
-        b=int(start*sr);z=z[:max(0,n-b)]
-        if b<0 or not len(z):return
-        music[b:b+len(z),0]+=z*math.sqrt(1-pan);music[b:b+len(z),1]+=z*math.sqrt(pan)
-    def note(start,midi,length,amp,bass=False):
-        t=np.arange(int(length*sr),dtype=np.float32)/sr;f=440*2**((midi-69)/12)
-        if bass:z=np.sin(2*np.pi*f*t)+.2*np.sin(4*np.pi*f*t)
-        else:z=np.sin(2*np.pi*f*t+1.7*np.sin(4*np.pi*f*t)*np.exp(-t*6))+.16*np.sin(6*np.pi*f*t)
-        env=(1-np.exp(-t*180))*np.exp(-t*(2.5 if bass else 2))
-        put(start,z*env*amp,.5 if bass else float(rng.uniform(.2,.8)))
-    chords=[(50,57,60,65),(46,53,57,62),(53,60,64,69),(48,55,60,64)]
-    # 120 BPM: piano-like motif, moving bass and a real rhythmic build/drop/return.
-    for beat,t in enumerate(np.arange(0,total,.5)):
-        chord=chords[int(t//4)%4]
-        energy=.4 if t<6 else (1.0 if t<29 else (.6 if t<35 else 1.15))
-        note(float(t),chord[beat%4]+(12 if beat%8==7 else 0),1.7,.12*energy)
-        if beat%2==0:note(float(t),chord[0]-24,.8,.22*energy,True)
-        if t>=6:
-            tt=np.arange(int(.38*sr),dtype=np.float32)/sr
-            if beat%2==0:
-                z=np.sin(2*np.pi*(48*tt+3*(1-np.exp(-tt*22))))*np.exp(-tt*16)*(1-np.exp(-tt*250));put(float(t),z*.38*energy)
-            else:
-                noise=rng.normal(0,1,len(tt)).astype(np.float32);noise=np.r_[0,np.diff(noise)]
-                put(float(t),noise*np.exp(-tt*30)*(1-np.exp(-tt*250))*.065*energy)
-            for off in (0,.25):
-                ht=np.arange(int(.09*sr),dtype=np.float32)/sr;noise=rng.normal(0,1,len(ht)).astype(np.float32)
-                put(float(t+off),np.r_[0,np.diff(noise)]*np.exp(-ht*65)*.022*energy,.65 if off else .35)
-    # Broader harmonic arrivals create lift at the start and after the listening break.
-    for t in (6,14,22,48,56):
-        chord=chords[int(t//4)%4]
-        for j,m in enumerate(chord):note(t,m+12,3,.095,.0)
-    fade=np.minimum(np.arange(n)/sr/.3,1)*np.minimum((n-np.arange(n))/sr/2,1)
-    music*=fade[:,None];music*=.8/max(.001,np.max(np.abs(music)))
-    art.write_wav(WORK/'score-raw.wav',music)
-    base.run(['-i',str(WORK/'score-raw.wav'),'-af','loudnorm=I=-16:TP=-2:LRA=11','-ar','48000','-ac','2','-c:a','pcm_s16le',str(HERE/'storycut_music.wav')],WORK/'music-level.log')
-    music=readwav(HERE/'storycut_music.wav')[:n];gate=np.ones(n,np.float32)
-    for a,b in intervals:
-        lo=int(a*sr);hi=int(b*sr);pre=max(0,lo-48000);post=min(n,hi+24000)
-        gate[pre:lo]=np.linspace(1,0,lo-pre)**1.5;gate[lo:hi]=0;gate[hi:post]=np.linspace(0,1,post-hi)
-    gated=music*gate[:,None];art.write_wav(HERE/'storycut_music_gated.wav',gated);art.write_wav(WORK/'mix.wav',gated+src)
-    (HERE/'storycut_audio.json').write_text(json.dumps(dict(music_target_lufs=-16,phone_target_lufs=-16,music_zero_windows=intervals,max_music_in_phone_windows=float(np.max(np.abs(gated[gate==0]))),mix_peak=float(np.max(np.abs(gated+src)))),indent=2),encoding='utf-8')
+    (HERE/'storycut_audio.json').write_text(json.dumps(dict(background_music=False,phone_target_lufs=-16,phone_audio_windows=intervals,phone_peak=float(np.max(np.abs(src)))),indent=2),encoding='utf-8')
     return intervals,levels
 
 def ass(v,rows,intervals,levels):
@@ -167,7 +126,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     for a,b in intervals:
         x,y=(190,1682) if v else (70,728);bw=700 if v else 1000
         emit(a,b,rf'{{\pos({x},{y})\p1\c&H203448&\fad(60,120)}}m 0 0 l {bw} 0 l {bw} 116 l 0 116',3)
-        emit(a,b,rf'{{\pos({x+18},{y+12})\fs{27 if v else 30}\b1\c&H7BC2FF&}}SIMULATED BEACON / MUSIC OFF',4)
+        emit(a,b,rf'{{\pos({x+18},{y+12})\fs{27 if v else 30}\b1\c&H7BC2FF&}}SIMULATED BEACON / APP AUDIO',4)
         for t in np.arange(a,b,.12):
             val=min(1,float(levels[min(len(levels)-1,int(t/.02))])*12);pts=[]
             for j in range(32):
@@ -196,7 +155,7 @@ def render(v,total,rows,intervals,levels):
     joined=WORK/f'{label}-joined.mp4';base.run(['-f','concat','-safe','0','-i',str(listing),'-c','copy',str(joined)],WORK/f'{label}-concat.log')
     subs=ass(v,rows,intervals,levels)
     print(f'{label} final',flush=True)
-    base.run(['-i',str(joined),'-i',str(WORK/'mix.wav'),'-vf',f'ass={subs}','-t',str(total),'-c:v','libx264','-preset','fast','-crf','19','-c:a','aac','-b:a','192k','-movflags','+faststart',f'zombieSatellite_Story_{label}_EN.mp4'],WORK/f'{label}-final.log')
+    base.run(['-i',str(joined),'-i',str(HERE/'storycut_phone.wav'),'-vf',f'ass={subs}','-t',str(total),'-c:v','libx264','-preset','fast','-crf','19','-c:a','aac','-b:a','192k','-movflags','+faststart',f'zombieSatellite_Story_{label}_NoMusic_EN.mp4'],WORK/f'{label}-final.log')
 
 if __name__=='__main__':
     total,rows=timeline();print('Duration:',total,flush=True);prev.private_frames();intervals,levels=audio(total)

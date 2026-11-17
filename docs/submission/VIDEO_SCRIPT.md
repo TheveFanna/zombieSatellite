@@ -1,6 +1,12 @@
 # zombieSatellite: video script
 
-## Short story editions — current delivery (2026-11-17)
+## No-music story editions — current delivery (2026-11-17)
+
+Use `docs/video/zombieSatellite_Story_landscape_NoMusic_EN.mp4` or `docs/video/zombieSatellite_Story_portrait_NoMusic_EN.mp4`. Both retain the 64-second edit, privacy masks, short story copy and listening prompt. Background music is removed completely; only the edited original phone audio remains, with the same loudness normalization as the previous delivery. The sound badge now reads “SIMULATED BEACON / APP AUDIO”.
+
+`storycut_phone.wav` is the standalone edited phone soundtrack for adding music later. `render_storycut.py` now exports the no-music editions by default. Older files containing music remain historical exports and are not the current delivery.
+
+## Short story editions with music — previous delivery (2026-11-17)
 
 `docs/video/zombieSatellite_Story_landscape_EN.mp4` and `docs/video/zombieSatellite_Story_portrait_EN.mp4` are the current versions. Both are 64 seconds, 30 fps, H.264/AAC, in 1920 x 1080 and 1080 x 1920. They replace the earlier TTS-paced editions. No voice-over is planned or included.
 
