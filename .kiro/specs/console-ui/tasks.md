@@ -1,4 +1,4 @@
-> Status (repository tidy-up): the tasks below are not all done. The Console_Home was removed in S11 and the `?console=1` preview with it; the session console (tasks 4 to 10) stayed. Tasks 1 to 3 and 11 are not implemented.
+> Status (repository tidy-up): the checkboxes of tasks 1 to 3 were never ticked, but their code is in the repository (the alignment meter and the radar panel are used by the session console). Task 11 was cancelled: the Console_Home and the `?console=1` preview were removed.
 
 # Implementation Plan: console-ui (S8)
 
