@@ -3,6 +3,7 @@
 zombieSatellite is a mobile-first web app for the Kiroween 2026 hackathon (category Resurrection). It is a finding, pointing and Doppler aid for amateur radio and satellite hobbyists, built around a fixed catalog of seven zombie satellites: old spacecraft that were given up for dead and then turned out to still be transmitting, or whose story deserves to be told. The beacon sound in the app is simulated; only the orbital data is real.
 
 Live app: https://zombie-satellite.vercel.app/
+Demo video: https://youtu.be/Bf7HQ5XEycQ
 
 ## How to play
 

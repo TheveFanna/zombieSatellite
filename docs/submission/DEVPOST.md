@@ -7,20 +7,21 @@ Written for the Devpost form, in the order of its fields. English only. Every fi
 zombieSatellite
 
 ## Tagline
-
-Find a zombie satellite's next pass, point your phone at it and follow its Doppler shift, with a simulated beacon built from public orbital data.
+The satellite that has entered its grave orbit, do you know it once watched you grow up.
 
 ## Category
 Resurrection. The seven zombie satellites are old spacecraft that were given up for dead and turned out to still be transmitting, or whose story deserves retelling. The app brings them back as a planning and listening aid.
 
 ## Try it out
-- Live app: https://zombie-satellite.vercel.app/ (HTTPS, works in a desktop browser).
-- No radio is needed. Open **Passes**, pick a satellite and tap **Open session**, then use **Start demo (60x)**. The demo plays the next real pass in a few minutes.
-- On a phone, **AR** asks once for the camera and the motion sensors. On iPhone the motion prompt needs a tap. Without sensors the sky view still shows the horizon, the cardinal marks and the satellite orbit.
-- The archive (**Archive**) has each satellite's story and its illustrative model.
+- Live app: https://zombie-satellite.vercel.app/
+- Archive (stories and models): https://zombie-satellite.vercel.app/catalog
+- Source code (MIT licence): https://github.com/TheveFanna/zombieSatellite
+- No radio is needed. Open **Passes**, pick a satellite, tap **Open session**, then **Start demo (60×)**.
+- On a phone, **AR** asks once for the camera and the motion sensors. On iPhone the motion prompt needs a tap.
 
 ## Demo video
-[Link to be added after upload. The video is under three minutes; the script is in docs/submission/VIDEO_SCRIPT.md.]
+https://youtu.be/Bf7HQ5XEycQ
+
 ## Inspiration (the problem)
 
 Some satellites were declared dead decades ago and are still in orbit. A few of them are still transmitting, and almost every one of those was found again by an amateur with an antenna, not by the agency that built it.
@@ -109,13 +110,24 @@ Writing the numeric baselines down first, and then building tests against them, 
 - The shadow prediction is geometric. A real transmitter may switch on or off at slightly different moments.
 
 ## Built with
-
-- Next.js 16, React 19, TypeScript
-- satellite.js 6.0.2 (SGP4)
-- Web Audio API, DeviceOrientation, Geolocation and getUserMedia browser APIs
-- CelesTrak public GP data
-- Vitest and fast-check
+(18 tags, one per line in the Devpost form)
+- Next.js
+- React
+- TypeScript
+- satellite.js (SGP4)
+- Web Audio API
+- DeviceOrientation API
+- Geolocation API
+- getUserMedia (camera)
+- Service Worker (PWA)
+- SVG
+- CelesTrak TLE data
+- WMM 2025 magnetic model
+- Natural Earth coastlines
 - Vercel
+- Vitest
+- fast-check
+- pnpm
 - Kiro
 
 ## Story anchors
